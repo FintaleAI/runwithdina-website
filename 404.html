@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | RunWithDina</title>
+  <meta name="description" content="The page you're looking for doesn't exist. Head back to RunWithDina.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" href="img/logo-icon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .logo { margin-bottom: 2rem; }
+    .logo img { height: 50px; width: auto; }
+    .code {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(5rem, 15vw, 10rem);
+      font-weight: 700;
+      color: #b5d63d;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #f5f5f5;
+    }
+    p {
+      font-size: 0.95rem;
+      color: #888;
+      max-width: 420px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .buttons { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: #b5d63d;
+      color: #0a0a0a;
+    }
+    .btn-primary:hover {
+      background: #c8e55a;
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: #f0f0f0;
+      border: 1px solid #333;
+    }
+    .btn-outline:hover {
+      border-color: #666;
+      transform: translateY(-2px);
+    }
+    .footer-line {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 0.72rem;
+      color: #555;
+      letter-spacing: 0.03em;
+    }
+    .footer-line a { color: #888; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+
+<body>
+  <a href="index.html" class="logo">
+    <img src="img/logo-w.png" alt="RunWithDina logo">
+  </a>
+  <div class="code">404</div>
+  <h1>This page doesn't exist</h1>
+  <p>You might have followed an old link or typed the URL incorrectly. Let's get you back on track.</p>
+  <div class="buttons">
+    <a href="index.html" class="btn btn-primary">Back To Home</a>
+    <a href="monsoon-miles/index.html" class="btn btn-outline">Monsoon Miles</a>
+    <a href="contact.html" class="btn btn-outline">Contact Dina</a>
+  </div>
+  <div class="footer-line">
+    Made with love by <a href="https://fintale.io" target="_blank" rel="noopener noreferrer">fintale.io</a> for the RWD Community
+  </div>
+</body>
+
+</html>
