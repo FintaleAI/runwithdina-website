@@ -36,8 +36,14 @@ ErrorDocument 404 /404.html
 # ============================================================
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Force HTTPS
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Remove index.html from URLs — clean URLs
+  RewriteCond %{THE_REQUEST} /index\.html [NC]
+  RewriteRule ^(.*)index\.html$ /$1 [L,R=301]
 </IfModule>
 
 # ============================================================
