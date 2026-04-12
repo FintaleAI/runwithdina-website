@@ -1693,13 +1693,14 @@ input[type="date"].form-input {
 .rp-overlay {
   position: fixed; inset: 0; z-index: 9999;
   background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: center;
   padding: 1.5rem;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
 }
 .rp-modal {
   background: #111; border: 1px solid rgba(255,255,255,0.08);
   border-radius: 1rem; padding: 2.5rem; width: 100%; max-width: 420px;
-  position: relative;
+  position: relative; margin: auto 0; flex-shrink: 0;
 }
 .rp-close {
   position: absolute; top: 1rem; right: 1.2rem;
@@ -2926,7 +2927,9 @@ function openPayment(category, amount) {
   document.getElementById('rpForm').reset();
   document.getElementById('rpRunriotInfo').style.display = 'none';
   document.getElementById('rpOverlay').style.display = 'flex';
+  document.getElementById('rpOverlay').scrollTop = 0;
   document.body.style.overflow = 'hidden';
+  if (typeof lenis !== 'undefined') lenis.stop();
 }
 
 // RunRiot opt-in toggle
@@ -2940,6 +2943,7 @@ document.getElementById('rpRunriot').addEventListener('change', function() {
 function closePayment() {
   document.getElementById('rpOverlay').style.display = 'none';
   document.body.style.overflow = '';
+  if (typeof lenis !== 'undefined') lenis.start();
 }
 
 // Close on overlay click
