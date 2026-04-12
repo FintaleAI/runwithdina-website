@@ -2546,7 +2546,7 @@ button.cat-card-cta {
     <form id="rpForm" onsubmit="initiatePayment(event)">
       <input type="text" id="rpName" placeholder="Full Name" required class="rp-input">
       <input type="email" id="rpEmail" placeholder="Email Address" required class="rp-input">
-      <input type="tel" id="rpPhone" placeholder="Phone Number" required pattern="[0-9]{10}" class="rp-input">
+      <input type="tel" id="rpPhone" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10,12}" title="Enter 10-12 digit phone number" class="rp-input">
       <div class="rp-row">
         <input type="date" id="rpDob" required class="rp-input" placeholder="Date of Birth">
         <select id="rpGender" required class="rp-input">
@@ -2578,7 +2578,7 @@ button.cat-card-cta {
           <option value="O-">O-</option>
         </select>
       </div>
-      <input type="tel" id="rpEmergency" placeholder="Emergency Contact Number" required pattern="[0-9]{10}" class="rp-input">
+      <input type="tel" id="rpEmergency" placeholder="Emergency Contact Number (10 digits)" required pattern="[0-9]{10,12}" title="Enter 10-12 digit phone number" class="rp-input">
 
       <!-- RunRiot Integration -->
       <div class="rp-runriot">
