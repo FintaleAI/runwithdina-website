@@ -1676,6 +1676,11 @@ input[type="date"].form-input {
   .hero-title { font-size: clamp(2.5rem, 10vw, 4rem); }
   .hero-description { font-size: 0.85rem; }
   .hero-meta-value { font-size: 1rem; }
+  .hero-countdown { gap: 0.3rem; }
+  .cd-block { min-width: 56px; padding: 0.6rem 0.5rem; }
+  .cd-num { font-size: 1.3rem; }
+  .cd-sep { font-size: 1.2rem; }
+  .cd-label { font-size: 0.5rem; letter-spacing: 1px; }
   .intro-text { padding: 0; }
   .marquee-item { padding: 0 0.75rem; font-size: 1rem; }
   .cat-card-name { font-size: clamp(1.5rem, 6vw, 2rem); }
@@ -1733,6 +1738,108 @@ input[type="date"].form-input {
   margin-top: 1rem;
 }
 .rp-secure i { margin-right: 4px; }
+
+/* Live Countdown */
+.hero-countdown {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.cd-block {
+  display: flex; flex-direction: column; align-items: center;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.5rem; padding: 0.8rem 1rem; min-width: 70px;
+}
+.cd-num {
+  font-family: var(--mono); font-size: 1.8rem; font-weight: 500;
+  color: var(--pure); letter-spacing: -1px; line-height: 1;
+}
+.cd-label {
+  font-family: var(--sans); font-size: 0.6rem; color: var(--slate);
+  text-transform: uppercase; letter-spacing: 2px; margin-top: 0.3rem;
+}
+.cd-sep {
+  font-family: var(--mono); font-size: 1.5rem; color: var(--rain);
+  font-weight: 600; margin-top: -1rem;
+}
+
+/* Payment Success Overlay */
+.pay-success-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+  display: none; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.pay-success-card {
+  background: linear-gradient(160deg, #0f1a2e 0%, #111 50%, #0a1a0a 100%);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 1.2rem; padding: 3rem 2.5rem; width: 100%; max-width: 440px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.pay-success-card::before {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 50% 0%, rgba(59,130,246,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+.psc-check {
+  width: 72px; height: 72px; margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 30px rgba(52,211,153,0.25);
+  animation: psc-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes psc-pop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.psc-check svg { width: 36px; height: 36px; }
+.psc-title {
+  font-family: var(--serif); font-size: 1.8rem; font-style: italic;
+  color: #fff; margin-bottom: 0.3rem;
+}
+.psc-subtitle {
+  font-size: 0.95rem; color: var(--silver); margin-bottom: 1.8rem; line-height: 1.5;
+}
+.psc-details {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0.6rem; padding: 1.2rem; margin-bottom: 1.5rem; text-align: left;
+}
+.psc-detail-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.psc-detail-row:last-child { border-bottom: none; }
+.psc-detail-label { font-size: 0.82rem; color: var(--slate); }
+.psc-detail-value { font-size: 0.9rem; color: #fff; font-weight: 500; }
+.psc-detail-value.highlight { color: var(--rain); }
+.psc-detail-value.green { color: #34d399; }
+.psc-whatsapp {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: #25D366; color: #fff; padding: 0.9rem 1.8rem;
+  border-radius: 50px; font-size: 0.95rem; font-weight: 600;
+  text-decoration: none; margin-bottom: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-family: var(--sans);
+}
+.psc-whatsapp:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37,211,102,0.3);
+}
+.psc-email-note {
+  font-size: 0.78rem; color: var(--slate); margin-bottom: 1.2rem;
+}
+.psc-close {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--mist); padding: 0.7rem 2rem; border-radius: 0.4rem;
+  font-size: 0.85rem; cursor: pointer; font-family: var(--sans);
+  transition: background 0.2s;
+}
+.psc-close:hover { background: rgba(255,255,255,0.1); }
+
+/* Confetti canvas */
+#confettiCanvas {
+  position: fixed; inset: 0; z-index: 10001; pointer-events: none;
+}
 
 .rp-row {
   display: flex; gap: 0.6rem;
@@ -1862,6 +1969,16 @@ button.cat-card-cta {
           <div class="hero-meta-label">New This Year</div>
           <div class="hero-meta-value" style="color:var(--lightning)">Pool Party</div>
         </div>
+      </div>
+      <!-- Live Countdown -->
+      <div class="hero-countdown" id="heroCountdown">
+        <div class="cd-block"><span class="cd-num" id="cdDays">00</span><span class="cd-label">Days</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><span class="cd-num" id="cdHours">00</span><span class="cd-label">Hours</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><span class="cd-num" id="cdMins">00</span><span class="cd-label">Minutes</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><span class="cd-num" id="cdSecs">00</span><span class="cd-label">Seconds</span></div>
       </div>
     </div>
   </div>
@@ -2380,6 +2497,30 @@ button.cat-card-cta {
   </div>
 </footer>
 
+<!-- PAYMENT SUCCESS OVERLAY -->
+<div class="pay-success-overlay" id="paySuccessOverlay">
+  <div class="pay-success-card">
+    <div class="psc-check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 class="psc-title">You're in!</h3>
+    <p class="psc-subtitle">Welcome to RWD Monsoon Miles 2026. See you on July 19th.</p>
+    <div class="psc-details">
+      <div class="psc-detail-row"><span class="psc-detail-label">Name</span><span class="psc-detail-value" id="pscName">—</span></div>
+      <div class="psc-detail-row"><span class="psc-detail-label">Category</span><span class="psc-detail-value highlight" id="pscCategory">—</span></div>
+      <div class="psc-detail-row"><span class="psc-detail-label">Amount</span><span class="psc-detail-value green" id="pscAmount">—</span></div>
+      <div class="psc-detail-row"><span class="psc-detail-label">Payment ID</span><span class="psc-detail-value" id="pscPaymentId" style="font-family:var(--mono);font-size:0.78rem;color:var(--slate);">—</span></div>
+    </div>
+    <a href="https://chat.whatsapp.com/BSBbdKL0I7q4yaOZCMCte8" target="_blank" class="psc-whatsapp">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+      Join Runners WhatsApp Group
+    </a>
+    <p class="psc-email-note">A confirmation email has been sent to your inbox.</p>
+    <button class="psc-close" onclick="closeSuccessOverlay()">Close</button>
+  </div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+
 <!-- WHATSAPP FLOAT -->
 <a href="https://wa.me/919099906174?text=Hi%2C%20I%20have%20a%20question%20about%20Monsoon%20Miles%202026" target="_blank" class="wa-float" aria-label="Chat on WhatsApp">
   <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -2671,17 +2812,92 @@ function closeMobileMenu() {
 // ============================================================
 // COUNTDOWN (dynamic)
 // ============================================================
+// Live Countdown Timer
 const eventDate = new Date('2026-07-19T05:00:00+05:30').getTime();
 function updateCountdown() {
   const now = Date.now();
   const diff = eventDate - now;
+  // Final CTA days
   const el = document.getElementById('countdownDays');
-  if (!el) return;
-  if (diff <= 0) { el.textContent = '0'; return; }
-  el.textContent = Math.ceil(diff / (1000 * 60 * 60 * 24));
+  if (el) el.textContent = diff <= 0 ? '0' : Math.ceil(diff / (1000 * 60 * 60 * 24));
+  // Hero countdown
+  if (diff <= 0) return;
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const s = Math.floor((diff % (1000 * 60)) / 1000);
+  const pad = n => String(n).padStart(2, '0');
+  document.getElementById('cdDays').textContent = pad(d);
+  document.getElementById('cdHours').textContent = pad(h);
+  document.getElementById('cdMins').textContent = pad(m);
+  document.getElementById('cdSecs').textContent = pad(s);
 }
 updateCountdown();
-setInterval(updateCountdown, 60000);
+setInterval(updateCountdown, 1000);
+
+// Payment Success Overlay
+function showSuccessOverlay(name, category, amount, paymentId) {
+  document.getElementById('pscName').textContent = name;
+  document.getElementById('pscCategory').textContent = category;
+  document.getElementById('pscAmount').textContent = '₹' + amount;
+  document.getElementById('pscPaymentId').textContent = paymentId;
+  document.getElementById('paySuccessOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  launchConfetti();
+}
+function closeSuccessOverlay() {
+  document.getElementById('paySuccessOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Confetti
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = [];
+  const colors = ['#3b82f6','#f59e0b','#34d399','#ef4444','#8b5cf6','#ec4899','#06b6d4'];
+  for (let i = 0; i < 150; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: Math.random() * 8 + 4,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 3 + 2,
+      rot: Math.random() * 360,
+      vr: (Math.random() - 0.5) * 8,
+      opacity: 1
+    });
+  }
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    pieces.forEach(p => {
+      if (p.opacity <= 0) return;
+      alive = true;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      p.vy += 0.05;
+      if (frame > 120) p.opacity -= 0.01;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.globalAlpha = Math.max(0, p.opacity);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (alive) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
 
 // ============================================================
 // EARLY BIRD WAITLIST → GOOGLE SHEETS
@@ -2806,9 +3022,9 @@ function initiatePayment(e) {
         body: JSON.stringify(regData)
       });
 
-      // Show success
+      // Show success overlay with confetti
       closePayment();
-      alert('Payment successful! 🎉\n\nCategory: ' + selectedCategory + '\nPayment ID: ' + response.razorpay_payment_id + '\n\nYou are registered for RWD Monsoon Miles 2026! Check your email for confirmation.');
+      showSuccessOverlay(name, selectedCategory, selectedAmount, response.razorpay_payment_id);
     },
     modal: {
       ondismiss: function() {
