@@ -32,9 +32,35 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 # ============================================================
+# FORCE HTTPS
+# ============================================================
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ============================================================
 # SECURITY HEADERS
 # ============================================================
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
+
+# ============================================================
+# BLOCK DIRECTORY BROWSING
+# ============================================================
+Options -Indexes
+
+# ============================================================
+# BLOCK ACCESS TO SENSITIVE FILES
+# ============================================================
+<FilesMatch "\.(git|env|log|bak|sql|old)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
