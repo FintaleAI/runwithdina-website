@@ -2322,35 +2322,11 @@ button.cat-card-cta {
   <div class="final-cta-bg"></div>
   <div class="final-cta-label"><span id="countdownDays"></span> days to go</div>
   <h2 class="final-cta-title">So. July 19th.<br>You in?</h2>
-  <p class="final-cta-sub">200 people came last year and told their friends. This year we have room for 400. Drop your details below and we'll notify you the moment registrations open.</p>
-
-  <!-- Early Bird Waitlist Form -->
-  <div class="waitlist-form" id="waitlistForm">
-    <form id="earlyBirdForm" class="waitlist-fields">
-      <div class="waitlist-row">
-        <input type="text" name="name" placeholder="Your Name" required class="form-input waitlist-input">
-        <input type="tel" name="phone" placeholder="+91 98XXXXXXXX" required pattern="[0-9+\-\s()]{8,}" inputmode="tel" class="form-input waitlist-input">
-        <input type="email" name="email" placeholder="Email Address" required class="form-input waitlist-input">
-        <select name="category" required class="form-input waitlist-input">
-          <option value="" disabled selected>Category?</option>
-          <option value="1 Hour">1 Hour (Min. 6 KM)</option>
-          <option value="2 Hours">2 Hours (Min. 12 KM)</option>
-          <option value="4 Hours">4 Hours (Min. 24 KM)</option>
-          <option value="Not Sure">Not sure yet</option>
-        </select>
-      </div>
-      <button type="submit" class="final-cta-btn waitlist-btn" data-hover>
-        Join the Early Bird List
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-      <div class="waitlist-status" id="waitlistStatus"></div>
-    </form>
-    <div class="waitlist-success" id="waitlistSuccess" style="display:none;">
-      <div style="font-size:2.5rem;margin-bottom:1rem;">&#127783;&#65039;</div>
-      <div class="reg-title" style="margin-bottom:0.5rem;">You're on the list!</div>
-      <div class="reg-sub" style="max-width:380px;margin:0 auto;line-height:1.7;">We'll notify you the moment registrations open. Get your running shoes ready — July 19 is coming.</div>
-    </div>
-  </div>
+  <p class="final-cta-sub">200 people came last year and told their friends. This year we have room for 400. Registrations opening soon.</p>
+  <a href="#categories" class="final-cta-btn" data-hover style="display:inline-flex;text-decoration:none;">
+    View Categories
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
 </section>
 
 <!-- FOOTER -->
@@ -2712,53 +2688,7 @@ setInterval(updateCountdown, 60000);
 // ============================================================
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzWnsWvJBraVL8cnhJeGaBlGC-tL0X_BMJ1ErTXC3JjW14cJXrqeTapPw0IbZjNO6Y/exec';
 
-document.getElementById('earlyBirdForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector('.waitlist-btn');
-  const status = document.getElementById('waitlistStatus');
-  const data = {
-    name: form.name.value.trim(),
-    phone: form.phone.value.trim(),
-    email: form.email.value.trim(),
-    category: form.category.value,
-    timestamp: new Date().toISOString(),
-    source: 'monsoon-miles-website'
-  };
-
-  // Validate
-  if (!data.name || !data.phone || !data.email || !data.category) {
-    status.textContent = 'Please fill in all fields.';
-    status.className = 'waitlist-status';
-    return;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    status.textContent = 'Please enter a valid email address.';
-    status.className = 'waitlist-status';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = 'Sending...';
-  status.textContent = '';
-
-  try {
-    await fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    // no-cors always returns opaque, so we assume success
-    document.getElementById('earlyBirdForm').style.display = 'none';
-    document.getElementById('waitlistSuccess').style.display = 'block';
-  } catch (err) {
-    status.textContent = 'Something went wrong. Please try again.';
-    status.className = 'waitlist-status';
-    btn.disabled = false;
-    btn.innerHTML = 'Join the Early Bird List <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-  }
-});
+// Early bird form removed — registrations now via Razorpay
 </script>
 
 <!-- RAZORPAY CHECKOUT -->
