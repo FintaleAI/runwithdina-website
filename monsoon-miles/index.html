@@ -1737,6 +1737,63 @@ input[type="date"].form-input {
 .rp-row {
   display: flex; gap: 0.6rem;
 }
+
+/* RunRiot opt-in */
+.rp-runriot {
+  margin: 0.8rem 0 0.4rem;
+  padding: 1rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0.5rem;
+}
+.rp-checkbox-label {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  cursor: pointer; font-size: 0.9rem; color: #ccc;
+}
+.rp-checkbox { display: none; }
+.rp-checkbox-custom {
+  flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px;
+  border: 2px solid rgba(255,255,255,0.2); border-radius: 4px;
+  background: transparent; transition: all 0.2s;
+  position: relative;
+}
+.rp-checkbox:checked + .rp-checkbox-custom {
+  background: var(--rain); border-color: var(--rain);
+}
+.rp-checkbox:checked + .rp-checkbox-custom::after {
+  content: ''; position: absolute; top: 2px; left: 6px;
+  width: 5px; height: 10px;
+  border: solid #fff; border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.rp-checkbox-text { line-height: 1.4; }
+.rp-checkbox-text strong { color: #f59e0b; }
+.rp-runriot-info {
+  margin-top: 0.8rem; padding-top: 0.8rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.rp-runriot-desc {
+  font-size: 0.82rem; color: var(--silver); line-height: 1.5;
+  margin: 0 0 0.8rem;
+}
+.rp-runriot-privacy {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-radius: 0.4rem; padding: 0.8rem;
+}
+.rp-runriot-privacy-title {
+  font-size: 0.82rem; font-weight: 600; color: #f59e0b;
+  margin: 0 0 0.5rem;
+}
+.rp-runriot-privacy-text {
+  font-size: 0.78rem; color: var(--silver); line-height: 1.5;
+  margin: 0 0 0.5rem;
+}
+.rp-privacy-confirm {
+  margin-top: 0.6rem; font-size: 0.82rem;
+}
+.rp-privacy-confirm .rp-checkbox-text { color: #f59e0b; }
+.rp-privacy-confirm .rp-checkbox-text strong { color: #fff; }
 .rp-row .rp-input { flex: 1; min-width: 0; }
 .rp-input select, .rp-input option { color: #fff; background: #111; }
 
@@ -2369,6 +2426,29 @@ button.cat-card-cta {
         </select>
       </div>
       <input type="tel" id="rpEmergency" placeholder="Emergency Contact Number" required pattern="[0-9]{10}" class="rp-input">
+
+      <!-- RunRiot Integration -->
+      <div class="rp-runriot">
+        <label class="rp-checkbox-label">
+          <input type="checkbox" id="rpRunriot" class="rp-checkbox">
+          <span class="rp-checkbox-custom"></span>
+          <span class="rp-checkbox-text">Join <strong>RunRiot</strong> — a territory conquest running game</span>
+        </label>
+        <div class="rp-runriot-info" id="rpRunriotInfo" style="display:none;">
+          <p class="rp-runriot-desc">RunRiot tracks your runs to let you conquer territories on a real map. Compete with other runners, claim zones, and defend your turf.</p>
+          <div class="rp-runriot-privacy">
+            <p class="rp-runriot-privacy-title">&#128205; Location & Route Sharing</p>
+            <p class="rp-runriot-privacy-text">By opting in, you agree to share your <strong>GPS location and running routes</strong> with RunRiot during the event. This data is used to track territory conquests and leaderboard positions.</p>
+            <p class="rp-runriot-privacy-text">Your data is <strong>never sold</strong> and is only visible to other RunRiot players as conquered zones — not your exact route. You can delete your account and all data anytime.</p>
+            <label class="rp-checkbox-label rp-privacy-confirm">
+              <input type="checkbox" id="rpRunriotConsent" class="rp-checkbox">
+              <span class="rp-checkbox-custom"></span>
+              <span class="rp-checkbox-text">I understand and agree to share my location data with RunRiot</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
       <button type="submit" class="rp-pay-btn">Pay & Register</button>
     </form>
     <p class="rp-secure"><i class="fa-solid fa-lock"></i> Secure payment via Razorpay</p>
@@ -2662,9 +2742,18 @@ function openPayment(category, amount) {
   document.getElementById('rpCategory').textContent = category;
   document.getElementById('rpPrice').textContent = '₹' + amount;
   document.getElementById('rpForm').reset();
+  document.getElementById('rpRunriotInfo').style.display = 'none';
   document.getElementById('rpOverlay').style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
+
+// RunRiot opt-in toggle
+document.getElementById('rpRunriot').addEventListener('change', function() {
+  document.getElementById('rpRunriotInfo').style.display = this.checked ? 'block' : 'none';
+  if (!this.checked) {
+    document.getElementById('rpRunriotConsent').checked = false;
+  }
+});
 
 function closePayment() {
   document.getElementById('rpOverlay').style.display = 'none';
@@ -2691,8 +2780,16 @@ function initiatePayment(e) {
   const tshirt = document.getElementById('rpTshirt').value;
   const blood = document.getElementById('rpBlood').value;
   const emergency = document.getElementById('rpEmergency').value.trim();
+  const runriotOptIn = document.getElementById('rpRunriot').checked;
+  const runriotConsent = document.getElementById('rpRunriotConsent').checked;
 
   if (!name || !email || !phone || !dob || !gender || !tshirt || !blood || !emergency) return;
+
+  // If RunRiot is checked but consent is not given, alert
+  if (runriotOptIn && !runriotConsent) {
+    alert('Please agree to the RunRiot location sharing consent, or uncheck the RunRiot option.');
+    return;
+  }
 
   const options = {
     key: RAZORPAY_KEY,
@@ -2732,7 +2829,8 @@ function initiatePayment(e) {
         amount: selectedAmount,
         payment_id: response.razorpay_payment_id,
         timestamp: new Date().toISOString(),
-        source: 'razorpay-website'
+        source: 'razorpay-website',
+        runriot: runriotOptIn ? 'Yes' : 'No'
       };
 
       fetch(SHEET_URL, {
