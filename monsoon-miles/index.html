@@ -628,6 +628,15 @@ ul { list-style: none; }
   margin-right: 2px;
 }
 
+.cat-card-timing {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--silver);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
 .cat-card-features {
   display: flex; flex-direction: column;
   gap: 0.8rem;
@@ -1560,6 +1569,67 @@ input[type="date"].form-input {
   .final-cta-title { font-size: clamp(1.8rem, 7vw, 3rem); }
   .footer-grid { gap: 1.5rem; }
 }
+
+/* RAZORPAY MODAL */
+.rp-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.rp-modal {
+  background: #111; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem; padding: 2.5rem; width: 100%; max-width: 420px;
+  position: relative;
+}
+.rp-close {
+  position: absolute; top: 1rem; right: 1.2rem;
+  background: none; border: none; color: var(--silver); font-size: 1.8rem;
+  cursor: pointer; line-height: 1;
+}
+.rp-close:hover { color: #fff; }
+.rp-title {
+  font-family: var(--serif); font-size: 1.5rem; font-style: italic;
+  color: #fff; margin-bottom: 0.3rem;
+}
+.rp-title span { color: var(--rain); }
+.rp-price {
+  font-family: var(--serif); font-size: 2.5rem; font-style: italic;
+  color: var(--rain); margin-bottom: 1.5rem;
+}
+.rp-input {
+  display: block; width: 100%; padding: 0.85rem 1rem;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.5rem; color: #fff; font-size: 0.95rem;
+  margin-bottom: 0.8rem; outline: none;
+  font-family: var(--sans);
+}
+.rp-input:focus { border-color: var(--rain); }
+.rp-input::placeholder { color: var(--slate); }
+.rp-pay-btn {
+  width: 100%; padding: 1rem; margin-top: 0.5rem;
+  background: var(--rain); color: #fff; border: none;
+  border-radius: 0.5rem; font-size: 1rem; font-weight: 600;
+  cursor: pointer; font-family: var(--sans);
+  transition: background 0.2s;
+}
+.rp-pay-btn:hover { background: #2563eb; }
+.rp-secure {
+  text-align: center; font-size: 0.75rem; color: var(--slate);
+  margin-top: 1rem;
+}
+.rp-secure i { margin-right: 4px; }
+
+.rp-row {
+  display: flex; gap: 0.6rem;
+}
+.rp-row .rp-input { flex: 1; min-width: 0; }
+.rp-input select, .rp-input option { color: #fff; background: #111; }
+
+/* Fix button cat-card-cta */
+button.cat-card-cta {
+  font-family: var(--mono); border: none; cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -1610,8 +1680,8 @@ input[type="date"].form-input {
           <div class="hero-meta-value">Endurance Loop</div>
         </div>
         <div class="hero-meta-item">
-          <div class="hero-meta-label">Start</div>
-          <div class="hero-meta-value">5:00 AM</div>
+          <div class="hero-meta-label">Flag Off</div>
+          <div class="hero-meta-value">5:30 AM</div>
         </div>
         <div class="hero-meta-item">
           <div class="hero-meta-label">Edition</div>
@@ -1634,7 +1704,7 @@ input[type="date"].form-input {
 <section class="marquee-section">
   <div class="marquee-track">
     <div class="marquee-item"><span class="marquee-text">200 runners in 2025</span><span class="marquee-dot"></span></div>
-    <div class="marquee-item"><span class="marquee-text">5 AM start, no excuses</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><span class="marquee-text">5:30 AM flag off, no excuses</span><span class="marquee-dot"></span></div>
     <div class="marquee-item"><span class="marquee-text">Wet shoes, big smiles</span><span class="marquee-dot"></span></div>
     <div class="marquee-item"><span class="marquee-text">Suncity Club and Resort, Vadodara</span><span class="marquee-dot"></span></div>
     <div class="marquee-item"><span class="marquee-text">Non-profit, community first</span><span class="marquee-dot"></span></div>
@@ -1643,7 +1713,7 @@ input[type="date"].form-input {
     <div class="marquee-item"><span class="marquee-text">RunWithDina</span><span class="marquee-dot"></span></div>
     <!-- duplicate -->
     <div class="marquee-item"><span class="marquee-text">200 runners in 2025</span><span class="marquee-dot"></span></div>
-    <div class="marquee-item"><span class="marquee-text">5 AM start, no excuses</span><span class="marquee-dot"></span></div>
+    <div class="marquee-item"><span class="marquee-text">5:30 AM flag off, no excuses</span><span class="marquee-dot"></span></div>
     <div class="marquee-item"><span class="marquee-text">Wet shoes, big smiles</span><span class="marquee-dot"></span></div>
     <div class="marquee-item"><span class="marquee-text">Suncity Club and Resort, Vadodara</span><span class="marquee-dot"></span></div>
     <div class="marquee-item"><span class="marquee-text">Non-profit, community first</span><span class="marquee-dot"></span></div>
@@ -1744,6 +1814,8 @@ input[type="date"].form-input {
       <div class="cat-card-name">1 Hour</div>
       <div class="cat-card-duration">Endurance Loop</div>
       <div class="cat-card-km"><span>Min. 6 KM</span></div>
+      <div class="cat-card-price"><span class="cat-card-price-sym">₹</span>799</div>
+      <div class="cat-card-timing">Reporting 7:00 AM · Flag Off 7:30 AM</div>
       <div class="cat-card-features">
         <div class="cat-card-feature">You don't need to be a runner. Seriously.</div>
         <div class="cat-card-feature">1 hour of running at your own pace</div>
@@ -1752,7 +1824,7 @@ input[type="date"].form-input {
         <div class="cat-card-feature">Pool party to cool off after your run</div>
         <div class="cat-card-feature">The best first race experience in Vadodara</div>
       </div>
-      <a href="#waitlistForm" class="cat-card-cta" data-hover>Join Waitlist</a>
+      <button class="cat-card-cta" data-hover disabled style="opacity:0.5;cursor:not-allowed;">Registrations Opening Soon</button>
     </div>
     <!-- 2 HOURS -->
     <div class="cat-card downpour">
@@ -1761,6 +1833,8 @@ input[type="date"].form-input {
       <div class="cat-card-name">2 Hours</div>
       <div class="cat-card-duration">Endurance Loop</div>
       <div class="cat-card-km"><span>Min. 12 KM</span></div>
+      <div class="cat-card-price"><span class="cat-card-price-sym">₹</span>899</div>
+      <div class="cat-card-timing">Reporting 5:00 AM · Flag Off 5:35 AM</div>
       <div class="cat-card-features">
         <div class="cat-card-feature">You run regularly and want something to train for</div>
         <div class="cat-card-feature">2 hours of monsoon trail loops</div>
@@ -1770,7 +1844,7 @@ input[type="date"].form-input {
         <div class="cat-card-feature">Podium prizes for top finishers</div>
         <div class="cat-card-feature">Most of our 2025 runners picked this one</div>
       </div>
-      <a href="#waitlistForm" class="cat-card-cta" data-hover>Join Waitlist</a>
+      <button class="cat-card-cta" data-hover disabled style="opacity:0.5;cursor:not-allowed;">Registrations Opening Soon</button>
     </div>
     <!-- 4 HOURS -->
     <div class="cat-card cyclone">
@@ -1779,6 +1853,8 @@ input[type="date"].form-input {
       <div class="cat-card-name">4 Hours</div>
       <div class="cat-card-duration">Endurance Loop</div>
       <div class="cat-card-km"><span>Min. 24 KM</span></div>
+      <div class="cat-card-price"><span class="cat-card-price-sym">₹</span>999</div>
+      <div class="cat-card-timing">Reporting 5:00 AM · Flag Off 5:30 AM</div>
       <div class="cat-card-features">
         <div class="cat-card-feature">4 hours in the rain. On repeat. No excuses.</div>
         <div class="cat-card-feature">This is the one people talk about</div>
@@ -1788,7 +1864,7 @@ input[type="date"].form-input {
         <div class="cat-card-feature">Podium prizes for top finishers</div>
         <div class="cat-card-feature">The satisfaction of pushing your limits and finishing strong</div>
       </div>
-      <a href="#waitlistForm" class="cat-card-cta" data-hover>Join Waitlist</a>
+      <button class="cat-card-cta" data-hover disabled style="opacity:0.5;cursor:not-allowed;">Registrations Opening Soon</button>
     </div>
   </div>
 </section>
@@ -1831,37 +1907,61 @@ input[type="date"].form-input {
       <div class="tl-dot"></div>
       <div class="tl-time">4:30 AM</div>
       <div class="tl-title">You'll wonder why you signed up</div>
-      <div class="tl-desc">You'll pull into Suncity Club and Resort while it's still dark. The parking lot is half full already. Collect your BIB, pin it on, stretch a little. You'll hear nervous laughter and way too many "are we really doing this?" conversations.</div>
+      <div class="tl-desc">You'll pull into Suncity Club and Resort while it's still dark. The parking lot is half full already. 4 Hour and 2 Hour runners collect BIBs, pin them on, stretch a little. Nervous laughter and way too many "are we really doing this?" conversations.</div>
     </div>
     <div class="tl-item">
       <div class="tl-dot"></div>
       <div class="tl-time">5:00 AM</div>
-      <div class="tl-title">And then you'll remember</div>
-      <div class="tl-desc">Everyone starts together. Headlamps on, phones in armbands, and then you're off. The first loop feels easy. The red earth of Suncity Club and Resort is soft under your feet. The air smells like wet leaves. You'll forget you woke up at 4.</div>
+      <div class="tl-title">Reporting — 4 Hour &amp; 2 Hour</div>
+      <div class="tl-desc">4 Hour and 2 Hour runners report to the start line. Headlamps on, phones in armbands. The air smells like wet leaves. The energy is building.</div>
     </div>
     <div class="tl-item">
       <div class="tl-dot"></div>
-      <div class="tl-time">6:00 AM</div>
-      <div class="tl-title">1 Hour runners come home</div>
-      <div class="tl-desc">The 1 hour runners come through. Some sprinting the last stretch, some walking in with the biggest grins. Medals go around necks. Now you get to stand on the sideline and cheer everyone else.</div>
+      <div class="tl-time">5:30 AM</div>
+      <div class="tl-title">Flag off — 4 Hours</div>
+      <div class="tl-desc">The 4 Hour runners go first. And then you're off. The first loop feels easy. The red earth of Suncity Club and Resort is soft under your feet. You'll forget you woke up at 4.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-time">5:35 AM</div>
+      <div class="tl-title">Flag off — 2 Hours</div>
+      <div class="tl-desc">Five minutes later, 2 Hour runners follow. The trail is alive now. Runners everywhere, rain coming down, and you're part of it.</div>
     </div>
     <div class="tl-item">
       <div class="tl-dot"></div>
       <div class="tl-time">7:00 AM</div>
-      <div class="tl-title">2 Hour wraps up</div>
-      <div class="tl-desc">The sky is starting to lighten. 2 Hour runners are finishing, and the tiredness on their faces is mixed with something else. The 4 Hour runners are still out there. People start clapping louder.</div>
+      <div class="tl-title">1 Hour runners report</div>
+      <div class="tl-desc">The 1 Hour runners arrive at Suncity Club and Resort. Fresh energy, fresh legs. Collect your BIB, warm up, and get ready for your flag off at 7:30.</div>
     </div>
     <div class="tl-item">
       <div class="tl-dot"></div>
-      <div class="tl-time">9:00 AM</div>
+      <div class="tl-time">7:30 AM</div>
+      <div class="tl-title">Flag off — 1 Hour</div>
+      <div class="tl-desc">The 1 Hour runners are off! Your pace, your race. Some sprinting, some jogging, all smiling. The 2 Hour runners are wrapping up around you. The energy is electric.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-time">7:35 AM</div>
+      <div class="tl-title">2 Hours wraps up</div>
+      <div class="tl-desc">The sky is lightening. 2 Hour runners are finishing, and the tiredness on their faces is mixed with something else. Medals go around necks. The 4 Hour runners are still out there. People start clapping louder.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-time">8:30 AM</div>
+      <div class="tl-title">1 Hour runners come home</div>
+      <div class="tl-desc">The 1 Hour runners come through. Some sprinting the last stretch, some walking in with the biggest grins. Medals, hugs, and the realization that you just ran in a monsoon. Now you get to cheer the 4 Hour legends still going.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-time">9:30 AM</div>
       <div class="tl-title">4 Hours. Done.</div>
       <div class="tl-desc">Four hours. Done. If you've never seen someone finish a 4 hour loop challenge in the rain, it's something. Hugs from strangers. Medals that actually mean something.</div>
     </div>
     <div class="tl-item">
       <div class="tl-dot" style="background:var(--rain);box-shadow:0 0 12px var(--rain);"></div>
-      <div class="tl-time" style="color:var(--rain);">9:15 AM</div>
+      <div class="tl-time" style="color:var(--rain);">9:45 AM</div>
       <div class="tl-title" style="color:var(--lightning);">Pool party. Yes, really.</div>
-      <div class="tl-desc">This is the part nobody else in Gujarat is doing. You just finished a monsoon endurance run. Now jump in the Suncity Club and Resort pool while it's still raining. Cold water, sore muscles, loud music, and 400 people who just completed the same challenge you did. This is what you'll tell everyone about on Monday.</div>
+      <div class="tl-desc">This is the part nobody else in Gujarat is doing. You just finished a monsoon endurance run. Now jump in the Suncity Club and Resort pool while it's still raining. Cold water, sore muscles, loud music, and everyone who just completed the same challenge you did. This is what you'll tell everyone about on Monday.</div>
     </div>
     <div class="tl-item">
       <div class="tl-dot"></div>
@@ -1951,7 +2051,7 @@ input[type="date"].form-input {
       </div>
       <div class="venue-item">
         <div class="venue-item-label">Reporting</div>
-        <div class="venue-item-value">4:30 AM. Gates close at 4:50. Don't be late.</div>
+        <div class="venue-item-value">4:30 AM (4H &amp; 2H) · 6:30 AM (1H). Don't be late.</div>
       </div>
       <div class="venue-item">
         <div class="venue-item-label">Course</div>
@@ -1990,7 +2090,7 @@ input[type="date"].form-input {
   </div>
   <div class="faq-item">
     <button class="faq-q" data-hover onclick="toggleFaq(this)">What should I bring that morning?<span class="faq-q-icon">+</span></button>
-    <div class="faq-a"><div class="faq-a-inner">Wear the event T-shirt with your BIB pinned on. Bring running shoes (trail shoes if you have them), a headlamp or phone torch (it's pitch dark at 5 AM), a water bottle, and a change of clothes for after. Leave valuables in your car.</div></div>
+    <div class="faq-a"><div class="faq-a-inner">Wear the event T-shirt with your BIB pinned on. Bring running shoes (trail shoes if you have them), a headlamp or phone torch (4H &amp; 2H runners, it's pitch dark at 5 AM), a water bottle, and a change of clothes for after. Leave valuables in your car.</div></div>
   </div>
   <div class="faq-item">
     <button class="faq-q" data-hover onclick="toggleFaq(this)">Can my 15 year old sign up?<span class="faq-q-icon">+</span></button>
@@ -2109,11 +2209,57 @@ input[type="date"].form-input {
       <div class="m-sticky-info">Coming Soon</div>
       <div class="m-sticky-sub">19 July 2026</div>
     </div>
-    <a href="#waitlistForm" class="m-sticky-btn" style="text-decoration:none;display:inline-block;">Join Waitlist</a>
+    <a href="#categories" class="m-sticky-btn" style="text-decoration:none;display:inline-block;">Registrations Opening Soon</a>
   </div>
 </div>
 
-<!-- Registration modal removed — all buttons now scroll to the inline waitlist form -->
+<!-- RAZORPAY REGISTRATION MODAL -->
+<div class="rp-overlay" id="rpOverlay" style="display:none;">
+  <div class="rp-modal">
+    <button class="rp-close" onclick="closePayment()" aria-label="Close">&times;</button>
+    <h3 class="rp-title">Register for <span id="rpCategory">1 Hour</span></h3>
+    <p class="rp-price" id="rpPrice">₹799</p>
+    <form id="rpForm" onsubmit="initiatePayment(event)">
+      <input type="text" id="rpName" placeholder="Full Name" required class="rp-input">
+      <input type="email" id="rpEmail" placeholder="Email Address" required class="rp-input">
+      <input type="tel" id="rpPhone" placeholder="Phone Number" required pattern="[0-9]{10}" class="rp-input">
+      <div class="rp-row">
+        <input type="date" id="rpDob" required class="rp-input" placeholder="Date of Birth">
+        <select id="rpGender" required class="rp-input">
+          <option value="" disabled selected>Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="rp-row">
+        <select id="rpTshirt" required class="rp-input">
+          <option value="" disabled selected>T-shirt Size</option>
+          <option value="XS">XS</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+          <option value="XXL">XXL</option>
+        </select>
+        <select id="rpBlood" required class="rp-input">
+          <option value="" disabled selected>Blood Group</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+      </div>
+      <input type="tel" id="rpEmergency" placeholder="Emergency Contact Number" required pattern="[0-9]{10}" class="rp-input">
+      <button type="submit" class="rp-pay-btn">Pay & Register</button>
+    </form>
+    <p class="rp-secure"><i class="fa-solid fa-lock"></i> Secure payment via Razorpay</p>
+  </div>
+</div>
 
 <!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
@@ -2299,7 +2445,7 @@ burger.addEventListener('click', () => {
       <a href="#gallery" class="mobile-menu-link">Gallery</a>
       <a href="#faq" class="mobile-menu-link">FAQ</a>
       <a href="#venue" class="mobile-menu-link">Venue</a>
-      <a href="#waitlistForm" class="mobile-menu-register" onclick="closeMobileMenu();" style="text-decoration:none;display:inline-block;">Join Waitlist</a>
+      <a href="#categories" class="mobile-menu-register" onclick="closeMobileMenu();" style="text-decoration:none;display:inline-block;">Registrations Opening Soon</a>
     `;
     document.body.appendChild(mobileMenu);
     mobileMenu.querySelector('.mobile-menu-close').addEventListener('click', closeMobileMenu);
@@ -2383,6 +2529,122 @@ document.getElementById('earlyBirdForm').addEventListener('submit', async functi
     btn.innerHTML = 'Join the Early Bird List <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
   }
 });
+</script>
+
+<!-- RAZORPAY CHECKOUT -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+// ============================================================
+// RAZORPAY PAYMENT INTEGRATION
+// ============================================================
+const RAZORPAY_KEY = 'PASTE_YOUR_RAZORPAY_KEY_HERE'; // Replace with your rzp_live_ or rzp_test_ key
+
+let selectedCategory = '';
+let selectedAmount = 0;
+
+function openPayment(category, amount) {
+  selectedCategory = category;
+  selectedAmount = amount;
+  document.getElementById('rpCategory').textContent = category;
+  document.getElementById('rpPrice').textContent = '₹' + amount;
+  document.getElementById('rpForm').reset();
+  document.getElementById('rpOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closePayment() {
+  document.getElementById('rpOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+// Close on overlay click
+document.getElementById('rpOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closePayment();
+});
+
+// Close on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closePayment();
+});
+
+function initiatePayment(e) {
+  e.preventDefault();
+  const name = document.getElementById('rpName').value.trim();
+  const email = document.getElementById('rpEmail').value.trim();
+  const phone = document.getElementById('rpPhone').value.trim();
+  const dob = document.getElementById('rpDob').value;
+  const gender = document.getElementById('rpGender').value;
+  const tshirt = document.getElementById('rpTshirt').value;
+  const blood = document.getElementById('rpBlood').value;
+  const emergency = document.getElementById('rpEmergency').value.trim();
+
+  if (!name || !email || !phone || !dob || !gender || !tshirt || !blood || !emergency) return;
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: selectedAmount * 100, // Razorpay expects paise
+    currency: 'INR',
+    name: 'Monsoon Miles 2026',
+    description: selectedCategory + ' — Monsoon Miles 2026',
+    image: 'https://runwithdina.com/img/logo-icon.png',
+    prefill: {
+      name: name,
+      email: email,
+      contact: phone
+    },
+    notes: {
+      category: selectedCategory,
+      event: 'Monsoon Miles 2026',
+      tshirt: tshirt,
+      blood_group: blood,
+      emergency_contact: emergency,
+      source: 'website'
+    },
+    theme: {
+      color: '#3b82f6'
+    },
+    handler: function(response) {
+      // Payment successful — save to Google Sheets
+      const regData = {
+        name: name,
+        phone: phone,
+        email: email,
+        dob: dob,
+        gender: gender,
+        tshirt: tshirt,
+        blood_group: blood,
+        emergency_contact: emergency,
+        category: selectedCategory,
+        amount: selectedAmount,
+        payment_id: response.razorpay_payment_id,
+        timestamp: new Date().toISOString(),
+        source: 'razorpay-website'
+      };
+
+      fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(regData)
+      });
+
+      // Show success
+      closePayment();
+      alert('Payment successful! 🎉\n\nCategory: ' + selectedCategory + '\nPayment ID: ' + response.razorpay_payment_id + '\n\nYou are registered for Monsoon Miles 2026! Check your email for confirmation.');
+    },
+    modal: {
+      ondismiss: function() {
+        // User closed Razorpay without paying
+      }
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.on('payment.failed', function(response) {
+    alert('Payment failed. Please try again or contact us on WhatsApp.');
+  });
+  rzp.open();
+}
 </script>
 </body>
 </html>
