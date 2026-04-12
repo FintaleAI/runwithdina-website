@@ -205,6 +205,7 @@
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const element = entry.target;
+          if (element.dataset.counted) { counterObserver.unobserve(element); return; }
 
           // If parent reveal is not yet visible, wait for it
           if (!isRevealVisible(element)) {
@@ -213,19 +214,21 @@
               const mo = new MutationObserver(() => {
                 if (reveal.classList.contains('visible')) {
                   mo.disconnect();
-                  // Small delay so the opacity transition has started
                   setTimeout(() => animateCounter(element), 150);
+                  counterObserver.unobserve(element);
                 }
               });
               mo.observe(reveal, { attributes: true, attributeFilter: ['class'] });
-              return; // Don't unobserve yet
+              // Fallback: if MutationObserver doesn't fire within 3s, animate anyway
+              setTimeout(() => { mo.disconnect(); if (!element.dataset.counted) animateCounter(element); counterObserver.unobserve(element); }, 3000);
+              return;
             }
           }
 
           animateCounter(element);
           counterObserver.unobserve(element);
         });
-      }, { threshold: 0.3 });
+      }, { threshold: 0.2 });
 
       counters.forEach((element) => counterObserver.observe(element));
     }
