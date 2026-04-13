@@ -775,18 +775,28 @@ ul { list-style: none; }
   width: 100%;
   text-align: center;
   padding: 16px;
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 2px;
-  transition: all 0.4s var(--ease);
-}
-.cat-card-cta:hover {
+  border: none;
+  border-radius: 4px;
   background: var(--white);
   color: var(--black);
-  border-color: var(--white);
+  transition: all 0.4s var(--ease);
+  cursor: pointer;
+}
+.cat-card-cta:hover {
+  background: var(--rain);
+  color: var(--white);
+}
+.cat-card-cta:active {
+  transform: scale(0.97);
+}
+.cat-card-cta:disabled {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  cursor: not-allowed;
 }
 
 /* ============================================================
@@ -1053,6 +1063,8 @@ ul { list-style: none; }
   display: flex;
   gap: 1rem;
   padding: 0 clamp(1.5rem, 4vw, 4rem);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 .gallery-img {
   flex: 0 0 min(400px, 75vw);
@@ -1060,6 +1072,7 @@ ul { list-style: none; }
   border-radius: 3px;
   overflow: hidden;
   position: relative;
+  scroll-snap-align: start;
 }
 .gallery-img.wide {
   aspect-ratio: 16/10;
@@ -2591,7 +2604,7 @@ button.cat-card-cta {
       <input type="email" id="rpEmail" placeholder="Email Address" required class="rp-input">
       <input type="tel" id="rpPhone" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10,12}" title="Enter 10-12 digit phone number" class="rp-input">
       <div class="rp-row">
-        <input type="date" id="rpDob" required class="rp-input" placeholder="Date of Birth">
+        <input type="text" id="rpDob" required class="rp-input" placeholder="Date of Birth" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
         <select id="rpGender" required class="rp-input">
           <option value="" disabled selected>Gender</option>
           <option value="Male">Male</option>
