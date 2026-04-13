@@ -1016,13 +1016,17 @@ ul { list-style: none; }
   display: flex;
   gap: 1rem;
   padding: 0 clamp(1.5rem, 4vw, 4rem);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
-.gallery-strip::-webkit-scrollbar { display: none; }
+@media (max-width: 768px) {
+  .gallery-strip {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .gallery-strip::-webkit-scrollbar { display: none; }
+}
 .gallery-img {
   flex: 0 0 min(400px, 75vw);
   aspect-ratio: 3/4;
