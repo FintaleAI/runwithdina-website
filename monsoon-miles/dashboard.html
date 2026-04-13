@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — RWD Monsoon Miles 2026</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0a; --surface: #141414; --border: #222;
+    --white: #f5f5f5; --mist: #a3a3a3; --slate: #6b6b6b;
+    --rain: #3b82f6; --rain-light: #60a5fa;
+    --green: #22c55e; --amber: #f59e0b; --rose: #f43f5e;
+    --font: 'Space Grotesk', system-ui, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: var(--font); background: var(--bg); color: var(--white); min-height: 100vh; }
+
+  /* PIN GATE */
+  .pin-gate {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; gap: 1.5rem; padding: 2rem;
+  }
+  .pin-gate h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+  .pin-gate p { color: var(--mist); font-size: 0.9rem; }
+  .pin-input {
+    background: var(--surface); border: 1px solid var(--border); color: var(--white);
+    font-family: var(--font); font-size: 1.2rem; text-align: center;
+    padding: 12px 24px; border-radius: 6px; width: 200px; letter-spacing: 0.2em;
+  }
+  .pin-input:focus { outline: none; border-color: var(--rain); }
+  .pin-btn {
+    background: var(--rain); color: #fff; border: none; padding: 12px 32px;
+    font-family: var(--font); font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase; border-radius: 6px; cursor: pointer;
+  }
+  .pin-btn:hover { background: var(--rain-light); }
+  .pin-error { color: var(--rose); font-size: 0.85rem; display: none; }
+
+  /* DASHBOARD */
+  .dashboard { display: none; padding: 2rem clamp(1rem, 4vw, 4rem); max-width: 1200px; margin: 0 auto; }
+  .dash-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .dash-header h1 { font-size: 1.4rem; font-weight: 700; }
+  .dash-header span { color: var(--mist); font-size: 0.8rem; }
+  .dash-refresh {
+    background: var(--surface); border: 1px solid var(--border); color: var(--mist);
+    padding: 8px 16px; border-radius: 6px; font-family: var(--font); font-size: 0.75rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .dash-refresh:hover { border-color: var(--rain); color: var(--white); }
+
+  /* SUMMARY CARDS */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.25rem; text-align: center;
+  }
+  .card-value { font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; }
+  .card-label { color: var(--mist); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .card-value.blue { color: var(--rain); }
+  .card-value.green { color: var(--green); }
+  .card-value.amber { color: var(--amber); }
+  .card-value.rose { color: var(--rose); }
+
+  /* CHARTS */
+  .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+  .chart-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.5rem;
+  }
+  .chart-box h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--mist); margin-bottom: 1rem; }
+  @media (max-width: 640px) { .charts { grid-template-columns: 1fr; } }
+
+  /* REVENUE */
+  .revenue-bar {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  .revenue-bar .rev-total { font-size: 1.5rem; font-weight: 700; color: var(--green); }
+  .revenue-bar .rev-label { color: var(--mist); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .rev-breakdown { display: flex; gap: 1.5rem; margin-left: auto; flex-wrap: wrap; }
+  .rev-item { text-align: center; }
+  .rev-item .rev-amt { font-size: 1rem; font-weight: 600; }
+  .rev-item .rev-cat { color: var(--slate); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* TABLES */
+  .table-section { margin-bottom: 2rem; }
+  .table-section h3 {
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--mist); margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .table-section h3 .badge {
+    background: var(--rain); color: #fff; font-size: 0.65rem; padding: 2px 8px;
+    border-radius: 10px; font-weight: 600;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--slate); padding: 8px 12px; border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 12px; font-size: 0.85rem; border-bottom: 1px solid var(--border);
+    color: var(--mist);
+  }
+  tr:hover td { color: var(--white); background: rgba(59,130,246,0.04); }
+  .gender-m { color: var(--rain-light); }
+  .gender-f { color: var(--rose); }
+  .gender-o { color: var(--amber); }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 4rem; color: var(--mist); }
+  .loading .spinner {
+    width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--rain);
+    border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TABS */
+  .tab-bar { display: flex; gap: 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .tab-btn {
+    background: none; border: none; color: var(--slate); padding: 10px 20px;
+    font-family: var(--font); font-size: 0.8rem; cursor: pointer; border-bottom: 2px solid transparent;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .tab-btn.active { color: var(--rain); border-bottom-color: var(--rain); }
+  .tab-btn:hover { color: var(--white); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- PIN GATE -->
+<div class="pin-gate" id="pinGate">
+  <h1>Monsoon Miles 2026</h1>
+  <p>Core Committee Dashboard</p>
+  <input type="password" class="pin-input" id="pinInput" placeholder="PIN" maxlength="10" autocomplete="off">
+  <button class="pin-btn" id="pinBtn" onclick="authenticate()">Enter</button>
+  <div class="pin-error" id="pinError">Incorrect PIN. Try again.</div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-header">
+    <div>
+      <h1>Monsoon Miles 2026</h1>
+      <span>Core Committee Dashboard</span>
+    </div>
+    <button class="dash-refresh" onclick="loadData()">Refresh Data</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    Loading registrations...
+  </div>
+
+  <div id="dashContent" style="display:none;">
+    <!-- Summary Cards -->
+    <div class="cards" id="cards"></div>
+
+    <!-- Revenue -->
+    <div class="revenue-bar" id="revenueBar"></div>
+
+    <!-- Charts -->
+    <div class="charts">
+      <div class="chart-box">
+        <h3>Category Distribution</h3>
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>Gender Distribution</h3>
+        <canvas id="genderChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Category Tabs + Tables -->
+    <div class="tab-bar" id="tabBar"></div>
+    <div id="tabPanels"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — Update this URL after deploying the Apps Script
+// ============================================================
+const DASHBOARD_API_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXci31n_qxWREx3jt6SWUXZQO3MnjsdKbmV-72oTV1Sx8z58/exec';
+const DASHBOARD_PIN = 'MM2026';
+
+let allData = [];
+let categoryChart = null;
+let genderChart = null;
+
+// ============================================================
+// PIN AUTH
+// ============================================================
+document.getElementById('pinInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') authenticate();
+});
+
+function authenticate() {
+  const pin = document.getElementById('pinInput').value.trim();
+  if (pin === DASHBOARD_PIN) {
+    document.getElementById('pinGate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('pinError').style.display = 'block';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+  }
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadData() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('dashContent').style.display = 'none';
+
+  try {
+    const res = await fetch(DASHBOARD_API_URL + '?pin=' + DASHBOARD_PIN);
+    const json = await res.json();
+
+    if (json.error) {
+      document.getElementById('loading').innerHTML = '<p style="color:var(--rose);">Access denied. Check API PIN.</p>';
+      return;
+    }
+
+    allData = json.registrations || [];
+    renderDashboard();
+  } catch (err) {
+    document.getElementById('loading').innerHTML = '<p style="color:var(--rose);">Failed to load data. Make sure the Apps Script is deployed.<br><small style="color:var(--slate);">' + err.message + '</small></p>';
+  }
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderDashboard() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('dashContent').style.display = 'block';
+
+  const cats = { '1 Hour': [], '2 Hours': [], '4 Hours': [] };
+  let male = 0, female = 0, other = 0;
+  let totalRevenue = 0;
+  const revByCat = {};
+
+  allData.forEach(r => {
+    const cat = r.category || 'Unknown';
+    if (!cats[cat]) cats[cat] = [];
+    cats[cat].push(r);
+
+    const g = (r.gender || '').toLowerCase();
+    if (g === 'male') male++;
+    else if (g === 'female') female++;
+    else other++;
+
+    const amt = parseInt(r.amount) || 0;
+    totalRevenue += amt;
+    revByCat[cat] = (revByCat[cat] || 0) + amt;
+  });
+
+  // Cards
+  const cardsHTML = `
+    <div class="card"><div class="card-value blue">${allData.length}</div><div class="card-label">Total Registrations</div></div>
+    <div class="card"><div class="card-value">${cats['1 Hour']?.length || 0}</div><div class="card-label">1 Hour</div></div>
+    <div class="card"><div class="card-value">${cats['2 Hours']?.length || 0}</div><div class="card-label">2 Hours</div></div>
+    <div class="card"><div class="card-value">${cats['4 Hours']?.length || 0}</div><div class="card-label">4 Hours</div></div>
+    <div class="card"><div class="card-value green">${male}</div><div class="card-label">Male</div></div>
+    <div class="card"><div class="card-value rose">${female}</div><div class="card-label">Female</div></div>
+  `;
+  document.getElementById('cards').innerHTML = cardsHTML;
+
+  // Revenue
+  let revBreakdownHTML = '';
+  Object.keys(revByCat).forEach(cat => {
+    revBreakdownHTML += `<div class="rev-item"><div class="rev-amt">\u20B9${revByCat[cat].toLocaleString('en-IN')}</div><div class="rev-cat">${cat}</div></div>`;
+  });
+  document.getElementById('revenueBar').innerHTML = `
+    <div><div class="rev-total">\u20B9${totalRevenue.toLocaleString('en-IN')}</div><div class="rev-label">Total Revenue</div></div>
+    <div class="rev-breakdown">${revBreakdownHTML}</div>
+  `;
+
+  // Charts
+  renderCharts(cats, male, female, other);
+
+  // Tables
+  renderTables(cats);
+}
+
+function getAge(dob) {
+  if (!dob) return '-';
+  const d = new Date(dob);
+  if (isNaN(d)) return '-';
+  const today = new Date();
+  let age = today.getFullYear() - d.getFullYear();
+  const m = today.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+  return age;
+}
+
+function renderCharts(cats, male, female, other) {
+  const chartColors = ['#3b82f6', '#f59e0b', '#22c55e'];
+  const genderColors = ['#60a5fa', '#f43f5e', '#f59e0b'];
+
+  if (categoryChart) categoryChart.destroy();
+  if (genderChart) genderChart.destroy();
+
+  categoryChart = new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(cats),
+      datasets: [{ data: Object.values(cats).map(a => a.length), backgroundColor: chartColors, borderWidth: 0 }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#a3a3a3', padding: 16, font: { family: "'Space Grotesk'" } } }
+      }
+    }
+  });
+
+  genderChart = new Chart(document.getElementById('genderChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Male', 'Female', 'Other'],
+      datasets: [{ data: [male, female, other], backgroundColor: genderColors, borderWidth: 0 }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#a3a3a3', padding: 16, font: { family: "'Space Grotesk'" } } }
+      }
+    }
+  });
+}
+
+function renderTables(cats) {
+  const tabBar = document.getElementById('tabBar');
+  const panels = document.getElementById('tabPanels');
+  let tabHTML = '';
+  let panelHTML = '';
+  let first = true;
+
+  // "All" tab
+  tabHTML += `<button class="tab-btn active" onclick="switchTab(event, 'tab-all')">All</button>`;
+  panelHTML += `<div class="tab-panel active" id="tab-all">${buildTable(allData)}</div>`;
+
+  Object.keys(cats).forEach(cat => {
+    const id = 'tab-' + cat.replace(/\s/g, '');
+    tabHTML += `<button class="tab-btn" onclick="switchTab(event, '${id}')">${cat} <span class="badge" style="margin-left:4px;">${cats[cat].length}</span></button>`;
+    panelHTML += `<div class="tab-panel" id="${id}">${buildTable(cats[cat])}</div>`;
+  });
+
+  tabBar.innerHTML = tabHTML;
+  panels.innerHTML = panelHTML;
+}
+
+function buildTable(rows) {
+  if (rows.length === 0) return '<p style="color:var(--slate);padding:1rem;">No registrations yet.</p>';
+
+  let html = '<table><thead><tr><th>#</th><th>Name</th><th>Age</th><th>Gender</th><th>Category</th><th>T-Shirt</th><th>Date</th></tr></thead><tbody>';
+  rows.forEach((r, i) => {
+    const g = (r.gender || '').toLowerCase();
+    const gClass = g === 'male' ? 'gender-m' : g === 'female' ? 'gender-f' : 'gender-o';
+    const date = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '-';
+    html += `<tr>
+      <td>${i + 1}</td>
+      <td style="color:var(--white);font-weight:500;">${r.name || '-'}</td>
+      <td>${getAge(r.dob)}</td>
+      <td class="${gClass}">${r.gender || '-'}</td>
+      <td>${r.category || '-'}</td>
+      <td>${r.tshirt || '-'}</td>
+      <td>${date}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+function switchTab(e, tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  e.target.closest('.tab-btn').classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+}
+</script>
+</body>
+</html>
