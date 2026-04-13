@@ -803,55 +803,6 @@ ul { list-style: none; }
 }
 
 /* ============================================================
-   TESTIMONIALS
-   ============================================================ */
-.testimonials {
-  padding: clamp(4rem, 10vh, 8rem) clamp(1.5rem, 4vw, 4rem);
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-.testimonials-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1.5rem, 3vw, 3rem);
-  margin-top: 2rem;
-}
-.testimonial {
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 3px;
-  background: var(--ink);
-}
-.testimonial-text {
-  font-family: var(--serif);
-  font-size: clamp(1rem, 1.3vw, 1.15rem);
-  font-style: italic;
-  line-height: 1.7;
-  color: var(--mist);
-  margin-bottom: 1.5rem;
-}
-.testimonial-author {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  color: var(--white);
-}
-.testimonial-author span {
-  display: block;
-  color: var(--slate);
-  margin-top: 0.2rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  font-size: 0.6rem;
-}
-@media (max-width: 768px) {
-  .testimonials-grid { grid-template-columns: 1fr; }
-}
-
-/* ============================================================
    FULLSCREEN IMAGE DIVIDER
    ============================================================ */
 .divider-image {
@@ -1895,26 +1846,6 @@ input[type="date"].form-input {
   </div>
 </section>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-  <div class="testimonials-inner">
-    <div class="intro-label">From 2025 runners</div>
-    <div class="testimonials-grid">
-      <div class="testimonial">
-        <p class="testimonial-text">"I signed up thinking I'd walk most of it. Ended up running the entire hour. Something about running in the rain with 200 strangers just hits different."</p>
-        <div class="testimonial-author">Sneha P. <span>1 Hour finisher, 2025</span></div>
-      </div>
-      <div class="testimonial">
-        <p class="testimonial-text">"Best organized event I've done in Vadodara. The breakfast after made me forget how exhausted my legs were."</p>
-        <div class="testimonial-author">Karan M. <span>2 Hour finisher, 2025</span></div>
-      </div>
-      <div class="testimonial">
-        <p class="testimonial-text">"I'm 58 years old and I finished the 4 Hour. My kids still can't believe it. Already registered for 2026."</p>
-        <div class="testimonial-author">Rajeshbhai T. <span>4 Hour finisher, 2025</span></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- DIVIDER -->
 <section class="divider-image" id="divider1">
@@ -2483,14 +2414,6 @@ gsap.utils.toArray('.cat-card').forEach((card, i) => {
 // ============================================================
 // GENERAL REVEALS
 // ============================================================
-gsap.utils.toArray('.testimonial').forEach((t, i) => {
-  gsap.from(t, {
-    opacity: 0, y: 40, duration: 0.8, delay: i * 0.15,
-    ease: 'power3.out',
-    scrollTrigger: { trigger: t, start: 'top 85%' }
-  });
-});
-
 gsap.utils.toArray('.intro-label, .intro-heading, .intro-text, .intro-stats, .categories-heading, .exp-heading, .gallery-heading, .faq-heading, .venue-item').forEach(el => {
   gsap.from(el, {
     opacity: 0, y: 40, duration: 0.8, ease: 'power3.out',
