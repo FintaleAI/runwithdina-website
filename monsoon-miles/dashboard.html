@@ -253,16 +253,16 @@ function renderDashboard() {
   const revByCat = {};
 
   allData.forEach(r => {
-    const cat = r.category || 'Unknown';
+    const cat = r.Category || r.category || 'Unknown';
     if (!cats[cat]) cats[cat] = [];
     cats[cat].push(r);
 
-    const g = (r.gender || '').toLowerCase();
+    const g = (r.Gender || r.gender || '').toLowerCase();
     if (g === 'male') male++;
     else if (g === 'female') female++;
     else other++;
 
-    const amt = parseInt(r.amount) || 0;
+    const amt = parseInt(r.Amount || r.amount) || 0;
     totalRevenue += amt;
     revByCat[cat] = (revByCat[cat] || 0) + amt;
   });
@@ -368,16 +368,17 @@ function buildTable(rows) {
 
   let html = '<table><thead><tr><th>#</th><th>Name</th><th>Age</th><th>Gender</th><th>Category</th><th>T-Shirt</th><th>Date</th></tr></thead><tbody>';
   rows.forEach((r, i) => {
-    const g = (r.gender || '').toLowerCase();
+    const g = (r.Gender || r.gender || '').toLowerCase();
     const gClass = g === 'male' ? 'gender-m' : g === 'female' ? 'gender-f' : 'gender-o';
-    const date = r.timestamp ? new Date(r.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '-';
+    const ts = r.Timestamp || r.timestamp;
+    const date = ts ? new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '-';
     html += `<tr>
       <td>${i + 1}</td>
-      <td style="color:var(--white);font-weight:500;">${r.name || '-'}</td>
-      <td>${getAge(r.dob)}</td>
-      <td class="${gClass}">${r.gender || '-'}</td>
-      <td>${r.category || '-'}</td>
-      <td>${r.tshirt || '-'}</td>
+      <td style="color:var(--white);font-weight:500;">${r.Name || r.name || '-'}</td>
+      <td>${getAge(r.DOB || r.dob)}</td>
+      <td class="${gClass}">${r.Gender || r.gender || '-'}</td>
+      <td>${r.Category || r.category || '-'}</td>
+      <td>${r['T-Shirt'] || r.tshirt || '-'}</td>
       <td>${date}</td>
     </tr>`;
   });
