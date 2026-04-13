@@ -290,7 +290,9 @@
     });
 
     updateSlider();
-  }`r`n`r`n  const contactForm = document.getElementById('contactForm');
+  }
+
+  const contactForm = document.getElementById('contactForm');
   const formStatus = document.getElementById('formStatus');
   const formNext = document.getElementById('formNext');
 
