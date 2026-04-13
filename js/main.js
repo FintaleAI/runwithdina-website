@@ -84,6 +84,11 @@
       }
     });
 
+    const mobileNavClose = document.getElementById('mobileNavClose');
+    if (mobileNavClose) {
+      mobileNavClose.addEventListener('click', closeMenu);
+    }
+
     mobileNav.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
         closeMenu();
