@@ -1706,28 +1706,28 @@ input[type="date"].form-input {
 
 /* RAZORPAY MODAL */
 body.modal-open {
-  position: fixed;
-  width: 100%;
   overflow: hidden;
+  height: 100%;
 }
 .rp-overlay {
   position: fixed; inset: 0; z-index: 9999;
   background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-  display: flex; align-items: flex-start; justify-content: center;
-  padding: 1rem;
-  overflow-y: auto; -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
 }
 .rp-modal {
   background: #111; border: 1px solid rgba(255,255,255,0.08);
   border-radius: 1rem; padding: 2.5rem; width: 100%; max-width: 420px;
-  position: relative; margin: 1rem auto; flex-shrink: 0;
-  touch-action: pan-y;
+  position: relative; margin: 0 1rem;
+  max-height: 90vh; max-height: 90dvh;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 @media (max-width: 480px) {
-  .rp-overlay { padding: 0.5rem; }
-  .rp-modal { padding: 1.5rem; margin: 0.5rem auto; border-radius: 0.75rem; }
+  .rp-modal {
+    padding: 1.5rem; margin: 0 0.5rem; border-radius: 0.75rem;
+    max-height: 92vh; max-height: 92dvh;
+  }
 }
 .rp-close {
   position: absolute; top: 1rem; right: 1.2rem;
@@ -1889,7 +1889,7 @@ body.modal-open {
   .rp-runriot-privacy-text { font-size: 0.72rem; margin-bottom: 0.3rem; }
   .rp-waiver { padding: 0.7rem; margin: 0.5rem 0 0.3rem; }
   .rp-waiver-content { max-height: 150px; }
-  .rp-input { padding: 0.7rem 0.8rem; margin-bottom: 0.6rem; font-size: 0.9rem; }
+  .rp-input { padding: 0.7rem 0.8rem; margin-bottom: 0.6rem; font-size: 16px; }
   .m-sticky-info { font-size: 0.9rem; }
   .m-sticky-btn { padding: 12px 18px; font-size: 0.7rem; }
 }
@@ -3017,10 +3017,11 @@ function openPayment(category, amount) {
   document.getElementById('rpRunriotInfo').style.display = 'none';
   document.getElementById('rpWaiverContent').style.display = 'none';
   document.getElementById('rpOverlay').style.display = 'flex';
-  document.getElementById('rpOverlay').scrollTop = 0;
-  // Lock body scroll — works on iOS Safari
+  // Scroll modal to top
+  var modal = document.querySelector('.rp-modal');
+  if (modal) modal.scrollTop = 0;
+  // Lock body scroll
   savedScrollY = window.scrollY;
-  document.body.style.top = '-' + savedScrollY + 'px';
   document.body.classList.add('modal-open');
   if (typeof lenis !== 'undefined') lenis.stop();
 }
@@ -3043,7 +3044,6 @@ document.getElementById('rpWaiverToggle').addEventListener('click', function(e) 
 function closePayment() {
   document.getElementById('rpOverlay').style.display = 'none';
   document.body.classList.remove('modal-open');
-  document.body.style.top = '';
   window.scrollTo(0, savedScrollY);
   if (typeof lenis !== 'undefined') lenis.start();
 }
@@ -3052,6 +3052,11 @@ function closePayment() {
 document.getElementById('rpOverlay').addEventListener('click', function(e) {
   if (e.target === this) closePayment();
 });
+
+// Prevent background scroll on overlay touch (but allow modal scroll)
+document.getElementById('rpOverlay').addEventListener('touchmove', function(e) {
+  if (e.target === this) e.preventDefault();
+}, { passive: false });
 
 // Close on Escape key
 document.addEventListener('keydown', function(e) {
