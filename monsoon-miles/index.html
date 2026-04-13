@@ -248,6 +248,7 @@ ul { list-style: none; }
   font-weight: 500;
   letter-spacing: 0.25em;
   text-transform: uppercase;
+  padding: 0.5rem 0;
 }
 .nav-right {
   display: flex; align-items: center; gap: 2.5rem;
@@ -291,6 +292,8 @@ ul { list-style: none; }
   display: none;
   width: 28px; height: 20px;
   flex-direction: column; justify-content: space-between;
+  padding: 12px;
+  box-sizing: content-box;
 }
 .nav-burger span {
   width: 100%; height: 1.5px;
@@ -1034,7 +1037,6 @@ ul { list-style: none; }
    ============================================================ */
 .gallery {
   padding: clamp(4rem, 8vh, 8rem) 0;
-  overflow: hidden;
 }
 .gallery-header {
   padding: 0 clamp(1.5rem, 4vw, 4rem);
@@ -1063,9 +1065,13 @@ ul { list-style: none; }
   display: flex;
   gap: 1rem;
   padding: 0 clamp(1.5rem, 4vw, 4rem);
+  overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.gallery-strip::-webkit-scrollbar { display: none; }
 .gallery-img {
   flex: 0 0 min(400px, 75vw);
   aspect-ratio: 3/4;
@@ -1362,6 +1368,7 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   font-size: 0.85rem;
   color: var(--silver);
   transition: color 0.3s;
+  padding: 0.5rem 0;
 }
 .footer-link:hover { color: var(--white); }
 .footer-bottom {
@@ -1689,11 +1696,6 @@ input[type="date"].form-input {
   .hero-title { font-size: clamp(2.5rem, 10vw, 4rem); }
   .hero-description { font-size: 0.85rem; }
   .hero-meta-value { font-size: 1rem; }
-  .hero-countdown { gap: 0.3rem; }
-  .cd-block { min-width: 56px; padding: 0.6rem 0.5rem; }
-  .cd-num { font-size: 1.3rem; }
-  .cd-sep { font-size: 1.2rem; }
-  .cd-label { font-size: 0.6rem; letter-spacing: 1px; }
   .intro-text { padding: 0; }
   .marquee-item { padding: 0 0.75rem; font-size: 1rem; }
   .cat-card-name { font-size: clamp(1.5rem, 6vw, 2rem); }
@@ -1707,7 +1709,6 @@ body.modal-open {
   position: fixed;
   width: 100%;
   overflow: hidden;
-  touch-action: none;
 }
 .rp-overlay {
   position: fixed; inset: 0; z-index: 9999;
@@ -1722,6 +1723,7 @@ body.modal-open {
   background: #111; border: 1px solid rgba(255,255,255,0.08);
   border-radius: 1rem; padding: 2.5rem; width: 100%; max-width: 420px;
   position: relative; margin: 1rem auto; flex-shrink: 0;
+  touch-action: pan-y;
 }
 @media (max-width: 480px) {
   .rp-overlay { padding: 0.5rem; }
@@ -1786,6 +1788,13 @@ body.modal-open {
 .cd-sep {
   font-family: var(--mono); font-size: 1.5rem; color: var(--rain);
   font-weight: 600; margin-top: -1rem;
+}
+@media (max-width: 480px) {
+  .hero-countdown { gap: 0.25rem; }
+  .cd-block { min-width: 48px; padding: 0.5rem 0.4rem; }
+  .cd-num { font-size: 1.2rem; }
+  .cd-sep { font-size: 1rem; }
+  .cd-label { font-size: 0.55rem; letter-spacing: 1px; }
 }
 
 /* Payment Success Overlay */
@@ -1882,7 +1891,7 @@ body.modal-open {
   .rp-waiver-content { max-height: 150px; }
   .rp-input { padding: 0.7rem 0.8rem; margin-bottom: 0.6rem; font-size: 0.9rem; }
   .m-sticky-info { font-size: 0.9rem; }
-  .m-sticky-btn { padding: 10px 16px; font-size: 0.65rem; }
+  .m-sticky-btn { padding: 12px 18px; font-size: 0.7rem; }
 }
 
 /* RunRiot opt-in */
