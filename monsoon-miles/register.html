@@ -395,10 +395,14 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-// Read category & amount from URL params
+// Valid categories and their prices
+const VALID_CATEGORIES = { '1 Hour': 799, '2 Hours': 899, '4 Hours': 999 };
+
+// Read category from URL params, validate against whitelist
 const params = new URLSearchParams(window.location.search);
-const selectedCategory = params.get('category') || '1 Hour';
-const selectedAmount = parseInt(params.get('amount') || '799', 10);
+const rawCategory = params.get('category') || '1 Hour';
+const selectedCategory = VALID_CATEGORIES[rawCategory] ? rawCategory : '1 Hour';
+const selectedAmount = VALID_CATEGORIES[selectedCategory];
 
 // Set header
 document.getElementById('regCategory').textContent = selectedCategory;
@@ -422,8 +426,11 @@ document.getElementById('regWaiverToggle').addEventListener('click', function(e)
   content.style.display = content.style.display === 'none' ? 'block' : 'none';
 });
 
+let paymentInProgress = false;
+
 function initiatePayment(e) {
   e.preventDefault();
+  if (paymentInProgress) return;
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim();
   const phone = document.getElementById('regPhone').value.trim();
@@ -485,11 +492,19 @@ function initiatePayment(e) {
 
       showSuccessOverlay(name, selectedCategory, selectedAmount, response.razorpay_payment_id);
     },
-    modal: { ondismiss: function() {} }
+    modal: { ondismiss: function() { paymentInProgress = false; btn.disabled = false; btn.textContent = 'Pay & Register'; } }
   };
+
+  const btn = document.querySelector('.reg-pay-btn');
+  paymentInProgress = true;
+  btn.disabled = true;
+  btn.textContent = 'Opening Razorpay...';
 
   const rzp = new Razorpay(options);
   rzp.on('payment.failed', function() {
+    paymentInProgress = false;
+    btn.disabled = false;
+    btn.textContent = 'Pay & Register';
     alert('Payment failed. Please try again or contact us on WhatsApp.');
   });
   rzp.open();
