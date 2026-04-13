@@ -1703,6 +1703,12 @@ input[type="date"].form-input {
 }
 
 /* RAZORPAY MODAL */
+body.modal-open {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
 .rp-overlay {
   position: fixed; inset: 0; z-index: 9999;
   background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
@@ -1710,6 +1716,7 @@ input[type="date"].form-input {
   padding: 1rem;
   overflow-y: auto; -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 .rp-modal {
   background: #111; border: 1px solid rgba(255,255,255,0.08);
@@ -2990,6 +2997,7 @@ const RAZORPAY_KEY = 'rzp_live_Scw49LtUExJvGX';
 
 let selectedCategory = '';
 let selectedAmount = 0;
+let savedScrollY = 0;
 
 function openPayment(category, amount) {
   selectedCategory = category;
@@ -3001,7 +3009,10 @@ function openPayment(category, amount) {
   document.getElementById('rpWaiverContent').style.display = 'none';
   document.getElementById('rpOverlay').style.display = 'flex';
   document.getElementById('rpOverlay').scrollTop = 0;
-  document.body.style.overflow = 'hidden';
+  // Lock body scroll — works on iOS Safari
+  savedScrollY = window.scrollY;
+  document.body.style.top = '-' + savedScrollY + 'px';
+  document.body.classList.add('modal-open');
   if (typeof lenis !== 'undefined') lenis.stop();
 }
 
@@ -3022,7 +3033,9 @@ document.getElementById('rpWaiverToggle').addEventListener('click', function(e) 
 
 function closePayment() {
   document.getElementById('rpOverlay').style.display = 'none';
-  document.body.style.overflow = '';
+  document.body.classList.remove('modal-open');
+  document.body.style.top = '';
+  window.scrollTo(0, savedScrollY);
   if (typeof lenis !== 'undefined') lenis.start();
 }
 
