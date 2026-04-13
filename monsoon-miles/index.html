@@ -1960,7 +1960,7 @@ button.cat-card-cta {
     <a href="#experience" class="nav-link" data-hover>Experience</a>
     <a href="#gallery" class="nav-link" data-hover>Gallery</a>
     <a href="#faq" class="nav-link" data-hover>FAQ</a>
-    <a href="#categories" class="nav-register" data-hover>Registrations Opening Soon</a>
+    <a href="#categories" class="nav-register" data-hover>Register Now</a>
   </div>
   <button class="nav-burger" data-hover aria-label="Menu">
     <span></span><span></span><span></span>
@@ -2144,7 +2144,7 @@ button.cat-card-cta {
         <div class="cat-card-feature">Pool party to cool off after your run</div>
         <div class="cat-card-feature">The best first race experience in Vadodara</div>
       </div>
-      <button class="cat-card-cta" data-hover disabled style="opacity:0.5;cursor:not-allowed;">Registrations Opening Soon</button>
+      <button class="cat-card-cta" data-hover onclick="openPayment('1 Hour', 799)">Register Now</button>
     </div>
     <!-- 2 HOURS -->
     <div class="cat-card downpour">
@@ -2164,7 +2164,7 @@ button.cat-card-cta {
         <div class="cat-card-feature">Podium prizes for top finishers</div>
         <div class="cat-card-feature">Most of our 2025 runners picked this one</div>
       </div>
-      <button class="cat-card-cta" data-hover disabled style="opacity:0.5;cursor:not-allowed;">Registrations Opening Soon</button>
+      <button class="cat-card-cta" data-hover onclick="openPayment('2 Hours', 899)">Register Now</button>
     </div>
     <!-- 4 HOURS -->
     <div class="cat-card cyclone">
@@ -2184,7 +2184,7 @@ button.cat-card-cta {
         <div class="cat-card-feature">Podium prizes for top finishers</div>
         <div class="cat-card-feature">The satisfaction of pushing your limits and finishing strong</div>
       </div>
-      <button class="cat-card-cta" data-hover disabled style="opacity:0.5;cursor:not-allowed;">Registrations Opening Soon</button>
+      <button class="cat-card-cta" data-hover onclick="openPayment('4 Hours', 999)">Register Now</button>
     </div>
   </div>
 </section>
@@ -2565,7 +2565,7 @@ button.cat-card-cta {
       <div class="m-sticky-info">Coming Soon</div>
       <div class="m-sticky-sub">19 July 2026</div>
     </div>
-    <a href="#categories" class="m-sticky-btn" style="text-decoration:none;display:inline-block;">Registrations Opening Soon</a>
+    <a href="#categories" class="m-sticky-btn" style="text-decoration:none;display:inline-block;">Register Now</a>
   </div>
 </div>
 
@@ -2841,7 +2841,7 @@ burger.addEventListener('click', () => {
       <a href="#gallery" class="mobile-menu-link">Gallery</a>
       <a href="#faq" class="mobile-menu-link">FAQ</a>
       <a href="#venue" class="mobile-menu-link">Venue</a>
-      <a href="#categories" class="mobile-menu-register" onclick="closeMobileMenu();" style="text-decoration:none;display:inline-block;">Registrations Opening Soon</a>
+      <a href="#categories" class="mobile-menu-register" onclick="closeMobileMenu();" style="text-decoration:none;display:inline-block;">Register Now</a>
     `;
     document.body.appendChild(mobileMenu);
     mobileMenu.querySelector('.mobile-menu-close').addEventListener('click', closeMobileMenu);
@@ -2962,7 +2962,7 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXc
 // ============================================================
 // RAZORPAY PAYMENT INTEGRATION
 // ============================================================
-const RAZORPAY_KEY = 'rzp_test_ScWzDcgjIOvRJI';
+const RAZORPAY_KEY = 'rzp_live_Scw49LtUExJvGX';
 
 let selectedCategory = '';
 let selectedAmount = 0;
