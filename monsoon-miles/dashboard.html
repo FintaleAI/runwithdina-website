@@ -75,7 +75,22 @@
     padding: 1.5rem;
   }
   .chart-box h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--mist); margin-bottom: 1rem; }
-  @media (max-width: 640px) { .charts { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .charts { grid-template-columns: 1fr; }
+    .dashboard { padding: 1rem; }
+    .cards { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .card { padding: 0.75rem; }
+    .card-value { font-size: 1.5rem; }
+    .card-label { font-size: 0.6rem; }
+    .revenue-bar { flex-direction: column; align-items: flex-start; }
+    .rev-breakdown { margin-left: 0; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 540px; }
+    .tab-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn { padding: 8px 14px; font-size: 0.7rem; white-space: nowrap; }
+    .dash-header h1 { font-size: 1.1rem; }
+  }
 
   /* REVENUE */
   .revenue-bar {
@@ -366,7 +381,7 @@ function renderTables(cats) {
 function buildTable(rows) {
   if (rows.length === 0) return '<p style="color:var(--slate);padding:1rem;">No registrations yet.</p>';
 
-  let html = '<table><thead><tr><th>#</th><th>Name</th><th>Age</th><th>Gender</th><th>Category</th><th>T-Shirt</th><th>Date</th></tr></thead><tbody>';
+  let html = '<div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Age</th><th>Gender</th><th>Category</th><th>T-Shirt</th><th>Date</th></tr></thead><tbody>';
   rows.forEach((r, i) => {
     const g = (r.Gender || r.gender || '').toLowerCase();
     const gClass = g === 'male' ? 'gender-m' : g === 'female' ? 'gender-f' : 'gender-o';
@@ -382,7 +397,7 @@ function buildTable(rows) {
       <td>${date}</td>
     </tr>`;
   });
-  html += '</tbody></table>';
+  html += '</tbody></table></div>';
   return html;
 }
 
