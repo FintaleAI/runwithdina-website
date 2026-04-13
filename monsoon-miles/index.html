@@ -1680,7 +1680,7 @@ input[type="date"].form-input {
   .cd-block { min-width: 56px; padding: 0.6rem 0.5rem; }
   .cd-num { font-size: 1.3rem; }
   .cd-sep { font-size: 1.2rem; }
-  .cd-label { font-size: 0.5rem; letter-spacing: 1px; }
+  .cd-label { font-size: 0.6rem; letter-spacing: 1px; }
   .intro-text { padding: 0; }
   .marquee-item { padding: 0 0.75rem; font-size: 1rem; }
   .cat-card-name { font-size: clamp(1.5rem, 6vw, 2rem); }
@@ -1845,6 +1845,14 @@ input[type="date"].form-input {
 .rp-row {
   display: flex; gap: 0.6rem;
 }
+@media (max-width: 380px) {
+  .rp-row { flex-direction: column; gap: 0; }
+  .rp-modal { padding: 1.5rem; }
+  .rp-title { font-size: 1.2rem; }
+  .rp-price { font-size: 2rem; margin-bottom: 1rem; }
+  .m-sticky-info { font-size: 0.9rem; }
+  .m-sticky-btn { padding: 10px 16px; font-size: 0.65rem; }
+}
 
 /* RunRiot opt-in */
 .rp-runriot {
@@ -1903,6 +1911,29 @@ input[type="date"].form-input {
 .rp-privacy-confirm .rp-checkbox-text { color: #f59e0b; }
 .rp-privacy-confirm .rp-checkbox-text strong { color: #fff; }
 .rp-row .rp-input { flex: 1; min-width: 0; }
+
+/* Waiver / Terms */
+.rp-waiver {
+  margin: 0.8rem 0 0.4rem;
+  padding: 1rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0.5rem;
+}
+.rp-waiver-toggle {
+  color: var(--rain); cursor: pointer; text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.rp-waiver-content {
+  margin-top: 0.8rem; padding-top: 0.8rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  max-height: 200px; overflow-y: auto;
+}
+.rp-waiver-item {
+  font-size: 0.75rem; color: var(--silver); line-height: 1.5;
+  margin: 0 0 0.8rem;
+}
+.rp-waiver-item strong { color: #e2e8f0; font-size: 0.78rem; }
 .rp-input select, .rp-input option { color: #fff; background: #111; }
 
 /* Fix button cat-card-cta */
@@ -2603,6 +2634,23 @@ button.cat-card-cta {
         </div>
       </div>
 
+      <!-- Terms & Conditions / Waiver -->
+      <div class="rp-waiver">
+        <label class="rp-checkbox-label">
+          <input type="checkbox" id="rpWaiver" class="rp-checkbox" required>
+          <span class="rp-checkbox-custom"></span>
+          <span class="rp-checkbox-text">I agree to the <strong class="rp-waiver-toggle" id="rpWaiverToggle">Terms & Conditions</strong></span>
+        </label>
+        <div class="rp-waiver-content" id="rpWaiverContent" style="display:none;">
+          <p class="rp-waiver-item"><strong>1. Assumption of Risk</strong><br>I acknowledge that participating in RWD Monsoon Miles 2026 involves running in monsoon conditions including wet surfaces, reduced visibility, mud, and puddles. I understand the physical demands and risks of endurance running and voluntarily assume all risks including slips, falls, heat exhaustion, dehydration, and muscle injury.</p>
+          <p class="rp-waiver-item"><strong>2. Medical Fitness Declaration</strong><br>I confirm that I am medically fit to participate in this event. I declare that I have no medical condition that would make participation dangerous. If I have any known cardiac, respiratory, or orthopedic conditions, I have consulted a physician before registering.</p>
+          <p class="rp-waiver-item"><strong>3. Liability Release</strong><br>I release RunWithDina, the organizers, sponsors, volunteers, and venue (Suncity Club and Resort) from any and all liability for injury, illness, or death arising from my participation. I waive all claims for damages including injuries caused by other participants, course conditions, or weather.</p>
+          <p class="rp-waiver-item"><strong>4. Emergency Medical Authorization</strong><br>I authorize the organizers to seek emergency medical treatment on my behalf if required during the event. I understand that I am responsible for all costs of any medical treatment provided.</p>
+          <p class="rp-waiver-item"><strong>5. Photo &amp; Video Consent</strong><br>I consent to being photographed and recorded during the event. I grant RunWithDina and event sponsors the right to use my likeness in photos, videos, and promotional materials across social media, website, and marketing channels without compensation.</p>
+          <p class="rp-waiver-item"><strong>6. No Refund &amp; No Transfer Policy</strong><br>I understand that registration fees are non-refundable and non-transferable under any circumstances. In case of event postponement or cancellation due to force majeure, the organizer's decision regarding refunds or rescheduling shall be final.</p>
+        </div>
+      </div>
+
       <button type="submit" class="rp-pay-btn">Pay & Register</button>
     </form>
     <p class="rp-secure"><i class="fa-solid fa-lock"></i> Secure payment via Razorpay</p>
@@ -2926,6 +2974,7 @@ function openPayment(category, amount) {
   document.getElementById('rpPrice').textContent = '₹' + amount;
   document.getElementById('rpForm').reset();
   document.getElementById('rpRunriotInfo').style.display = 'none';
+  document.getElementById('rpWaiverContent').style.display = 'none';
   document.getElementById('rpOverlay').style.display = 'flex';
   document.getElementById('rpOverlay').scrollTop = 0;
   document.body.style.overflow = 'hidden';
@@ -2938,6 +2987,13 @@ document.getElementById('rpRunriot').addEventListener('change', function() {
   if (!this.checked) {
     document.getElementById('rpRunriotConsent').checked = false;
   }
+});
+
+// Waiver toggle
+document.getElementById('rpWaiverToggle').addEventListener('click', function(e) {
+  e.preventDefault();
+  var content = document.getElementById('rpWaiverContent');
+  content.style.display = content.style.display === 'none' ? 'block' : 'none';
 });
 
 function closePayment() {
@@ -2970,6 +3026,12 @@ function initiatePayment(e) {
   const runriotConsent = document.getElementById('rpRunriotConsent').checked;
 
   if (!name || !email || !phone || !dob || !gender || !tshirt || !blood || !emergency) return;
+
+  // Waiver must be accepted
+  if (!document.getElementById('rpWaiver').checked) {
+    alert('Please agree to the Terms & Conditions to proceed.');
+    return;
+  }
 
   // If RunRiot is checked but consent is not given, alert
   if (runriotOptIn && !runriotConsent) {
