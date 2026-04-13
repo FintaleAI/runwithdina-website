@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Register — RWD Monsoon Miles 2026</title>
+<meta name="description" content="Register for RWD Monsoon Miles 2026. Choose your category and pay securely via Razorpay.">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="../img/logo-icon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #050505;
+  --ink: #0a0a0a;
+  --charcoal: #111;
+  --slate: #666;
+  --silver: #999;
+  --white: #f5f5f0;
+  --pure: #fff;
+  --rain: #3b82f6;
+  --rain-light: #60a5fa;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Space Grotesk', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+a { color: inherit; text-decoration: none; }
+
+/* Page layout */
+.reg-page {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding: 1.5rem;
+}
+.reg-back {
+  align-self: flex-start;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-bottom: 2rem;
+  padding: 0.5rem 0;
+  transition: color 0.3s;
+}
+.reg-back:hover { color: var(--white); }
+.reg-card {
+  background: var(--charcoal);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 440px;
+}
+.reg-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-style: italic;
+  color: #fff;
+  margin-bottom: 0.3rem;
+}
+.reg-title span { color: var(--rain); }
+.reg-price {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-style: italic;
+  color: var(--rain);
+  margin-bottom: 1.5rem;
+}
+
+/* Form inputs */
+.reg-input {
+  display: block; width: 100%; padding: 0.85rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.5rem;
+  color: #fff; font-size: 16px;
+  margin-bottom: 0.8rem; outline: none;
+  font-family: var(--sans);
+  -webkit-appearance: none;
+}
+.reg-input:focus { border-color: var(--rain); }
+.reg-input::placeholder { color: var(--slate); }
+select.reg-input { color: #fff; background: var(--charcoal); }
+select.reg-input option { color: #fff; background: var(--charcoal); }
+.reg-row {
+  display: flex; gap: 0.6rem;
+}
+.reg-row .reg-input { flex: 1; min-width: 0; }
+
+/* Pay button */
+.reg-pay-btn {
+  width: 100%; padding: 1rem; margin-top: 0.5rem;
+  background: var(--rain); color: #fff; border: none;
+  border-radius: 0.5rem; font-size: 1rem; font-weight: 600;
+  cursor: pointer; font-family: var(--sans);
+  transition: background 0.2s;
+}
+.reg-pay-btn:hover { background: #2563eb; }
+.reg-secure {
+  text-align: center; font-size: 0.75rem; color: var(--slate);
+  margin-top: 1rem;
+}
+
+/* Checkboxes */
+.reg-checkbox-label {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  cursor: pointer; font-size: 0.9rem; color: #ccc;
+}
+.reg-checkbox { display: none; }
+.reg-checkbox-custom {
+  flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px;
+  border: 2px solid rgba(255,255,255,0.2); border-radius: 4px;
+  background: transparent; transition: all 0.2s;
+  position: relative;
+}
+.reg-checkbox:checked + .reg-checkbox-custom {
+  background: var(--rain); border-color: var(--rain);
+}
+.reg-checkbox:checked + .reg-checkbox-custom::after {
+  content: ''; position: absolute; top: 2px; left: 6px;
+  width: 5px; height: 10px;
+  border: solid #fff; border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.reg-checkbox-text { line-height: 1.4; }
+.reg-checkbox-text strong { color: #f59e0b; }
+
+/* RunRiot opt-in */
+.reg-runriot {
+  margin: 0.8rem 0 0.4rem;
+  padding: 1rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0.5rem;
+}
+.reg-runriot-info {
+  margin-top: 0.8rem; padding-top: 0.8rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.reg-runriot-desc {
+  font-size: 0.82rem; color: var(--silver); line-height: 1.5;
+  margin: 0 0 0.8rem;
+}
+.reg-runriot-privacy {
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-radius: 0.4rem; padding: 0.8rem;
+}
+.reg-runriot-privacy-title {
+  font-size: 0.82rem; font-weight: 600; color: #f59e0b;
+  margin: 0 0 0.5rem;
+}
+.reg-runriot-privacy-text {
+  font-size: 0.78rem; color: var(--silver); line-height: 1.5;
+  margin: 0 0 0.5rem;
+}
+.reg-privacy-confirm { margin-top: 0.6rem; font-size: 0.82rem; }
+.reg-privacy-confirm .reg-checkbox-text { color: #f59e0b; }
+.reg-privacy-confirm .reg-checkbox-text strong { color: #fff; }
+
+/* Waiver */
+.reg-waiver {
+  margin: 0.8rem 0 0.4rem;
+  padding: 1rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 0.5rem;
+}
+.reg-waiver-toggle {
+  color: var(--rain); cursor: pointer; text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.reg-waiver-content {
+  margin-top: 0.8rem; padding-top: 0.8rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  max-height: 200px; overflow-y: auto;
+}
+.reg-waiver-item {
+  font-size: 0.75rem; color: var(--silver); line-height: 1.5;
+  margin: 0 0 0.8rem;
+}
+.reg-waiver-item strong { color: #e2e8f0; font-size: 0.78rem; }
+
+/* Success overlay */
+.pay-success-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+  display: none; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.pay-success-card {
+  background: linear-gradient(145deg, #111 0%, #0a0a0a 100%);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 1.2rem; padding: 3rem 2.5rem; width: 100%; max-width: 440px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.pay-success-card::before {
+  content: ''; position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at center, rgba(59,130,246,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+.psc-check {
+  width: 64px; height: 64px; margin: 0 auto 1.5rem;
+  background: rgba(52,211,153,0.1); border: 2px solid #34d399;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+.psc-check svg { width: 32px; height: 32px; }
+.psc-title {
+  font-family: var(--serif); font-size: 2rem; font-style: italic;
+  color: #fff; margin-bottom: 0.5rem;
+}
+.psc-subtitle {
+  font-size: 0.9rem; color: var(--silver); margin-bottom: 2rem; line-height: 1.5;
+}
+.psc-details {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 0.75rem; padding: 1.2rem; margin-bottom: 1.5rem; text-align: left;
+}
+.psc-detail-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.psc-detail-row:last-child { border-bottom: none; }
+.psc-detail-label { font-size: 0.8rem; color: var(--slate); }
+.psc-detail-value { font-size: 0.9rem; color: #fff; font-weight: 500; }
+.psc-detail-value.highlight { color: var(--rain); }
+.psc-detail-value.green { color: #34d399; }
+.psc-whatsapp {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: #25d366; color: #fff; padding: 0.8rem 1.5rem;
+  border-radius: 2rem; font-size: 0.85rem; font-weight: 600;
+  margin-bottom: 1rem; transition: background 0.2s;
+}
+.psc-whatsapp:hover { background: #1fb855; }
+.psc-email-note {
+  font-size: 0.75rem; color: var(--slate); margin-bottom: 1.5rem;
+}
+.psc-close {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: var(--silver); padding: 0.6rem 2rem; border-radius: 0.5rem;
+  cursor: pointer; font-size: 0.85rem; transition: all 0.2s;
+}
+.psc-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* Confetti */
+#confettiCanvas {
+  position: fixed; inset: 0; z-index: 10000;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .reg-page { padding: 1rem; }
+  .reg-card { padding: 1.5rem; border-radius: 0.75rem; }
+  .reg-title { font-size: 1.2rem; }
+  .reg-price { font-size: 2rem; margin-bottom: 1rem; }
+  .reg-row { flex-direction: column; gap: 0; }
+  .reg-back { margin-bottom: 1rem; }
+  .reg-runriot { padding: 0.7rem; margin: 0.5rem 0 0.3rem; }
+  .reg-runriot-desc { font-size: 0.78rem; margin-bottom: 0.5rem; }
+  .reg-runriot-privacy { padding: 0.6rem; }
+  .reg-runriot-privacy-text { font-size: 0.72rem; margin-bottom: 0.3rem; }
+  .reg-waiver { padding: 0.7rem; margin: 0.5rem 0 0.3rem; }
+  .reg-waiver-content { max-height: 150px; }
+}
+</style>
+</head>
+<body>
+
+<div class="reg-page">
+  <a href="./" class="reg-back">&larr; Back to Monsoon Miles</a>
+
+  <div class="reg-card">
+    <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
+    <p class="reg-price" id="regPrice">&#8377;799</p>
+
+    <form id="regForm" onsubmit="initiatePayment(event)">
+      <input type="text" id="regName" placeholder="Full Name" required class="reg-input">
+      <input type="email" id="regEmail" placeholder="Email Address" required class="reg-input">
+      <input type="tel" id="regPhone" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10,12}" title="Enter 10-12 digit phone number" class="reg-input">
+      <div class="reg-row">
+        <input type="text" id="regDob" required class="reg-input" placeholder="Date of Birth" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
+        <select id="regGender" required class="reg-input">
+          <option value="" disabled selected>Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="reg-row">
+        <select id="regTshirt" required class="reg-input">
+          <option value="" disabled selected>T-shirt Size</option>
+          <option value="XS">XS</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+          <option value="XXL">XXL</option>
+        </select>
+        <select id="regBlood" required class="reg-input">
+          <option value="" disabled selected>Blood Group</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+      </div>
+      <input type="tel" id="regEmergency" placeholder="Emergency Contact Number (10 digits)" required pattern="[0-9]{10,12}" title="Enter 10-12 digit phone number" class="reg-input">
+
+      <!-- RunRiot Integration -->
+      <div class="reg-runriot">
+        <label class="reg-checkbox-label">
+          <input type="checkbox" id="regRunriot" class="reg-checkbox">
+          <span class="reg-checkbox-custom"></span>
+          <span class="reg-checkbox-text">Join <strong>RunRiot</strong> &mdash; a territory conquest running game</span>
+        </label>
+        <div class="reg-runriot-info" id="regRunriotInfo" style="display:none;">
+          <p class="reg-runriot-desc">RunRiot tracks your runs to let you conquer territories on a real map. Compete with other runners, claim zones, and defend your turf.</p>
+          <div class="reg-runriot-privacy">
+            <p class="reg-runriot-privacy-title">&#128205; Location &amp; Route Sharing</p>
+            <p class="reg-runriot-privacy-text">By opting in, you agree to share your <strong>GPS location and running routes</strong> with RunRiot during the event. This data is used to track territory conquests and leaderboard positions.</p>
+            <p class="reg-runriot-privacy-text">Your data is <strong>never sold</strong> and is only visible to other RunRiot players as conquered zones &mdash; not your exact route. You can delete your account and all data anytime.</p>
+            <label class="reg-checkbox-label reg-privacy-confirm">
+              <input type="checkbox" id="regRunriotConsent" class="reg-checkbox">
+              <span class="reg-checkbox-custom"></span>
+              <span class="reg-checkbox-text">I understand and agree to share my location data with RunRiot</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms & Conditions / Waiver -->
+      <div class="reg-waiver">
+        <label class="reg-checkbox-label">
+          <input type="checkbox" id="regWaiver" class="reg-checkbox" required>
+          <span class="reg-checkbox-custom"></span>
+          <span class="reg-checkbox-text">I agree to the <strong class="reg-waiver-toggle" id="regWaiverToggle">Terms &amp; Conditions</strong></span>
+        </label>
+        <div class="reg-waiver-content" id="regWaiverContent" style="display:none;">
+          <p class="reg-waiver-item"><strong>1. Assumption of Risk</strong><br>I acknowledge that participating in RWD Monsoon Miles 2026 involves running in monsoon conditions including wet surfaces, reduced visibility, mud, and puddles. I understand the physical demands and risks of endurance running and voluntarily assume all risks including slips, falls, heat exhaustion, dehydration, and muscle injury.</p>
+          <p class="reg-waiver-item"><strong>2. Medical Fitness Declaration</strong><br>I confirm that I am medically fit to participate in this event. I declare that I have no medical condition that would make participation dangerous. If I have any known cardiac, respiratory, or orthopedic conditions, I have consulted a physician before registering.</p>
+          <p class="reg-waiver-item"><strong>3. Liability Release</strong><br>I release RunWithDina, the organizers, sponsors, volunteers, and venue (Suncity Club and Resort) from any and all liability for injury, illness, or death arising from my participation. I waive all claims for damages including injuries caused by other participants, course conditions, or weather.</p>
+          <p class="reg-waiver-item"><strong>4. Emergency Medical Authorization</strong><br>I authorize the organizers to seek emergency medical treatment on my behalf if required during the event. I understand that I am responsible for all costs of any medical treatment provided.</p>
+          <p class="reg-waiver-item"><strong>5. Photo &amp; Video Consent</strong><br>I consent to being photographed and recorded during the event. I grant RunWithDina and event sponsors the right to use my likeness in photos, videos, and promotional materials across social media, website, and marketing channels without compensation.</p>
+          <p class="reg-waiver-item"><strong>6. No Refund &amp; No Transfer Policy</strong><br>I understand that registration fees are non-refundable and non-transferable under any circumstances. In case of event postponement or cancellation due to force majeure, the organizer's decision regarding refunds or rescheduling shall be final.</p>
+        </div>
+      </div>
+
+      <button type="submit" class="reg-pay-btn">Pay &amp; Register</button>
+    </form>
+    <p class="reg-secure">&#128274; Secure payment via Razorpay</p>
+  </div>
+</div>
+
+<!-- Success Overlay -->
+<div class="pay-success-overlay" id="paySuccessOverlay">
+  <div class="pay-success-card">
+    <div class="psc-check">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3 class="psc-title">You're in!</h3>
+    <p class="psc-subtitle">Welcome to RWD Monsoon Miles 2026. See you on July 19th.</p>
+    <div class="psc-details">
+      <div class="psc-detail-row"><span class="psc-detail-label">Name</span><span class="psc-detail-value" id="pscName">&mdash;</span></div>
+      <div class="psc-detail-row"><span class="psc-detail-label">Category</span><span class="psc-detail-value highlight" id="pscCategory">&mdash;</span></div>
+      <div class="psc-detail-row"><span class="psc-detail-label">Amount</span><span class="psc-detail-value green" id="pscAmount">&mdash;</span></div>
+      <div class="psc-detail-row"><span class="psc-detail-label">Payment ID</span><span class="psc-detail-value" id="pscPaymentId" style="font-family:var(--mono);font-size:0.78rem;color:var(--slate);">&mdash;</span></div>
+    </div>
+    <a href="https://chat.whatsapp.com/BSBbdKL0I7q4yaOZCMCte8" target="_blank" class="psc-whatsapp">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+      Join Runners WhatsApp Group
+    </a>
+    <p class="psc-email-note">A confirmation email has been sent to your inbox.</p>
+    <button class="psc-close" onclick="closeSuccessOverlay()">Close</button>
+  </div>
+</div>
+<canvas id="confettiCanvas"></canvas>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+// Read category & amount from URL params
+const params = new URLSearchParams(window.location.search);
+const selectedCategory = params.get('category') || '1 Hour';
+const selectedAmount = parseInt(params.get('amount') || '799', 10);
+
+// Set header
+document.getElementById('regCategory').textContent = selectedCategory;
+document.getElementById('regPrice').textContent = '\u20B9' + selectedAmount;
+
+const RAZORPAY_KEY = 'rzp_live_Scw49LtUExJvGX';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXci31n_qxWREx3jt6SWUXZQO3MnjsdKbmV-72oTV1Sx8z58/exec';
+
+// RunRiot opt-in toggle
+document.getElementById('regRunriot').addEventListener('change', function() {
+  document.getElementById('regRunriotInfo').style.display = this.checked ? 'block' : 'none';
+  if (!this.checked) {
+    document.getElementById('regRunriotConsent').checked = false;
+  }
+});
+
+// Waiver toggle
+document.getElementById('regWaiverToggle').addEventListener('click', function(e) {
+  e.preventDefault();
+  var content = document.getElementById('regWaiverContent');
+  content.style.display = content.style.display === 'none' ? 'block' : 'none';
+});
+
+function initiatePayment(e) {
+  e.preventDefault();
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const dob = document.getElementById('regDob').value;
+  const gender = document.getElementById('regGender').value;
+  const tshirt = document.getElementById('regTshirt').value;
+  const blood = document.getElementById('regBlood').value;
+  const emergency = document.getElementById('regEmergency').value.trim();
+  const runriotOptIn = document.getElementById('regRunriot').checked;
+  const runriotConsent = document.getElementById('regRunriotConsent').checked;
+
+  if (!name || !email || !phone || !dob || !gender || !tshirt || !blood || !emergency) return;
+
+  if (!document.getElementById('regWaiver').checked) {
+    alert('Please agree to the Terms & Conditions to proceed.');
+    return;
+  }
+
+  if (runriotOptIn && !runriotConsent) {
+    alert('Please agree to the RunRiot location sharing consent, or uncheck the RunRiot option.');
+    return;
+  }
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: selectedAmount * 100,
+    currency: 'INR',
+    name: 'RWD Monsoon Miles 2026',
+    description: selectedCategory + ' \u2014 RWD Monsoon Miles 2026',
+    image: 'https://runwithdina.com/img/logo-icon.png',
+    prefill: { name: name, email: email, contact: phone },
+    notes: {
+      category: selectedCategory,
+      event: 'RWD Monsoon Miles 2026',
+      tshirt: tshirt,
+      blood_group: blood,
+      emergency_contact: emergency,
+      source: 'website'
+    },
+    theme: { color: '#3b82f6' },
+    handler: function(response) {
+      const regData = {
+        name: name, phone: phone, email: email,
+        dob: dob, gender: gender, tshirt: tshirt,
+        blood_group: blood, emergency_contact: emergency,
+        category: selectedCategory, amount: selectedAmount,
+        payment_id: response.razorpay_payment_id,
+        timestamp: new Date().toISOString(),
+        source: 'razorpay-website',
+        runriot: runriotOptIn ? 'Yes' : 'No'
+      };
+
+      fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(regData)
+      });
+
+      showSuccessOverlay(name, selectedCategory, selectedAmount, response.razorpay_payment_id);
+    },
+    modal: { ondismiss: function() {} }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.on('payment.failed', function() {
+    alert('Payment failed. Please try again or contact us on WhatsApp.');
+  });
+  rzp.open();
+}
+
+// Success overlay
+function showSuccessOverlay(name, category, amount, paymentId) {
+  document.getElementById('pscName').textContent = name;
+  document.getElementById('pscCategory').textContent = category;
+  document.getElementById('pscAmount').textContent = '\u20B9' + amount;
+  document.getElementById('pscPaymentId').textContent = paymentId;
+  document.getElementById('paySuccessOverlay').style.display = 'flex';
+  launchConfetti();
+}
+
+function closeSuccessOverlay() {
+  document.getElementById('paySuccessOverlay').style.display = 'none';
+  window.location.href = './';
+}
+
+// Confetti
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = [];
+  const colors = ['#3b82f6','#60a5fa','#fbbf24','#34d399','#f472b6','#fff'];
+  for (let i = 0; i < 150; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: Math.random() * 8 + 4,
+      h: Math.random() * 6 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 3,
+      vy: Math.random() * 3 + 2,
+      rot: Math.random() * 360,
+      rv: (Math.random() - 0.5) * 10
+    });
+  }
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, 1 - frame / 120);
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rv;
+      p.vy += 0.05;
+    });
+    frame++;
+    if (frame < 150) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+</script>
+</body>
+</html>

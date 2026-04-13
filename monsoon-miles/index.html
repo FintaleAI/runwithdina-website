@@ -1976,9 +1976,9 @@ body.modal-open {
 .rp-waiver-item strong { color: #e2e8f0; font-size: 0.78rem; }
 .rp-input select, .rp-input option { color: #fff; background: #111; }
 
-/* Fix button cat-card-cta */
-button.cat-card-cta {
-  font-family: var(--mono); border: none; cursor: pointer;
+/* Fix cat-card-cta (now <a> link) */
+.cat-card-cta {
+  font-family: var(--mono); text-decoration: none;
 }
 </style>
 </head>
@@ -2184,7 +2184,7 @@ button.cat-card-cta {
         <div class="cat-card-feature">Pool party to cool off after your run</div>
         <div class="cat-card-feature">The best first race experience in Vadodara</div>
       </div>
-      <button class="cat-card-cta" data-hover onclick="openPayment('1 Hour', 799)">Register Now</button>
+      <a href="register.html?category=1%20Hour&amount=799" class="cat-card-cta" data-hover>Register Now</a>
     </div>
     <!-- 2 HOURS -->
     <div class="cat-card downpour">
@@ -2204,7 +2204,7 @@ button.cat-card-cta {
         <div class="cat-card-feature">Podium prizes for top finishers</div>
         <div class="cat-card-feature">Most of our 2025 runners picked this one</div>
       </div>
-      <button class="cat-card-cta" data-hover onclick="openPayment('2 Hours', 899)">Register Now</button>
+      <a href="register.html?category=2%20Hours&amount=899" class="cat-card-cta" data-hover>Register Now</a>
     </div>
     <!-- 4 HOURS -->
     <div class="cat-card cyclone">
@@ -2224,7 +2224,7 @@ button.cat-card-cta {
         <div class="cat-card-feature">Podium prizes for top finishers</div>
         <div class="cat-card-feature">The satisfaction of pushing your limits and finishing strong</div>
       </div>
-      <button class="cat-card-cta" data-hover onclick="openPayment('4 Hours', 999)">Register Now</button>
+      <a href="register.html?category=4%20Hours&amount=999" class="cat-card-cta" data-hover>Register Now</a>
     </div>
   </div>
 </section>
