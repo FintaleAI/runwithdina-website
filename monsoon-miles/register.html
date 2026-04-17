@@ -428,6 +428,58 @@ document.getElementById('regWaiverToggle').addEventListener('click', function(e)
 
 let paymentInProgress = false;
 
+// Robust POST to Apps Script with retry + localStorage fallback queue.
+// If all attempts fail, registration still arrives via the Razorpay webhook (server-side).
+function postRegistrationWithRetry(regData, attemptsLeft) {
+  const attemptPost = function() {
+    return fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(regData)
+    });
+  };
+
+  // Save to localStorage first — so even if user closes tab mid-POST, we have a record
+  try {
+    const pending = JSON.parse(localStorage.getItem('mm_pending_regs') || '[]');
+    if (!pending.find(p => p.payment_id === regData.payment_id)) {
+      pending.push(regData);
+      localStorage.setItem('mm_pending_regs', JSON.stringify(pending));
+    }
+  } catch (e) { /* localStorage may be disabled; webhook is still the safety net */ }
+
+  attemptPost()
+    .then(function() {
+      // Success — remove from pending queue
+      try {
+        const pending = JSON.parse(localStorage.getItem('mm_pending_regs') || '[]');
+        const filtered = pending.filter(p => p.payment_id !== regData.payment_id);
+        localStorage.setItem('mm_pending_regs', JSON.stringify(filtered));
+      } catch (e) {}
+    })
+    .catch(function() {
+      if (attemptsLeft > 1) {
+        // Exponential backoff: 1s, 2s, 4s
+        const delay = Math.pow(2, (3 - attemptsLeft)) * 1000;
+        setTimeout(function() { postRegistrationWithRetry(regData, attemptsLeft - 1); }, delay);
+      }
+      // If all retries fail, the Razorpay webhook will still capture it server-side
+    });
+}
+
+// On page load, flush any pending registrations from previous sessions that didn't make it through
+(function flushPendingRegistrations() {
+  try {
+    const pending = JSON.parse(localStorage.getItem('mm_pending_regs') || '[]');
+    if (pending.length > 0) {
+      pending.forEach(function(regData) {
+        postRegistrationWithRetry(regData, 2);
+      });
+    }
+  } catch (e) {}
+})();
+
 function initiatePayment(e) {
   e.preventDefault();
   if (paymentInProgress) return;
@@ -482,11 +534,17 @@ function initiatePayment(e) {
     image: 'https://runwithdina.com/img/logo-icon.png',
     prefill: { name: name, email: email, contact: phone },
     notes: {
+      name: name,
+      phone: phone,
+      email: email,
+      dob: dob,
+      gender: gender,
       category: selectedCategory,
       event: 'RWD Monsoon Miles 2026',
       tshirt: tshirt,
       blood_group: blood,
       emergency_contact: emergency,
+      runriot: runriotOptIn ? 'Yes' : 'No',
       source: 'website'
     },
     theme: { color: '#3b82f6' },
@@ -502,12 +560,9 @@ function initiatePayment(e) {
         runriot: runriotOptIn ? 'Yes' : 'No'
       };
 
-      fetch(SHEET_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(regData)
-      });
+      // Belt-and-suspenders: try browser POST with retry.
+      // Even if all retries fail, the server-side Razorpay webhook is the safety net.
+      postRegistrationWithRetry(regData, 3);
 
       showSuccessOverlay(name, selectedCategory, selectedAmount, response.razorpay_payment_id);
     },
