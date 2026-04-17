@@ -290,7 +290,7 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
     <form id="regForm" onsubmit="initiatePayment(event)">
       <input type="text" id="regName" placeholder="Full Name" required class="reg-input">
       <input type="email" id="regEmail" placeholder="Email Address" required class="reg-input">
-      <input type="tel" id="regPhone" placeholder="Phone Number (10 digits)" required pattern="[0-9]{10,12}" title="Enter 10-12 digit phone number" class="reg-input">
+      <input type="tel" id="regPhone" placeholder="Phone Number (10 digits)" required pattern="[\+0-9\s\-]{10,15}" title="10-digit phone number (with or without +91)" class="reg-input" maxlength="15">
       <div class="reg-row">
         <input type="text" id="regDob" required class="reg-input" placeholder="Date of Birth" max="2012-07-19" min="1930-01-01" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
         <select id="regGender" required class="reg-input">
@@ -322,7 +322,7 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
           <option value="O-">O-</option>
         </select>
       </div>
-      <input type="tel" id="regEmergency" placeholder="Emergency Contact Number (10 digits)" required pattern="[0-9]{10,12}" title="Enter 10-12 digit phone number" class="reg-input">
+      <input type="tel" id="regEmergency" placeholder="Emergency Contact Number (10 digits)" required pattern="[\+0-9\s\-]{10,15}" title="10-digit phone number (with or without +91)" class="reg-input" maxlength="15">
 
       <!-- RunRiot Integration -->
       <div class="reg-runriot">
@@ -444,7 +444,7 @@ function postRegistrationWithRetry(regData, attemptsLeft) {
   try {
     const pending = JSON.parse(localStorage.getItem('mm_pending_regs') || '[]');
     if (!pending.find(p => p.payment_id === regData.payment_id)) {
-      pending.push(regData);
+      pending.push(Object.assign({}, regData, { queuedAt: Date.now() }));
       localStorage.setItem('mm_pending_regs', JSON.stringify(pending));
     }
   } catch (e) { /* localStorage may be disabled; webhook is still the safety net */ }
@@ -468,12 +468,19 @@ function postRegistrationWithRetry(regData, attemptsLeft) {
     });
 }
 
-// On page load, flush any pending registrations from previous sessions that didn't make it through
+// On page load, flush any pending registrations from previous sessions that didn't make it through.
+// Entries older than 24 hours are discarded — the Razorpay webhook is the source of truth for anything older.
 (function flushPendingRegistrations() {
   try {
-    const pending = JSON.parse(localStorage.getItem('mm_pending_regs') || '[]');
-    if (pending.length > 0) {
-      pending.forEach(function(regData) {
+    var pending = JSON.parse(localStorage.getItem('mm_pending_regs') || '[]');
+    var maxAgeMs = 24 * 60 * 60 * 1000;
+    var cutoff = Date.now() - maxAgeMs;
+    var fresh = pending.filter(function(p) { return !p.queuedAt || p.queuedAt > cutoff; });
+    if (fresh.length !== pending.length) {
+      localStorage.setItem('mm_pending_regs', JSON.stringify(fresh));
+    }
+    if (fresh.length > 0) {
+      fresh.forEach(function(regData) {
         postRegistrationWithRetry(regData, 2);
       });
     }
@@ -484,28 +491,61 @@ function initiatePayment(e) {
   e.preventDefault();
   if (paymentInProgress) return;
   const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  let phone = document.getElementById('regPhone').value.trim();
   const dob = document.getElementById('regDob').value;
   const gender = document.getElementById('regGender').value;
   const tshirt = document.getElementById('regTshirt').value;
   const blood = document.getElementById('regBlood').value;
-  const emergency = document.getElementById('regEmergency').value.trim();
+  let emergency = document.getElementById('regEmergency').value.trim();
   const runriotOptIn = document.getElementById('regRunriot').checked;
   const runriotConsent = document.getElementById('regRunriotConsent').checked;
 
-  if (!name || !email || !phone || !dob || !gender || !tshirt || !blood || !emergency) return;
+  if (!name || !email || !phone || !dob || !gender || !tshirt || !blood || !emergency) {
+    alert('Please fill in all required fields.');
+    return;
+  }
 
-  // DOB validation — age must be >= 14 on race day (July 19, 2026)
-  const dobDate = new Date(dob);
-  const raceDay = new Date('2026-07-19');
-  if (isNaN(dobDate) || dobDate > new Date()) {
+  // Name validation — at least 2 chars, no numbers-only garbage
+  if (name.length < 2 || !/[a-zA-Z]/.test(name)) {
+    alert('Please enter your full name.');
+    return;
+  }
+
+  // Email validation — strict regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  if (!emailRegex.test(email)) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  // Phone normalization — strip +91, spaces, dashes; enforce exactly 10 digits
+  phone = phone.replace(/^\+?91[\s-]?/, '').replace(/[\s\-]/g, '');
+  if (!/^\d{10}$/.test(phone)) {
+    alert('Please enter a valid 10-digit phone number (without +91 prefix).');
+    return;
+  }
+  emergency = emergency.replace(/^\+?91[\s-]?/, '').replace(/[\s\-]/g, '');
+  if (!/^\d{10}$/.test(emergency)) {
+    alert('Please enter a valid 10-digit emergency contact number (without +91 prefix).');
+    return;
+  }
+  if (emergency === phone) {
+    alert('Emergency contact number cannot be the same as your own phone number.');
+    return;
+  }
+
+  // DOB validation — parse as UTC to avoid timezone off-by-one; age must be >= 14 on race day
+  const dobDate = new Date(dob + 'T00:00:00Z');
+  const raceDay = new Date('2026-07-19T00:00:00Z');
+  const now = new Date();
+  if (isNaN(dobDate.getTime()) || dobDate > now) {
     alert('Please enter a valid date of birth.');
     return;
   }
-  let ageOnRaceDay = raceDay.getFullYear() - dobDate.getFullYear();
-  const m = raceDay.getMonth() - dobDate.getMonth();
-  if (m < 0 || (m === 0 && raceDay.getDate() < dobDate.getDate())) ageOnRaceDay--;
+  let ageOnRaceDay = raceDay.getUTCFullYear() - dobDate.getUTCFullYear();
+  const monthDiff = raceDay.getUTCMonth() - dobDate.getUTCMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && raceDay.getUTCDate() < dobDate.getUTCDate())) ageOnRaceDay--;
   if (ageOnRaceDay < 14) {
     alert('Minimum age for this event is 14 years (as of race day, July 19, 2026). Please enter your correct date of birth.');
     return;
@@ -574,14 +614,24 @@ function initiatePayment(e) {
   btn.disabled = true;
   btn.textContent = 'Opening Razorpay...';
 
-  const rzp = new Razorpay(options);
-  rzp.on('payment.failed', function() {
+  try {
+    if (typeof Razorpay === 'undefined') {
+      throw new Error('Razorpay script did not load');
+    }
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function() {
+      paymentInProgress = false;
+      btn.disabled = false;
+      btn.textContent = 'Pay & Register';
+      alert('Payment failed. Please try again or contact us on WhatsApp at +91 90999 06174.');
+    });
+    rzp.open();
+  } catch (err) {
     paymentInProgress = false;
     btn.disabled = false;
     btn.textContent = 'Pay & Register';
-    alert('Payment failed. Please try again or contact us on WhatsApp.');
-  });
-  rzp.open();
+    alert('Payment system could not load. Please refresh the page and try again. If the problem persists, contact us on WhatsApp at +91 90999 06174.');
+  }
 }
 
 // Success overlay
