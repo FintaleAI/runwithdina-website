@@ -342,6 +342,169 @@ ul { list-style: none; }
   max-width: 1400px;
 }
 
+/* ============================================================
+   PRIZE POOL SECTION
+   ============================================================ */
+.prize-section {
+  padding: 7rem 1.5rem;
+  background: linear-gradient(180deg, #050505 0%, #0a0a0a 50%, #050505 100%);
+  position: relative;
+  overflow: hidden;
+}
+.prize-section::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(251,191,36,0.4), transparent);
+}
+.prize-section::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(251,191,36,0.05), transparent 70%);
+  pointer-events: none;
+}
+.prize-container {
+  max-width: 1100px; margin: 0 auto;
+  position: relative; z-index: 2;
+}
+.prize-header { text-align: center; margin-bottom: 3.5rem; }
+.prize-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: #fbbf24;
+  margin-bottom: 1.5rem;
+}
+.prize-hero-num {
+  font-family: var(--mono);
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.prize-hero-label {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+.prize-hero-sub {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.6);
+  max-width: 540px; margin: 0 auto;
+  line-height: 1.6;
+}
+
+.prize-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+@media (min-width: 720px) {
+  .prize-grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+}
+
+.prize-card {
+  background: linear-gradient(135deg, rgba(251,191,36,0.04), rgba(245,158,11,0.02));
+  border: 1px solid rgba(251,191,36,0.18);
+  border-radius: 14px;
+  padding: 1.6rem 1.6rem 1.4rem;
+  transition: all 0.3s;
+}
+.prize-card:hover {
+  border-color: rgba(251,191,36,0.45);
+  transform: translateY(-2px);
+}
+.prize-card-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.prize-card-cat {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  font-weight: 700;
+}
+.prize-card-total {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  color: #fbbf24;
+  font-weight: 800;
+}
+.prize-tier-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6rem;
+}
+.prize-tier {
+  text-align: center;
+  padding: 0.75rem 0.4rem;
+  background: rgba(255,255,255,0.025);
+  border-radius: 8px;
+}
+.prize-tier-rank {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.prize-tier-rank.first { color: #fbbf24; }
+.prize-tier-rank.second { color: #cbd5e1; }
+.prize-tier-rank.third { color: #d4a373; }
+.prize-tier-amt {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  color: var(--white);
+  font-weight: 700;
+}
+
+.prize-cta-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  margin-top: 1rem;
+}
+.prize-cta {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  padding: 1.1rem 2.4rem;
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #0a0a0a;
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 100px;
+  transition: all 0.25s;
+  box-shadow: 0 8px 32px rgba(251,191,36,0.25);
+}
+.prize-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(251,191,36,0.4);
+}
+.prize-cta-note {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+}
+
 .hero-label {
   font-family: var(--mono);
   font-size: 0.85rem;
@@ -1737,6 +1900,7 @@ input[type="date"].form-input {
   <div class="nav-right">
     <a href="#about" class="nav-link" data-hover>About</a>
     <a href="#categories" class="nav-link" data-hover>Categories</a>
+    <a href="#prizes" class="nav-link" data-hover>Prize Pool</a>
     <a href="#experience" class="nav-link" data-hover>Experience</a>
     <a href="#gallery" class="nav-link" data-hover>Gallery</a>
     <a href="#faq" class="nav-link" data-hover>FAQ</a>
@@ -1974,6 +2138,97 @@ input[type="date"].form-input {
     <div class="pool-feat">
       <div class="pool-feat-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--rain)" stroke-width="1.5" stroke-linecap="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>
       <div class="pool-feat-text">Breakfast After</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIZE POOL -->
+<section class="prize-section" id="prizes">
+  <div class="prize-container">
+    <div class="prize-header">
+      <div class="prize-eyebrow">Prize Pool</div>
+      <div class="prize-hero-num">&#8377;60,000</div>
+      <div class="prize-hero-label">Total Prize Money</div>
+      <p class="prize-hero-sub">Top three finishers in every category — across 1 hour, 2 hours, and 4 hours, men and women — take home a share of the pool.</p>
+    </div>
+
+    <div class="prize-grid">
+      <div class="prize-card">
+        <div class="prize-card-head">
+          <div class="prize-card-cat">1 HOUR · MALE</div>
+          <div class="prize-card-total">&#8377;7,500</div>
+        </div>
+        <div class="prize-tier-grid">
+          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;3,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;2,500</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
+        </div>
+      </div>
+
+      <div class="prize-card">
+        <div class="prize-card-head">
+          <div class="prize-card-cat">1 HOUR · FEMALE</div>
+          <div class="prize-card-total">&#8377;7,500</div>
+        </div>
+        <div class="prize-tier-grid">
+          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;3,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;2,500</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
+        </div>
+      </div>
+
+      <div class="prize-card">
+        <div class="prize-card-head">
+          <div class="prize-card-cat">2 HOURS · MALE</div>
+          <div class="prize-card-total">&#8377;9,000</div>
+        </div>
+        <div class="prize-tier-grid">
+          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;4,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;3,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
+        </div>
+      </div>
+
+      <div class="prize-card">
+        <div class="prize-card-head">
+          <div class="prize-card-cat">2 HOURS · FEMALE</div>
+          <div class="prize-card-total">&#8377;9,000</div>
+        </div>
+        <div class="prize-tier-grid">
+          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;4,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;3,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
+        </div>
+      </div>
+
+      <div class="prize-card">
+        <div class="prize-card-head">
+          <div class="prize-card-cat">4 HOURS · MALE</div>
+          <div class="prize-card-total">&#8377;13,500</div>
+        </div>
+        <div class="prize-tier-grid">
+          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;7,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;4,500</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
+        </div>
+      </div>
+
+      <div class="prize-card">
+        <div class="prize-card-head">
+          <div class="prize-card-cat">4 HOURS · FEMALE</div>
+          <div class="prize-card-total">&#8377;13,500</div>
+        </div>
+        <div class="prize-tier-grid">
+          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;7,000</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;4,500</div></div>
+          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prize-cta-wrap">
+      <a href="register.html" class="prize-cta">Register &amp; Compete &nbsp;→</a>
+      <div class="prize-cta-note">Top 3 in every category · Prize money ₹60,000</div>
     </div>
   </div>
 </section>
@@ -2522,6 +2777,7 @@ burger.addEventListener('click', () => {
       <a href="../index.html" class="mobile-menu-link" style="color:var(--rain-light);">← RunWithDina Home</a>
       <a href="#about" class="mobile-menu-link">About</a>
       <a href="#categories" class="mobile-menu-link">Categories</a>
+      <a href="#prizes" class="mobile-menu-link">Prize Pool</a>
       <a href="#experience" class="mobile-menu-link">Experience</a>
       <a href="#gallery" class="mobile-menu-link">Gallery</a>
       <a href="#faq" class="mobile-menu-link">FAQ</a>
