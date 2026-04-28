@@ -343,10 +343,10 @@ ul { list-style: none; }
 }
 
 /* ============================================================
-   PRIZE POOL SECTION
+   PRIZE POOL SECTION (3-column podium layout)
    ============================================================ */
 .prize-section {
-  padding: 7rem 1.5rem;
+  padding: 7rem 1.5rem 6rem;
   background: linear-gradient(180deg, #050505 0%, #0a0a0a 50%, #050505 100%);
   position: relative;
   overflow: hidden;
@@ -359,128 +359,157 @@ ul { list-style: none; }
 .prize-section::after {
   content: '';
   position: absolute;
-  top: 50%; left: 50%;
+  top: 30%; left: 50%;
   transform: translate(-50%,-50%);
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(251,191,36,0.05), transparent 70%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(251,191,36,0.06), transparent 70%);
   pointer-events: none;
+  z-index: 1;
 }
 .prize-container {
-  max-width: 1100px; margin: 0 auto;
+  max-width: 1180px; margin: 0 auto;
   position: relative; z-index: 2;
 }
-.prize-header { text-align: center; margin-bottom: 3.5rem; }
+.prize-header { text-align: center; margin-bottom: 4.5rem; }
 .prize-eyebrow {
   font-family: var(--mono);
   font-size: 0.78rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: #fbbf24;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.4rem;
 }
 .prize-hero-num {
   font-family: var(--mono);
-  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  font-size: clamp(4rem, 11vw, 7.5rem);
   font-weight: 900;
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 1;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.6rem;
 }
 .prize-hero-label {
   font-family: var(--mono);
   font-size: 0.95rem;
-  letter-spacing: 0.35em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--white);
   margin-bottom: 1rem;
+  font-weight: 700;
 }
 .prize-hero-sub {
   font-size: 1.05rem;
-  color: rgba(255,255,255,0.6);
-  max-width: 540px; margin: 0 auto;
+  color: rgba(255,255,255,0.55);
+  max-width: 580px; margin: 0 auto;
   line-height: 1.6;
 }
 
 .prize-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 1.25rem;
   margin-bottom: 3rem;
 }
-@media (min-width: 720px) {
-  .prize-grid { grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media (min-width: 760px) {
+  .prize-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
 }
 
 .prize-card {
-  background: linear-gradient(135deg, rgba(251,191,36,0.04), rgba(245,158,11,0.02));
-  border: 1px solid rgba(251,191,36,0.18);
-  border-radius: 14px;
-  padding: 1.6rem 1.6rem 1.4rem;
+  background: linear-gradient(180deg, rgba(251,191,36,0.05) 0%, rgba(15,15,15,0.5) 100%);
+  border: 1px solid rgba(251,191,36,0.16);
+  border-radius: 18px;
+  padding: 2.2rem 1.8rem 1.8rem;
   transition: all 0.3s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.prize-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, #fbbf24, transparent);
+  opacity: 0.6;
 }
 .prize-card:hover {
   border-color: rgba(251,191,36,0.45);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(251,191,36,0.08);
 }
-.prize-card-head {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 1.2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.prize-card-cat {
+.prize-card-duration {
   font-family: var(--mono);
-  font-size: 0.95rem;
-  letter-spacing: 0.06em;
-  color: var(--white);
-  font-weight: 700;
-}
-.prize-card-total {
-  font-family: var(--mono);
-  font-size: 1.05rem;
-  color: #fbbf24;
-  font-weight: 800;
-}
-.prize-tier-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.6rem;
-}
-.prize-tier {
-  text-align: center;
-  padding: 0.75rem 0.4rem;
-  background: rgba(255,255,255,0.025);
-  border-radius: 8px;
-}
-.prize-tier-rank {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  letter-spacing: 0.4em;
   color: rgba(255,255,255,0.5);
   text-transform: uppercase;
   margin-bottom: 0.4rem;
 }
-.prize-tier-rank.first { color: #fbbf24; }
-.prize-tier-rank.second { color: #cbd5e1; }
-.prize-tier-rank.third { color: #d4a373; }
-.prize-tier-amt {
+.prize-card-name {
   font-family: var(--mono);
-  font-size: 1.05rem;
+  font-size: 2.4rem;
+  font-weight: 900;
   color: var(--white);
+  letter-spacing: -0.02em;
+  margin-bottom: 1.8rem;
+  line-height: 1;
+}
+.prize-card-name em { color: #fbbf24; font-style: normal; }
+
+.prize-podium {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 1.8rem;
+}
+.prize-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.85rem 1.1rem;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.prize-row.gold {
+  background: linear-gradient(90deg, rgba(251,191,36,0.18), rgba(251,191,36,0.06));
+  border-color: rgba(251,191,36,0.4);
+}
+.prize-row-rank {
+  display: flex; align-items: center; gap: 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   font-weight: 700;
+  color: rgba(255,255,255,0.65);
+}
+.prize-row.gold .prize-row-rank { color: #fbbf24; }
+.prize-row-medal { font-size: 1.3rem; line-height: 1; }
+.prize-row-amt {
+  font-family: var(--mono);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--white);
+}
+.prize-row.gold .prize-row-amt { color: #fbbf24; }
+
+.prize-card-equal {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  padding: 0.7rem 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 .prize-cta-wrap {
   display: flex; flex-direction: column; align-items: center; gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 .prize-cta {
   display: inline-flex; align-items: center; gap: 0.7rem;
-  padding: 1.1rem 2.4rem;
+  padding: 1.1rem 2.6rem;
   background: linear-gradient(135deg, #fbbf24, #d97706);
   color: #0a0a0a;
   font-family: var(--mono);
@@ -2154,75 +2183,63 @@ input[type="date"].form-input {
 
     <div class="prize-grid">
       <div class="prize-card">
-        <div class="prize-card-head">
-          <div class="prize-card-cat">1 HOUR · MALE</div>
-          <div class="prize-card-total">&#8377;7,500</div>
+        <div class="prize-card-duration">Distance</div>
+        <div class="prize-card-name">1 <em>Hour</em></div>
+        <div class="prize-podium">
+          <div class="prize-row gold">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129351;</span> 1st</div>
+            <div class="prize-row-amt">&#8377;3,000</div>
+          </div>
+          <div class="prize-row">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129352;</span> 2nd</div>
+            <div class="prize-row-amt">&#8377;2,500</div>
+          </div>
+          <div class="prize-row">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129353;</span> 3rd</div>
+            <div class="prize-row-amt">&#8377;2,000</div>
+          </div>
         </div>
-        <div class="prize-tier-grid">
-          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;3,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;2,500</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
-        </div>
+        <div class="prize-card-equal">&times;&nbsp;2 &nbsp;·&nbsp; Men &amp; Women</div>
       </div>
 
       <div class="prize-card">
-        <div class="prize-card-head">
-          <div class="prize-card-cat">1 HOUR · FEMALE</div>
-          <div class="prize-card-total">&#8377;7,500</div>
+        <div class="prize-card-duration">Distance</div>
+        <div class="prize-card-name">2 <em>Hours</em></div>
+        <div class="prize-podium">
+          <div class="prize-row gold">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129351;</span> 1st</div>
+            <div class="prize-row-amt">&#8377;4,000</div>
+          </div>
+          <div class="prize-row">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129352;</span> 2nd</div>
+            <div class="prize-row-amt">&#8377;3,000</div>
+          </div>
+          <div class="prize-row">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129353;</span> 3rd</div>
+            <div class="prize-row-amt">&#8377;2,000</div>
+          </div>
         </div>
-        <div class="prize-tier-grid">
-          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;3,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;2,500</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
-        </div>
+        <div class="prize-card-equal">&times;&nbsp;2 &nbsp;·&nbsp; Men &amp; Women</div>
       </div>
 
       <div class="prize-card">
-        <div class="prize-card-head">
-          <div class="prize-card-cat">2 HOURS · MALE</div>
-          <div class="prize-card-total">&#8377;9,000</div>
+        <div class="prize-card-duration">Distance</div>
+        <div class="prize-card-name">4 <em>Hours</em></div>
+        <div class="prize-podium">
+          <div class="prize-row gold">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129351;</span> 1st</div>
+            <div class="prize-row-amt">&#8377;7,000</div>
+          </div>
+          <div class="prize-row">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129352;</span> 2nd</div>
+            <div class="prize-row-amt">&#8377;4,500</div>
+          </div>
+          <div class="prize-row">
+            <div class="prize-row-rank"><span class="prize-row-medal">&#129353;</span> 3rd</div>
+            <div class="prize-row-amt">&#8377;2,000</div>
+          </div>
         </div>
-        <div class="prize-tier-grid">
-          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;4,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;3,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
-        </div>
-      </div>
-
-      <div class="prize-card">
-        <div class="prize-card-head">
-          <div class="prize-card-cat">2 HOURS · FEMALE</div>
-          <div class="prize-card-total">&#8377;9,000</div>
-        </div>
-        <div class="prize-tier-grid">
-          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;4,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;3,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
-        </div>
-      </div>
-
-      <div class="prize-card">
-        <div class="prize-card-head">
-          <div class="prize-card-cat">4 HOURS · MALE</div>
-          <div class="prize-card-total">&#8377;13,500</div>
-        </div>
-        <div class="prize-tier-grid">
-          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;7,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;4,500</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
-        </div>
-      </div>
-
-      <div class="prize-card">
-        <div class="prize-card-head">
-          <div class="prize-card-cat">4 HOURS · FEMALE</div>
-          <div class="prize-card-total">&#8377;13,500</div>
-        </div>
-        <div class="prize-tier-grid">
-          <div class="prize-tier"><div class="prize-tier-rank first">1st</div><div class="prize-tier-amt">&#8377;7,000</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank second">2nd</div><div class="prize-tier-amt">&#8377;4,500</div></div>
-          <div class="prize-tier"><div class="prize-tier-rank third">3rd</div><div class="prize-tier-amt">&#8377;2,000</div></div>
-        </div>
+        <div class="prize-card-equal">&times;&nbsp;2 &nbsp;·&nbsp; Men &amp; Women</div>
       </div>
     </div>
 
