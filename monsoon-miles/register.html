@@ -285,24 +285,16 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   white-space: nowrap;
   line-height: 1.3;
 }
-.reg-presents-label {
-  display: block;
-  font-family: var(--mono);
-  font-size: 0.52rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--rain-light);
-  margin-bottom: 0.18rem;
-}
 .reg-presents-text strong { color: var(--white); font-weight: 700; }
 @media (max-width: 480px) {
   .reg-presents { padding: 0.4rem 0.95rem 0.4rem 0.4rem; gap: 0.6rem; }
   .reg-presents-logo { height: 28px; padding: 3px 8px; }
   .reg-presents-text { font-size: 0.62rem; letter-spacing: 0.15em; }
-  .reg-presents-label { font-size: 0.48rem; }
 }
 
-/* Sponsor acknowledgment strip on register card */
+/* Sponsor acknowledgment strip on register card (FICCI FLO is already
+   shown as the title sponsor at the top, so the strip here just lists
+   the next-tier partners). */
 .reg-sponsors {
   margin: 0 0 1.6rem;
   padding: 0.95rem 0.95rem 1rem;
@@ -310,28 +302,21 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 0.7rem;
 }
-.reg-sponsors-text {
-  font-size: 0.75rem;
-  color: var(--silver);
-  line-height: 1.55;
-  margin-bottom: 0.7rem;
-}
-.reg-sponsors-text strong { color: var(--rain-light); font-weight: 600; }
 .reg-sponsors-logos {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-  margin-bottom: 0.55rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 0.7rem;
 }
 .reg-sp-card {
   background: var(--pure);
-  border-radius: 5px;
-  height: 44px;
+  border-radius: 6px;
+  height: 56px;
   display: flex; align-items: center; justify-content: center;
-  padding: 5px 7px;
+  padding: 6px 10px;
 }
 .reg-sp-card img {
-  max-width: 100%; max-height: 75%;
+  max-width: 100%; max-height: 80%;
   object-fit: contain;
 }
 .reg-sponsors-link {
@@ -378,22 +363,17 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   <div class="reg-card">
     <div class="reg-presents">
       <div class="reg-presents-logo"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara"></div>
-      <span class="reg-presents-text">
-        <span class="reg-presents-label">Title Sponsor</span>
-        <strong>FICCI FLO Vadodara</strong> presents
-      </span>
+      <span class="reg-presents-text"><strong>FICCI FLO Vadodara</strong> presents</span>
     </div>
     <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
     <p class="reg-price" id="regPrice">&#8377;799</p>
 
-    <!-- Sponsor acknowledgment -->
+    <!-- Sponsor acknowledgment (FICCI FLO already shown above as title sponsor) -->
     <div class="reg-sponsors">
-      <p class="reg-sponsors-text">This non-profit run is brought to you by <strong>FICCI FLO Vadodara</strong>, <strong>Shah Marble Industries</strong> and a handful of brands who chose to back it. Your registration goes into the run &mdash; the medals, hydration, and pool party are theirs.</p>
       <div class="reg-sponsors-logos">
-        <div class="reg-sp-card"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO"></div>
-        <div class="reg-sp-card"><img src="Photos/sponsors/shah-marbles.png" alt="Shah Marbles"></div>
-        <div class="reg-sp-card"><img src="Photos/sponsors/aura.png" alt="Aura"></div>
-        <div class="reg-sp-card"><img src="Photos/sponsors/aadicura.png" alt="Aadicura"></div>
+        <div class="reg-sp-card"><img src="Photos/sponsors/shah-marbles.png" alt="Shah Marble Industries"></div>
+        <div class="reg-sp-card"><img src="Photos/sponsors/aura.png" alt="Aura School"></div>
+        <div class="reg-sp-card"><img src="Photos/sponsors/aadicura.png" alt="Aadicura Hospital"></div>
       </div>
       <p class="reg-sponsors-link"><a href="./#partners">See all 10 partners &rarr;</a></p>
     </div>
