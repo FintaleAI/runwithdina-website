@@ -256,6 +256,52 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
 }
 .psc-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
+/* Sponsor acknowledgment strip on register card */
+.reg-sponsors {
+  margin: 0 0 1.6rem;
+  padding: 0.95rem 0.95rem 1rem;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 0.7rem;
+}
+.reg-sponsors-text {
+  font-size: 0.75rem;
+  color: var(--silver);
+  line-height: 1.55;
+  margin-bottom: 0.7rem;
+}
+.reg-sponsors-text strong { color: var(--rain-light); font-weight: 600; }
+.reg-sponsors-logos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-bottom: 0.55rem;
+}
+.reg-sp-card {
+  background: var(--pure);
+  border-radius: 5px;
+  height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 5px 7px;
+}
+.reg-sp-card img {
+  max-width: 100%; max-height: 75%;
+  object-fit: contain;
+}
+.reg-sponsors-link {
+  font-size: 0.65rem;
+  font-family: var(--mono);
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+.reg-sponsors-link a {
+  color: var(--rain-light);
+  text-decoration: none;
+}
+.reg-sponsors-link a:hover { text-decoration: underline; }
+
 /* Confetti */
 #confettiCanvas {
   position: fixed; inset: 0; z-index: 10000;
@@ -286,6 +332,18 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   <div class="reg-card">
     <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
     <p class="reg-price" id="regPrice">&#8377;799</p>
+
+    <!-- Sponsor acknowledgment -->
+    <div class="reg-sponsors">
+      <p class="reg-sponsors-text">This non-profit run is brought to you by <strong>FICCI FLO Vadodara</strong>, <strong>Shah Marble Industries</strong> and a handful of brands who chose to back it. Your registration goes into the run &mdash; the medals, hydration, and pool party are theirs.</p>
+      <div class="reg-sponsors-logos">
+        <div class="reg-sp-card"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO"></div>
+        <div class="reg-sp-card"><img src="Photos/sponsors/shah-marbles.png" alt="Shah Marbles"></div>
+        <div class="reg-sp-card"><img src="Photos/sponsors/aura.png" alt="Aura"></div>
+        <div class="reg-sp-card"><img src="Photos/sponsors/aadicura.png" alt="Aadicura"></div>
+      </div>
+      <p class="reg-sponsors-link"><a href="./#partners">See all 10 partners &rarr;</a></p>
+    </div>
 
     <form id="regForm" onsubmit="initiatePayment(event)">
       <input type="text" id="regName" placeholder="Full Name" required class="reg-input">

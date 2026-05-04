@@ -1622,6 +1622,21 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   padding: 16px 28px;
 }
 
+/* PHYSIOTHERAPY PARTNER — Visit Physio */
+.physio-partner-row {
+  display: flex; justify-content: center;
+  margin-bottom: clamp(2rem, 4vh, 3rem);
+}
+.physio-partner-card {
+  width: min(320px, 100%);
+  height: 130px;
+  padding: 14px 24px;
+}
+.physio-partner-card img {
+  max-width: 80%;
+  max-height: 85%;
+}
+
 /* SUPPORTING + TECH ROW */
 .supporting-row {
   display: grid;
@@ -2498,6 +2513,62 @@ input[type="date"].form-input {
   </div>
 </section>
 
+<!-- SPONSORS / PARTNERS -->
+<section class="sponsors-section" id="partners">
+  <div class="sponsors-section-bg"></div>
+  <div class="sponsors-section-label">Made possible by</div>
+  <h2 class="sponsors-section-title">Brands that<br><em>show up.</em></h2>
+  <p class="sponsors-section-sub">A non-profit run survives because of people who show up — and brands that back the people. Every one of these partners chose to back this event. Without them, there's no rain run.</p>
+
+  <!-- TITLE SPONSOR -->
+  <div class="sponsor-tier-label">Title Sponsor</div>
+  <div class="title-sponsor-row">
+    <div class="sponsor-card title-sponsor-card">
+      <img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara" loading="lazy">
+    </div>
+  </div>
+
+  <!-- PRESENTING PARTNER -->
+  <div class="sponsor-tier-label">Presenting Partner</div>
+  <div class="supporting-partner-row">
+    <div class="sponsor-card supporting-partner-card">
+      <img src="Photos/sponsors/shah-marbles.png" alt="Shah Marble Industries" loading="lazy">
+    </div>
+  </div>
+
+  <!-- CO-SPONSORS -->
+  <div class="sponsor-tier-label">Co-Sponsors</div>
+  <div class="co-sponsors-row">
+    <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/aura.png" alt="Aura School" loading="lazy"></div>
+    <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/aadicura.png" alt="Aadicura Hospital" loading="lazy"></div>
+  </div>
+
+  <!-- PHYSIOTHERAPY PARTNER -->
+  <div class="sponsor-tier-label">Physiotherapy Partner</div>
+  <div class="physio-partner-row">
+    <div class="sponsor-card physio-partner-card">
+      <img src="Photos/sponsors/visit-physio.png" alt="Visit Physio" loading="lazy">
+    </div>
+  </div>
+
+  <!-- SUPPORTING + TECHNOLOGY -->
+  <div class="sponsor-tier-label-row">
+    <div class="sponsor-tier-label">Supporting Partners</div>
+    <div class="sponsor-tier-label">Technology</div>
+  </div>
+  <div class="supporting-row">
+    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/amrutam.png" alt="Amrutam" loading="lazy"></div>
+    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/mohanlal.png" alt="Mohanlal Tea" loading="lazy"></div>
+    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/vishnu-optical.jpg" alt="Vishnu Optical" loading="lazy"></div>
+    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/fast-and-up.png" alt="Fast&amp;Up" loading="lazy"></div>
+    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/vadodara-marathon.jpg" alt="Vadodara Marathon" loading="lazy"></div>
+    <div class="sponsor-card sp-card-sm tech-card">
+      <img src="Photos/sponsors/fintale.jpg" alt="fintale.io" loading="lazy">
+      <div class="tech-text">fintale<span class="dot">.</span>io</div>
+    </div>
+  </div>
+</section>
+
 <!-- GALLERY -->
 <section class="gallery" id="gallery">
   <div class="gallery-header">
@@ -2709,54 +2780,6 @@ input[type="date"].form-input {
   <div class="faq-item">
     <button class="faq-q" data-hover onclick="toggleFaq(this)">Is there parking at Suncity Club and Resort?<span class="faq-q-icon">+</span></button>
     <div class="faq-a"><div class="faq-a-inner">Yes. Suncity Club and Resort has plenty of parking space. Get there by 4:30 AM and you'll find a spot easily. Gates close at 4:50 so don't cut it too close.</div></div>
-  </div>
-</section>
-
-<!-- SPONSORS / PARTNERS -->
-<section class="sponsors-section" id="partners">
-  <div class="sponsors-section-bg"></div>
-  <div class="sponsors-section-label">Made possible by</div>
-  <h2 class="sponsors-section-title">Brands that<br><em>show up.</em></h2>
-  <p class="sponsors-section-sub">A non-profit run survives because of people who show up — and brands that back the people. These are the ones backing us in 2026.</p>
-
-  <!-- TITLE SPONSOR -->
-  <div class="sponsor-tier-label">Title Sponsor</div>
-  <div class="title-sponsor-row">
-    <div class="sponsor-card title-sponsor-card">
-      <img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara" loading="lazy">
-    </div>
-  </div>
-
-  <!-- SUPPORTING PARTNER -->
-  <div class="sponsor-tier-label">Supporting Partner</div>
-  <div class="supporting-partner-row">
-    <div class="sponsor-card supporting-partner-card">
-      <img src="Photos/sponsors/shah-marbles.png" alt="Shah Marble Industries" loading="lazy">
-    </div>
-  </div>
-
-  <!-- CO-SPONSORS -->
-  <div class="sponsor-tier-label">Co-Sponsors</div>
-  <div class="co-sponsors-row">
-    <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/aura.png" alt="Aura School" loading="lazy"></div>
-    <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/aadicura.png" alt="Aadicura Hospital" loading="lazy"></div>
-  </div>
-
-  <!-- SUPPORTING + TECHNOLOGY -->
-  <div class="sponsor-tier-label-row">
-    <div class="sponsor-tier-label">Supporting Partners</div>
-    <div class="sponsor-tier-label">Technology</div>
-  </div>
-  <div class="supporting-row">
-    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/amrutam.png" alt="Amrutam" loading="lazy"></div>
-    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/mohanlal.png" alt="Mohanlal Tea" loading="lazy"></div>
-    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/vishnu-optical.jpg" alt="Vishnu Optical" loading="lazy"></div>
-    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/fast-and-up.png" alt="Fast&amp;Up" loading="lazy"></div>
-    <div class="sponsor-card sp-card-sm"><img src="Photos/sponsors/vadodara-marathon.jpg" alt="Vadodara Marathon" loading="lazy"></div>
-    <div class="sponsor-card sp-card-sm tech-card">
-      <img src="Photos/sponsors/fintale.jpg" alt="fintale.io" loading="lazy">
-      <div class="tech-text">fintale<span class="dot">.</span>io</div>
-    </div>
   </div>
 </section>
 
