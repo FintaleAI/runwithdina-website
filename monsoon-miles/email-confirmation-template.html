@@ -1,0 +1,189 @@
+<!--
+============================================================
+RWD MONSOON MILES 2026 — Registration Confirmation Email
+============================================================
+This is the source-of-truth template for the confirmation email
+sent after Razorpay payment succeeds. Replace placeholders with
+real values in the Apps Script that handles the webhook:
+
+  {{NAME}}            — registrant's first name
+  {{CATEGORY}}        — "1 Hour" / "2 Hours" / "4 Hours"
+  {{AMOUNT}}          — e.g. "799"
+  {{REPORTING_TIME}}  — e.g. "7:00 AM"
+  {{FLAG_OFF}}        — e.g. "7:30 AM"
+  {{FULL_NAME}}       — full name
+  {{EMAIL}}           — registrant's email
+  {{PHONE}}           — registrant's phone
+  {{TSHIRT}}          — t-shirt size
+  {{BLOOD_GROUP}}     — blood group
+  {{PAYMENT_ID}}      — Razorpay pay_xxx id
+
+CHANGES vs previous version:
+- Added "Made possible by" sponsors strip (4 logos: FICCI FLO,
+  Shah Marbles, Aura, Aadicura) before the footer block, with a
+  link to the full partners section at runwithdina.com/monsoon-miles
+============================================================
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:Arial,Helvetica,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:40px 20px;">
+  <tr><td align="center">
+    <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+      <!-- HEADER -->
+      <tr><td style="background:linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%);border-radius:16px 16px 0 0;padding:40px 40px 30px;text-align:center;">
+        <h1 style="margin:0;font-size:28px;color:#ffffff;font-weight:800;letter-spacing:-0.5px;">RWD MONSOON MILES 2026</h1>
+        <p style="margin:8px 0 0;font-size:14px;color:#94a3b8;letter-spacing:3px;text-transform:uppercase;">Run Through The Storm</p>
+      </td></tr>
+
+      <!-- CONFIRMED BADGE -->
+      <tr><td style="background:#111111;padding:30px 40px 20px;text-align:center;">
+        <div style="display:inline-block;background:#064e3b;color:#34d399;padding:8px 24px;border-radius:50px;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;">&#10003; Registration Confirmed</div>
+      </td></tr>
+
+      <!-- GREETING -->
+      <tr><td style="background:#111111;padding:10px 40px 25px;">
+        <h2 style="margin:0;font-size:22px;color:#ffffff;font-weight:600;">Hey {{NAME}}! &#128075;</h2>
+        <p style="margin:12px 0 0;font-size:15px;color:#94a3b8;line-height:1.6;">You're officially registered for <strong style="color:#3b82f6;">RWD Monsoon Miles 2026</strong>. Get ready to run through the rain at Suncity Club and Resort, Vadodara on <strong style="color:#ffffff;">July 26, 2026</strong>.</p>
+      </td></tr>
+
+      <!-- REGISTRATION DETAILS -->
+      <tr><td style="background:#111111;padding:0 40px 30px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border:1px solid #222;border-radius:12px;overflow:hidden;">
+          <tr><td style="padding:20px 24px 12px;">
+            <p style="margin:0;font-size:11px;color:#64748b;letter-spacing:2px;text-transform:uppercase;font-weight:600;">Your Registration Details</p>
+          </td></tr>
+          <tr><td style="padding:0 24px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Category</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><strong style="color:#3b82f6;font-size:15px;">{{CATEGORY}}</strong></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Amount Paid</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><strong style="color:#34d399;font-size:15px;">&#8377;{{AMOUNT}}</strong></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Reporting Time</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><strong style="color:#f59e0b;font-size:15px;">{{REPORTING_TIME}}</strong></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Flag Off</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><strong style="color:#f59e0b;font-size:15px;">{{FLAG_OFF}}</strong></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Name</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><span style="color:#e2e8f0;font-size:13px;">{{FULL_NAME}}</span></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Email</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><span style="color:#e2e8f0;font-size:13px;">{{EMAIL}}</span></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Phone</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><span style="color:#e2e8f0;font-size:13px;">{{PHONE}}</span></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">T-shirt Size</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><span style="color:#e2e8f0;font-size:13px;">{{TSHIRT}}</span></td></tr>
+              <tr><td style="padding:10px 0;border-bottom:1px solid #222;"><span style="color:#64748b;font-size:13px;">Blood Group</span></td><td style="padding:10px 0;border-bottom:1px solid #222;text-align:right;"><span style="color:#e2e8f0;font-size:13px;">{{BLOOD_GROUP}}</span></td></tr>
+              <tr><td style="padding:10px 0;"><span style="color:#64748b;font-size:13px;">Payment ID</span></td><td style="padding:10px 0;text-align:right;"><span style="color:#64748b;font-size:12px;font-family:monospace;">{{PAYMENT_ID}}</span></td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <!-- WHATSAPP CTA -->
+      <tr><td style="background:#111111;padding:0 40px 30px;text-align:center;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:12px;overflow:hidden;">
+          <tr><td style="padding:28px 30px;text-align:center;">
+            <p style="margin:0 0 6px;font-size:13px;color:#6ee7b7;letter-spacing:2px;text-transform:uppercase;font-weight:600;">Join the Runners Group</p>
+            <h3 style="margin:0 0 12px;font-size:20px;color:#ffffff;">Connect with fellow runners</h3>
+            <p style="margin:0 0 20px;font-size:14px;color:#a7f3d0;line-height:1.5;">Get event updates, training tips, and meet your fellow runners before the big day.</p>
+            <a href="https://chat.whatsapp.com/BSBbdKL0I7q4yaOZCMCte8" target="_blank" style="display:inline-block;background:#25D366;color:#ffffff;padding:14px 32px;border-radius:50px;font-size:15px;font-weight:700;text-decoration:none;">&#128172; Join WhatsApp Group</a>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <!-- DATE / REPORTING / FLAG OFF STATS -->
+      <tr><td style="background:#111111;padding:0 40px 30px;">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="background:#1a1a1a;border:1px solid #222;border-radius:10px;padding:20px;text-align:center;width:33%;">
+              <p style="margin:0 0 4px;font-size:20px;">&#128197;</p>
+              <p style="margin:0;font-size:12px;color:#64748b;">DATE</p>
+              <p style="margin:4px 0 0;font-size:14px;color:#ffffff;font-weight:600;">July 26, 2026</p>
+            </td>
+            <td style="width:10px;"></td>
+            <td style="background:#1a1a1a;border:1px solid #222;border-radius:10px;padding:20px;text-align:center;width:33%;">
+              <p style="margin:0 0 4px;font-size:20px;">&#128337;</p>
+              <p style="margin:0;font-size:12px;color:#64748b;">REPORTING</p>
+              <p style="margin:4px 0 0;font-size:14px;color:#ffffff;font-weight:600;">{{REPORTING_TIME}}</p>
+            </td>
+            <td style="width:10px;"></td>
+            <td style="background:#1a1a1a;border:1px solid #222;border-radius:10px;padding:20px;text-align:center;width:33%;">
+              <p style="margin:0 0 4px;font-size:20px;">&#127937;</p>
+              <p style="margin:0;font-size:12px;color:#64748b;">FLAG OFF</p>
+              <p style="margin:4px 0 0;font-size:14px;color:#ffffff;font-weight:600;">{{FLAG_OFF}}</p>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+
+      <!-- WHAT TO BRING -->
+      <tr><td style="background:#111111;padding:0 40px 30px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border:1px solid #222;border-radius:12px;">
+          <tr><td style="padding:24px;">
+            <p style="margin:0 0 16px;font-size:11px;color:#64748b;letter-spacing:2px;text-transform:uppercase;font-weight:600;">What to bring on race day</p>
+            <p style="margin:0 0 8px;font-size:14px;color:#e2e8f0;">&#127939; Comfortable running shoes (trail-ready preferred)</p>
+            <p style="margin:0 0 8px;font-size:14px;color:#e2e8f0;">&#128167; Water bottle / hydration pack</p>
+            <p style="margin:0 0 8px;font-size:14px;color:#e2e8f0;">&#128085; Light, quick-dry clothing (you WILL get wet)</p>
+            <p style="margin:0 0 8px;font-size:14px;color:#e2e8f0;">&#129409; Swimwear for the post-run pool party</p>
+            <p style="margin:0;font-size:14px;color:#e2e8f0;">&#128267; Energy and a smile &mdash; we handle the rest</p>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <!-- ============================================================
+           SPONSORS STRIP (NEW)
+           Compact strip with FICCI FLO + Shah Marbles + Aura + Aadicura
+           Link to full partners list at runwithdina.com/monsoon-miles
+           ============================================================ -->
+      <tr><td style="background:#111111;padding:0 40px 30px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border:1px solid #222;border-radius:12px;">
+          <tr><td style="padding:22px 24px 14px;text-align:center;">
+            <p style="margin:0;font-size:11px;color:#64748b;letter-spacing:2px;text-transform:uppercase;font-weight:600;">Made possible by</p>
+          </td></tr>
+
+          <!-- Row 1: Title Sponsor + Supporting Partner -->
+          <tr><td style="padding:0 16px 8px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="width:48%;background:#ffffff;border-radius:8px;padding:14px 16px;text-align:center;vertical-align:middle;">
+                  <img src="https://runwithdina.com/monsoon-miles/Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara" width="160" style="max-width:100%;height:auto;display:block;margin:0 auto;">
+                </td>
+                <td style="width:4%;"></td>
+                <td style="width:48%;background:#ffffff;border-radius:8px;padding:14px 16px;text-align:center;vertical-align:middle;">
+                  <img src="https://runwithdina.com/monsoon-miles/Photos/sponsors/shah-marbles.png" alt="Shah Marble Industries" width="200" style="max-width:100%;height:auto;display:block;margin:0 auto;">
+                </td>
+              </tr>
+            </table>
+          </td></tr>
+
+          <!-- Row 2: Co-Sponsors -->
+          <tr><td style="padding:0 16px 14px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="width:48%;background:#ffffff;border-radius:8px;padding:12px 16px;text-align:center;vertical-align:middle;">
+                  <img src="https://runwithdina.com/monsoon-miles/Photos/sponsors/aura.png" alt="Aura School" width="120" style="max-width:100%;height:auto;display:block;margin:0 auto;">
+                </td>
+                <td style="width:4%;"></td>
+                <td style="width:48%;background:#ffffff;border-radius:8px;padding:12px 16px;text-align:center;vertical-align:middle;">
+                  <img src="https://runwithdina.com/monsoon-miles/Photos/sponsors/aadicura.png" alt="Aadicura Hospital" width="120" style="max-width:100%;height:auto;display:block;margin:0 auto;">
+                </td>
+              </tr>
+            </table>
+          </td></tr>
+
+          <!-- Link to full partners list -->
+          <tr><td style="padding:0 24px 22px;text-align:center;">
+            <p style="margin:0;font-size:12px;color:#64748b;line-height:1.6;">+ supporting partners &mdash; see all at <a href="https://runwithdina.com/monsoon-miles/#partners" style="color:#3b82f6;text-decoration:none;font-weight:600;">runwithdina.com/monsoon-miles</a></p>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <!-- FOOTER -->
+      <tr><td style="background:#0a0a0a;border-radius:0 0 16px 16px;padding:30px 40px;text-align:center;border-top:1px solid #1a1a1a;">
+        <p style="margin:0 0 8px;font-size:14px;color:#64748b;">Questions? Message us anytime</p>
+        <a href="https://wa.me/919099906174" target="_blank" style="color:#3b82f6;font-size:14px;text-decoration:none;font-weight:600;">WhatsApp: +91 90999 06174</a>
+        <p style="margin:20px 0 0;font-size:12px;color:#334155;">RWD Monsoon Miles 2026 &middot; By RunWithDina &middot; Vadodara</p>
+        <p style="margin:8px 0 0;font-size:11px;color:#1e293b;"><a href="https://runwithdina.com/monsoon-miles/" style="color:#334155;text-decoration:none;">runwithdina.com/monsoon-miles</a></p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>
