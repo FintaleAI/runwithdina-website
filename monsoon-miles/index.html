@@ -349,7 +349,7 @@ ul { list-style: none; }
 .hero {
   position: relative;
   height: 100vh;
-  min-height: 700px;
+  min-height: 100dvh;
   display: flex; align-items: flex-end;
   padding: 0 clamp(1.5rem, 4vw, 4rem);
   padding-bottom: clamp(3rem, 6vh, 6rem);
@@ -2130,10 +2130,13 @@ input[type="date"].form-input {
      and burger menu both already give the user a way to register,
      and on narrow screens this button overlaps the hero presents pill. */
   .nav-register { display: none; }
+}
 
-  /* On small screens, top-align hero content + ensure hero grows to fit
-     so the FICCI FLO badge isn't clipped above the viewport on iPhone SE
-     (which is only 667px tall — shorter than the 700px hero min-height). */
+/* Short viewports (laptops with browser chrome eating space, mobile,
+   or any window where the hero content stack would exceed the viewport
+   height) — top-align the hero so the FICCI FLO presents pill stays
+   pinned just under the nav rather than getting clipped above it. */
+@media (max-width: 768px), (max-height: 900px) {
   .hero {
     align-items: flex-start;
     height: auto;
