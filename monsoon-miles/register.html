@@ -256,6 +256,35 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
 }
 .psc-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
+/* Title sponsor "presents" badge above register title */
+.reg-presents {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.3rem 0.85rem 0.3rem 0.3rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  margin-bottom: 0.85rem;
+}
+.reg-presents-logo {
+  background: #fff;
+  border-radius: 50px;
+  padding: 3px 8px;
+  height: 22px;
+  display: flex; align-items: center; justify-content: center;
+}
+.reg-presents-logo img { height: 100%; width: auto; display: block; }
+.reg-presents-text {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--silver);
+  white-space: nowrap;
+}
+.reg-presents-text strong { color: var(--white); font-weight: 600; }
+
 /* Sponsor acknowledgment strip on register card */
 .reg-sponsors {
   margin: 0 0 1.6rem;
@@ -330,6 +359,10 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   <a href="./" class="reg-back">&larr; Back to Monsoon Miles</a>
 
   <div class="reg-card">
+    <div class="reg-presents">
+      <div class="reg-presents-logo"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara"></div>
+      <span class="reg-presents-text"><strong>FICCI FLO Vadodara</strong> presents</span>
+    </div>
     <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
     <p class="reg-price" id="regPrice">&#8377;799</p>
 

@@ -548,6 +548,50 @@ ul { list-style: none; }
   transform: translateY(100%);
 }
 
+/* Title sponsor "presents" badge — sits above hero label */
+.hero-presents {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.35rem 0.95rem 0.35rem 0.35rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(6px);
+}
+.hero-presents-logo {
+  background: #fff;
+  border-radius: 50px;
+  padding: 4px 10px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-presents-logo img {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+.hero-presents-text {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--silver);
+  white-space: nowrap;
+}
+.hero-presents-text strong {
+  color: var(--white);
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .hero-presents { padding: 0.3rem 0.8rem 0.3rem 0.3rem; }
+  .hero-presents-logo { height: 22px; padding: 3px 8px; }
+  .hero-presents-text { font-size: 0.58rem; letter-spacing: 0.22em; }
+}
+
 /* HERO DATE — make the date dominate */
 .hero-date {
   font-family: var(--mono);
@@ -2135,6 +2179,10 @@ input[type="date"].form-input {
     <div class="hero-bg-overlay"></div>
   </div>
   <div class="hero-content">
+    <div class="hero-presents">
+      <div class="hero-presents-logo"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara"></div>
+      <span class="hero-presents-text"><strong>FICCI FLO Vadodara</strong> presents</span>
+    </div>
     <div class="hero-label"><span>RWD Monsoon Miles · Edition 002</span></div>
     <div class="hero-date"><span class="hero-date-day">26</span> JULY <span style="opacity:0.7;">2026</span></div>
     <div class="hero-venue">Suncity Club &amp; Resort · Vadodara</div>
