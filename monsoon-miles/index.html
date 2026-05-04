@@ -210,19 +210,20 @@ ul { list-style: none; }
 .preloader-presents {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.4rem 1.1rem 0.4rem 0.4rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
+  gap: 0.95rem;
+  padding: 0.65rem 1.5rem 0.65rem 0.65rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.14);
   border-radius: 100px;
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
   opacity: 0;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
 }
 .preloader-presents-logo {
   background: #fff;
   border-radius: 50px;
-  padding: 4px 10px;
-  height: 28px;
+  padding: 7px 16px;
+  height: 50px;
   display: flex; align-items: center; justify-content: center;
 }
 .preloader-presents-logo img {
@@ -230,17 +231,32 @@ ul { list-style: none; }
 }
 .preloader-presents-text {
   font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.3em;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--silver);
   white-space: nowrap;
+  line-height: 1.3;
 }
-.preloader-presents-text strong { color: var(--white); font-weight: 600; }
+.preloader-presents-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--rain-light);
+  margin-bottom: 0.2rem;
+}
+.preloader-presents-text strong { color: var(--white); font-weight: 700; }
 @media (max-width: 600px) {
-  .preloader-presents { padding: 0.35rem 0.9rem 0.35rem 0.35rem; }
-  .preloader-presents-logo { height: 24px; padding: 3px 8px; }
-  .preloader-presents-text { font-size: 0.62rem; letter-spacing: 0.22em; }
+  .preloader-presents {
+    padding: 0.5rem 1.15rem 0.5rem 0.5rem;
+    gap: 0.7rem;
+    margin-bottom: 1.5rem;
+  }
+  .preloader-presents-logo { height: 38px; padding: 5px 12px; }
+  .preloader-presents-text { font-size: 0.7rem; letter-spacing: 0.18em; }
+  .preloader-presents-label { font-size: 0.55rem; letter-spacing: 0.28em; }
 }
 .preloader-text {
   font-family: var(--serif);
@@ -587,19 +603,29 @@ ul { list-style: none; }
 .hero-presents {
   display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.35rem 0.95rem 0.35rem 0.35rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
+  gap: 0.85rem;
+  padding: 0.55rem 1.4rem 0.55rem 0.55rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.14);
   border-radius: 100px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
   backdrop-filter: blur(6px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+.hero-presents-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--rain-light);
+  margin-bottom: 0.18rem;
 }
 .hero-presents-logo {
   background: #fff;
   border-radius: 50px;
-  padding: 4px 10px;
-  height: 26px;
+  padding: 6px 14px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -611,20 +637,26 @@ ul { list-style: none; }
 }
 .hero-presents-text {
   font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.3em;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--silver);
   white-space: nowrap;
+  line-height: 1.3;
 }
 .hero-presents-text strong {
   color: var(--white);
-  font-weight: 600;
+  font-weight: 700;
 }
 @media (max-width: 600px) {
-  .hero-presents { padding: 0.3rem 0.8rem 0.3rem 0.3rem; }
-  .hero-presents-logo { height: 22px; padding: 3px 8px; }
-  .hero-presents-text { font-size: 0.58rem; letter-spacing: 0.22em; }
+  .hero-presents {
+    padding: 0.45rem 1.05rem 0.45rem 0.45rem;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+  }
+  .hero-presents-logo { height: 34px; padding: 4px 10px; }
+  .hero-presents-text { font-size: 0.65rem; letter-spacing: 0.18em; }
+  .hero-presents-label { font-size: 0.5rem; letter-spacing: 0.28em; }
 }
 
 /* HERO DATE — make the date dominate */
@@ -2114,6 +2146,24 @@ input[type="date"].form-input {
   .hero-bottom { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 768px) {
+  /* Hide the nav Register button on mobile — the bottom sticky bar
+     and burger menu both already give the user a way to register,
+     and on narrow screens this button overlaps the hero presents pill. */
+  .nav-register { display: none; }
+
+  /* On small screens, top-align hero content + ensure hero grows to fit
+     so the FICCI FLO badge isn't clipped above the viewport on iPhone SE
+     (which is only 667px tall — shorter than the 700px hero min-height). */
+  .hero {
+    align-items: flex-start;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-top: calc(var(--nav-h) + 1.25rem);
+    padding-bottom: clamp(2rem, 5vh, 4rem);
+  }
+}
+@media (max-width: 768px) {
   .m-sticky { display: block; }
   body { padding-bottom: 64px; }
   .hero-scroll { display: none; }
@@ -2220,7 +2270,10 @@ input[type="date"].form-input {
   <div class="hero-content">
     <div class="hero-presents">
       <div class="hero-presents-logo"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara"></div>
-      <span class="hero-presents-text"><strong>FICCI FLO Vadodara</strong> presents</span>
+      <span class="hero-presents-text">
+        <span class="hero-presents-label">Title Sponsor</span>
+        <strong>FICCI FLO Vadodara</strong> presents
+      </span>
     </div>
     <div class="hero-label"><span>RWD Monsoon Miles · Edition 002</span></div>
     <div class="hero-date"><span class="hero-date-day">26</span> JULY <span style="opacity:0.7;">2026</span></div>

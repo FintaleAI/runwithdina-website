@@ -260,30 +260,47 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
 .reg-presents {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.3rem 0.85rem 0.3rem 0.3rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
+  gap: 0.7rem;
+  padding: 0.45rem 1.1rem 0.45rem 0.45rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.14);
   border-radius: 100px;
-  margin-bottom: 0.85rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
 }
 .reg-presents-logo {
   background: #fff;
   border-radius: 50px;
-  padding: 3px 8px;
-  height: 22px;
+  padding: 4px 10px;
+  height: 32px;
   display: flex; align-items: center; justify-content: center;
 }
 .reg-presents-logo img { height: 100%; width: auto; display: block; }
 .reg-presents-text {
   font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.25em;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--silver);
   white-space: nowrap;
+  line-height: 1.3;
 }
-.reg-presents-text strong { color: var(--white); font-weight: 600; }
+.reg-presents-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--rain-light);
+  margin-bottom: 0.18rem;
+}
+.reg-presents-text strong { color: var(--white); font-weight: 700; }
+@media (max-width: 480px) {
+  .reg-presents { padding: 0.4rem 0.95rem 0.4rem 0.4rem; gap: 0.6rem; }
+  .reg-presents-logo { height: 28px; padding: 3px 8px; }
+  .reg-presents-text { font-size: 0.62rem; letter-spacing: 0.15em; }
+  .reg-presents-label { font-size: 0.48rem; }
+}
 
 /* Sponsor acknowledgment strip on register card */
 .reg-sponsors {
@@ -361,7 +378,10 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   <div class="reg-card">
     <div class="reg-presents">
       <div class="reg-presents-logo"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara"></div>
-      <span class="reg-presents-text"><strong>FICCI FLO Vadodara</strong> presents</span>
+      <span class="reg-presents-text">
+        <span class="reg-presents-label">Title Sponsor</span>
+        <strong>FICCI FLO Vadodara</strong> presents
+      </span>
     </div>
     <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
     <p class="reg-price" id="regPrice">&#8377;799</p>
