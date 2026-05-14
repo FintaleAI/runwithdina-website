@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ambassador Leaderboard — RWD Monsoon Miles 2026</title>
+<meta name="description" content="Live ambassador leaderboard for Monsoon Miles 2026 — track referrals, compete for the top spot, see who's leading.">
+<meta name="theme-color" content="#050505">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../img/logo-icon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #050505;
+    --ink: #0a0a0a;
+    --surface: #111111;
+    --border: #1f1f1f;
+    --slate: #525252;
+    --mist: #737373;
+    --silver: #a3a3a3;
+    --white: #f5f5f0;
+    --rain: #3b82f6;
+    --rain-light: #60a5fa;
+    --teal: #14b8a6;
+    --green: #22c55e;
+    --green-light: #34d399;
+    --amber: #f59e0b;
+    --rose: #f43f5e;
+    --gold: #eab308;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'Space Grotesk', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background:
+      radial-gradient(ellipse at 80% 0%, rgba(20,184,166,0.07), transparent 50%),
+      radial-gradient(ellipse at 0% 100%, rgba(59,130,246,0.05), transparent 50%),
+      var(--black);
+    color: var(--white);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 2rem 1.5rem 1.5rem;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  .header-back {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .header-back:hover { color: var(--silver); }
+  .header h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.05;
+    color: var(--white);
+    margin: 1rem 0 0.4rem;
+  }
+  .header h1 em { color: var(--teal); }
+  .header p {
+    font-size: 0.9rem;
+    color: var(--silver);
+    line-height: 1.5;
+    max-width: 540px;
+  }
+
+  /* PIN LOGIN */
+  .pin-screen {
+    max-width: 420px;
+    margin: 3rem auto 4rem;
+    padding: 0 1.5rem;
+  }
+  .pin-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+  .pin-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+  }
+  .pin-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+  }
+  .pin-sub {
+    font-size: 0.85rem;
+    color: var(--silver);
+    line-height: 1.5;
+    margin-bottom: 1.6rem;
+  }
+  .pin-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+  }
+  .pin-input:focus { outline: none; border-color: var(--teal); }
+  .pin-btn {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: var(--teal);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+  }
+  .pin-btn:hover { background: var(--green-light); }
+  .pin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pin-error {
+    color: var(--rose);
+    font-size: 0.8rem;
+    margin-top: 0.85rem;
+    min-height: 1.1em;
+  }
+
+  /* MAIN CONTENT */
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* COMPETITION HERO */
+  .comp-hero {
+    background:
+      linear-gradient(135deg, rgba(20,184,166,0.18), rgba(20,184,166,0.04)),
+      var(--surface);
+    border: 1px solid rgba(20,184,166,0.4);
+    border-radius: 14px;
+    padding: 1.75rem 1.5rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .comp-hero::before {
+    content: '🏆';
+    position: absolute;
+    top: -20px; right: -20px;
+    font-size: 12rem;
+    opacity: 0.04;
+    line-height: 1;
+  }
+  .comp-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.5rem;
+  }
+  .comp-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.7rem;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+    line-height: 1.1;
+  }
+  .comp-desc {
+    font-size: 0.9rem;
+    color: var(--silver);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  .comp-leader {
+    display: flex; align-items: center; gap: 0.85rem;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    flex-wrap: wrap;
+  }
+  .comp-leader-medal { font-size: 1.5rem; }
+  .comp-leader-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--white);
+    flex: 1; min-width: 150px;
+  }
+  .comp-leader-count {
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--teal);
+  }
+  .comp-leader-empty {
+    font-style: italic;
+    color: var(--silver);
+    font-size: 0.9rem;
+  }
+
+  /* STATS STRIP */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+  }
+  .stat-card-val {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .stat-card-val.teal { color: var(--teal); }
+  .stat-card-val.amber { color: var(--amber); }
+  .stat-card-lbl {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+
+  /* LEADERBOARD */
+  .board-title {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.85rem;
+    padding-left: 0.25rem;
+  }
+  .board-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .board-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 0.9rem;
+    align-items: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .board-row:hover { border-color: rgba(20,184,166,0.4); transform: translateX(2px); }
+  .board-row.rank-1 { border-color: rgba(234,179,8,0.45); background: linear-gradient(90deg, rgba(234,179,8,0.06), var(--surface) 40%); }
+  .board-row.rank-2 { border-color: rgba(163,163,163,0.35); }
+  .board-row.rank-3 { border-color: rgba(180,83,9,0.35); }
+  .board-row.capped { border-color: rgba(34,197,94,0.55); }
+  .board-row.paused { opacity: 0.55; }
+  .board-rank {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--mist);
+    text-align: center;
+  }
+  .board-row.rank-1 .board-rank { color: var(--gold); }
+  .board-row.rank-2 .board-rank { color: var(--silver); }
+  .board-row.rank-3 .board-rank { color: #b45309; }
+  .board-info { min-width: 0; }
+  .board-info-line1 { display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
+  .board-code {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 0.08em;
+  }
+  .board-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--white);
+  }
+  .board-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .board-tag {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.45rem;
+    border-radius: 3px;
+  }
+  .board-tag.cap { background: rgba(34,197,94,0.18); color: var(--green-light); }
+  .board-tag.paused { background: rgba(255,255,255,0.06); color: var(--mist); }
+  .board-bar-wrap {
+    height: 5px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .board-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--green-light));
+    transition: width 0.6s ease-out;
+  }
+  .board-count {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white);
+    white-space: nowrap;
+  }
+  .board-count-max {
+    font-size: 0.7rem;
+    color: var(--mist);
+    font-weight: 400;
+  }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 0.78rem;
+    color: var(--slate);
+    line-height: 1.6;
+  }
+  .footer-note a { color: var(--silver); text-decoration: underline; }
+
+  /* LOADING / ERROR */
+  .state-block {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--silver);
+  }
+  .state-block .spinner {
+    display: inline-block;
+    width: 26px; height: 26px;
+    border: 2px solid var(--border);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin-bottom: 0.9rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .comp-title { font-size: 1.4rem; }
+    .comp-leader-name { font-size: 1rem; }
+    .stat-card-val { font-size: 1.5rem; }
+    .board-row { grid-template-columns: 30px 1fr auto; gap: 0.6rem; padding: 0.85rem; }
+    .board-rank { font-size: 1.2rem; }
+    .board-name { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="./" class="header-back">&larr; Back to Monsoon Miles</a>
+  <h1>The <em>Leaderboard</em></h1>
+  <p>Live tracker for the Monsoon Miles 2026 ambassador competition. Whoever has the most referrals on race day takes the top spot &mdash; everyone gets recognised at the event.</p>
+</div>
+
+<!-- PIN LOGIN -->
+<div class="pin-screen" id="pinScreen">
+  <div class="pin-card">
+    <div class="pin-eyebrow">Ambassadors only</div>
+    <div class="pin-title">Enter the PIN</div>
+    <p class="pin-sub">Use the PIN Dina sent you. Same one for every ambassador.</p>
+    <input type="password" id="pinInput" class="pin-input" placeholder="PIN" maxlength="10" autocomplete="off" autofocus>
+    <button type="button" id="pinBtn" class="pin-btn">Enter</button>
+    <div class="pin-error" id="pinError"></div>
+  </div>
+</div>
+
+<!-- BOARD CONTENT -->
+<div class="container" id="boardContent" style="display:none;">
+  <!-- Competition hero -->
+  <div class="comp-hero">
+    <div class="comp-eyebrow">Active competition</div>
+    <div class="comp-title" id="compTitle">Top of the Leaderboard</div>
+    <p class="comp-desc" id="compDesc">Most referrals on race day wins.</p>
+    <div class="comp-leader" id="compLeader"></div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="stats-strip" id="statsStrip"></div>
+
+  <!-- Leaderboard -->
+  <div class="board-title">Every code, ranked</div>
+  <div class="board-list" id="boardList"></div>
+
+  <p class="footer-note">
+    Refreshes automatically every 30 seconds.<br>
+    Questions? WhatsApp Dina: <a href="https://wa.me/919099906174" target="_blank">+91 90999 06174</a>
+  </p>
+</div>
+
+<!-- Loading state -->
+<div class="state-block" id="loadingState" style="display:none;">
+  <div class="spinner"></div>
+  <div>Loading leaderboard...</div>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXci31n_qxWREx3jt6SWUXZQO3MnjsdKbmV-72oTV1Sx8z58/exec';
+
+const pinScreen = document.getElementById('pinScreen');
+const pinInput  = document.getElementById('pinInput');
+const pinBtn    = document.getElementById('pinBtn');
+const pinError  = document.getElementById('pinError');
+const boardContent = document.getElementById('boardContent');
+const loadingState = document.getElementById('loadingState');
+
+let cachedPin = '';
+let refreshTimer = null;
+
+// Auto-login if PIN is remembered from previous visit
+const stored = (function() {
+  try { return sessionStorage.getItem('mm_amb_pin') || ''; } catch (e) { return ''; }
+})();
+if (stored) {
+  cachedPin = stored;
+  showLoading();
+  loadBoard(stored);
+}
+
+pinBtn.addEventListener('click', submitPin);
+pinInput.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') submitPin();
+});
+
+function submitPin() {
+  const pin = pinInput.value.trim();
+  if (!pin) {
+    pinError.textContent = 'Please enter the PIN.';
+    return;
+  }
+  pinError.textContent = '';
+  pinBtn.disabled = true;
+  pinBtn.textContent = 'Checking...';
+  loadBoard(pin);
+}
+
+function showLoading() {
+  pinScreen.style.display = 'none';
+  boardContent.style.display = 'none';
+  loadingState.style.display = 'block';
+}
+
+function showPin(errorMsg) {
+  pinScreen.style.display = 'block';
+  boardContent.style.display = 'none';
+  loadingState.style.display = 'none';
+  pinBtn.disabled = false;
+  pinBtn.textContent = 'Enter';
+  if (errorMsg) pinError.textContent = errorMsg;
+}
+
+function showBoard() {
+  pinScreen.style.display = 'none';
+  loadingState.style.display = 'none';
+  boardContent.style.display = 'block';
+}
+
+async function loadBoard(pin) {
+  try {
+    const res = await fetch(API_URL + '?action=ambassadorBoard&pin=' + encodeURIComponent(pin));
+    const json = await res.json();
+
+    if (json.error) {
+      try { sessionStorage.removeItem('mm_amb_pin'); } catch (e) {}
+      showPin(json.message || 'Access denied. Check the PIN.');
+      return;
+    }
+
+    cachedPin = pin;
+    try { sessionStorage.setItem('mm_amb_pin', pin); } catch (e) {}
+    renderBoard(json);
+    showBoard();
+    scheduleRefresh();
+  } catch (err) {
+    showPin('Network error. Try again.');
+  }
+}
+
+function scheduleRefresh() {
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(function() {
+    if (cachedPin) loadBoard(cachedPin);
+  }, 30000); // 30 sec
+}
+
+function renderBoard(data) {
+  // Competition hero
+  document.getElementById('compTitle').textContent = data.competition.title;
+  document.getElementById('compDesc').textContent  = data.competition.description;
+  const leaderEl = document.getElementById('compLeader');
+  if (data.leader && data.leader.uses > 0) {
+    leaderEl.innerHTML = ''
+      + '<div class="comp-leader-medal">🥇</div>'
+      + '<div class="comp-leader-name">' + escapeHtml(data.leader.name) + ' <span style="color:var(--mist);font-size:0.8rem;">(' + escapeHtml(data.leader.code) + ')</span></div>'
+      + '<div class="comp-leader-count">' + data.leader.uses + ' referrals</div>';
+  } else {
+    leaderEl.innerHTML = '<div class="comp-leader-empty">No referrals yet &mdash; the leaderboard is wide open. Be the first to score.</div>';
+  }
+
+  // Stats strip
+  const stats = data.stats;
+  document.getElementById('statsStrip').innerHTML = ''
+    + '<div class="stat-card"><div class="stat-card-val teal">' + stats.totalReferrals + '</div><div class="stat-card-lbl">Total referrals</div></div>'
+    + '<div class="stat-card"><div class="stat-card-val">' + stats.activeAmbassadors + '</div><div class="stat-card-lbl">Active codes</div></div>'
+    + '<div class="stat-card"><div class="stat-card-val amber">' + stats.daysToGo + '</div><div class="stat-card-lbl">Days to race day</div></div>';
+
+  // Leaderboard
+  const list = document.getElementById('boardList');
+  if (!data.leaderboard || data.leaderboard.length === 0) {
+    list.innerHTML = '<div class="state-block">No ambassadors set up yet.</div>';
+    return;
+  }
+  let html = '';
+  data.leaderboard.forEach(function(row) {
+    const rankClass = row.rank <= 3 ? 'rank-' + row.rank : '';
+    const cappedClass = row.capped ? 'capped' : '';
+    const pausedClass = (row.status || '').toLowerCase() !== 'active' ? 'paused' : '';
+    const rowClasses = ['board-row', rankClass, cappedClass, pausedClass].filter(Boolean).join(' ');
+    let tags = '';
+    if (row.capped) tags += '<span class="board-tag cap">✓ Goal hit</span>';
+    if ((row.status || '').toLowerCase() !== 'active') tags += '<span class="board-tag paused">Paused</span>';
+    html += ''
+      + '<div class="' + rowClasses + '">'
+      + '<div class="board-rank">' + row.rank + '</div>'
+      + '<div class="board-info">'
+      +   '<div class="board-info-line1">'
+      +     '<span class="board-code">' + escapeHtml(row.code) + '</span>'
+      +     '<span class="board-name">' + escapeHtml(row.name) + '</span>'
+      +     (tags ? '<div class="board-tags">' + tags + '</div>' : '')
+      +   '</div>'
+      +   '<div class="board-bar-wrap"><div class="board-bar" style="width:' + row.percentage + '%;"></div></div>'
+      + '</div>'
+      + '<div class="board-count">' + row.uses + '<span class="board-count-max"> / ' + row.maxUses + '</span></div>'
+      + '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function escapeHtml(s) {
+  return (s == null ? '' : String(s)).replace(/[&<>"']/g, function(c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+</script>
+
+</body>
+</html>
