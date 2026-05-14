@@ -104,6 +104,38 @@
   .rev-item .rev-amt { font-size: 1rem; font-weight: 600; }
   .rev-item .rev-cat { color: var(--slate); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; }
 
+  /* AMBASSADOR LEADERBOARD */
+  .amb-block {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.25rem; margin-bottom: 2rem;
+  }
+  .amb-block-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .amb-block-header h3 {
+    font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--mist); margin: 0;
+  }
+  .amb-summary { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .amb-summary .amb-stat { text-align: right; }
+  .amb-summary .amb-stat-val { font-size: 1rem; font-weight: 600; color: var(--white); }
+  .amb-summary .amb-stat-lbl { color: var(--slate); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .amb-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+  .amb-row {
+    background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.7rem 0.85rem; display: flex; flex-direction: column; gap: 0.25rem;
+  }
+  .amb-row.maxed { border-color: rgba(34,197,94,0.4); }
+  .amb-row-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .amb-row-name { color: var(--white); font-weight: 600; font-size: 0.9rem; }
+  .amb-row-code { color: var(--slate); font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em; }
+  .amb-row-count { color: var(--green); font-weight: 600; font-size: 0.85rem; }
+  .amb-row.maxed .amb-row-count { color: #34d399; }
+  .amb-row-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .amb-row-bar-fill { height: 100%; background: var(--green); transition: width 0.4s; }
+  .amb-row.maxed .amb-row-bar-fill { background: #34d399; }
+
   /* TABLES */
   .table-section { margin-bottom: 2rem; }
   .table-section h3 {
@@ -182,6 +214,9 @@
 
     <!-- Revenue -->
     <div class="revenue-bar" id="revenueBar"></div>
+
+    <!-- Ambassador Leaderboard -->
+    <div class="amb-block" id="ambassadorBlock" style="display:none;"></div>
 
     <!-- Charts -->
     <div class="charts">
@@ -306,8 +341,86 @@ function renderDashboard() {
   // Charts
   renderCharts(cats, male, female, other);
 
+  // Ambassador leaderboard
+  renderAmbassadors();
+
   // Tables
   renderTables(cats);
+}
+
+// ============================================================
+// AMBASSADOR LEADERBOARD
+// Aggregates Ambassador Code usage from registrations and renders
+// a per-code card with uses, % of cap, and total discount given.
+// ============================================================
+function renderAmbassadors() {
+  const block = document.getElementById('ambassadorBlock');
+  if (!block) return;
+
+  // Aggregate: { CODE: { uses, totalDiscount } }
+  const byCode = {};
+  allData.forEach(r => {
+    const code = (r['Ambassador Code'] || r.ambassador_code || '').toString().trim().toUpperCase();
+    if (!code) return;
+    if (!byCode[code]) byCode[code] = { uses: 0, totalDiscount: 0 };
+    byCode[code].uses += 1;
+    byCode[code].totalDiscount += parseInt(r.Discount || r.discount, 10) || 0;
+  });
+
+  const codes = Object.keys(byCode);
+  if (codes.length === 0) {
+    block.style.display = 'none';
+    return;
+  }
+
+  // Sort by uses desc
+  codes.sort((a, b) => byCode[b].uses - byCode[a].uses);
+
+  const totalReferrals = codes.reduce((s, c) => s + byCode[c].uses, 0);
+  const totalDiscount  = codes.reduce((s, c) => s + byCode[c].totalDiscount, 0);
+  // Default cap; if the user later adds more codes, /actually/ the cap is per-ambassador
+  // and lives in the Ambassadors sheet — we don't have that here, so just show count.
+  const MAX_USES = 20;
+
+  let rowsHTML = '';
+  codes.forEach(code => {
+    const stats = byCode[code];
+    const pct = Math.min(100, Math.round((stats.uses / MAX_USES) * 100));
+    const maxed = stats.uses >= MAX_USES;
+    rowsHTML += `
+      <div class="amb-row ${maxed ? 'maxed' : ''}">
+        <div class="amb-row-top">
+          <div>
+            <div class="amb-row-name">${code}</div>
+            <div class="amb-row-code">₹${stats.totalDiscount.toLocaleString('en-IN')} discount given</div>
+          </div>
+          <div class="amb-row-count">${stats.uses} / ${MAX_USES}</div>
+        </div>
+        <div class="amb-row-bar"><div class="amb-row-bar-fill" style="width:${pct}%;"></div></div>
+      </div>`;
+  });
+
+  block.style.display = 'block';
+  block.innerHTML = `
+    <div class="amb-block-header">
+      <h3>Ambassador referrals</h3>
+      <div class="amb-summary">
+        <div class="amb-stat">
+          <div class="amb-stat-val">${codes.length}</div>
+          <div class="amb-stat-lbl">Active codes</div>
+        </div>
+        <div class="amb-stat">
+          <div class="amb-stat-val">${totalReferrals}</div>
+          <div class="amb-stat-lbl">Referred registrations</div>
+        </div>
+        <div class="amb-stat">
+          <div class="amb-stat-val">₹${totalDiscount.toLocaleString('en-IN')}</div>
+          <div class="amb-stat-lbl">Total discount given</div>
+        </div>
+      </div>
+    </div>
+    <div class="amb-board">${rowsHTML}</div>
+  `;
 }
 
 function getAge(dob) {

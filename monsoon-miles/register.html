@@ -292,6 +292,116 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   .reg-presents-text { font-size: 0.62rem; letter-spacing: 0.15em; }
 }
 
+/* Promo code block — sits between price and form. */
+.reg-promo {
+  margin: 0 0 1.25rem;
+  padding: 0.9rem 1rem;
+  background: rgba(20,184,166,0.08);
+  border: 1px solid rgba(20,184,166,0.25);
+  border-radius: 0.6rem;
+  transition: background 0.3s, border-color 0.3s;
+}
+.reg-promo.applied {
+  background: rgba(34,197,94,0.10);
+  border-color: rgba(52,211,153,0.45);
+}
+.reg-promo.error {
+  background: rgba(239,68,68,0.10);
+  border-color: rgba(248,113,113,0.45);
+}
+.reg-promo-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--rain-light);
+  margin-bottom: 0.55rem;
+}
+.reg-promo.applied .reg-promo-label { color: #34d399; }
+.reg-promo.error .reg-promo-label   { color: #f87171; }
+.reg-promo-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+.reg-promo-input {
+  flex: 1;
+  padding: 0.7rem 0.85rem;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 0.4rem;
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.reg-promo-input:focus {
+  outline: none;
+  border-color: var(--rain);
+}
+.reg-promo-input::placeholder {
+  color: rgba(255,255,255,0.3);
+  letter-spacing: normal;
+  text-transform: none;
+  font-family: var(--sans);
+}
+.reg-promo-btn {
+  padding: 0.7rem 1.2rem;
+  background: var(--rain);
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+.reg-promo-btn:hover { background: var(--rain-light); }
+.reg-promo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.reg-promo-status {
+  font-size: 0.75rem;
+  color: var(--silver);
+  line-height: 1.45;
+  margin-top: 0.55rem;
+  min-height: 1.1em;
+}
+.reg-promo-status strong { color: #fff; font-weight: 600; }
+.reg-promo.applied .reg-promo-status { color: #a7f3d0; }
+.reg-promo.applied .reg-promo-status strong { color: #fff; }
+.reg-promo.error .reg-promo-status { color: #fca5a5; }
+.reg-promo-collapsed-trigger {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px dashed rgba(255,255,255,0.18);
+  border-radius: 0.4rem;
+  padding: 0.65rem 0.85rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--slate);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.reg-promo-collapsed-trigger:hover {
+  border-color: var(--rain);
+  color: var(--rain-light);
+}
+.reg-price-strike {
+  display: inline-block;
+  font-size: 0.7em;
+  color: var(--slate);
+  text-decoration: line-through;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
 /* Sponsor acknowledgment strip on register card (FICCI FLO is already
    shown as the title sponsor at the top, so the strip here just lists
    the next-tier partners). */
@@ -367,6 +477,17 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
     </div>
     <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
     <p class="reg-price" id="regPrice">&#8377;799</p>
+
+    <!-- Promo / Ambassador referral code -->
+    <div class="reg-promo" id="regPromo" style="display:none;">
+      <div class="reg-promo-label" id="regPromoLabel">Have a promo code?</div>
+      <div class="reg-promo-row">
+        <input type="text" id="regPromoInput" class="reg-promo-input" placeholder="e.g. SNEHA10" maxlength="20" autocomplete="off">
+        <button type="button" id="regPromoBtn" class="reg-promo-btn">Apply</button>
+      </div>
+      <div class="reg-promo-status" id="regPromoStatus"></div>
+    </div>
+    <button type="button" id="regPromoOpen" class="reg-promo-collapsed-trigger">+ Have a promo code?</button>
 
     <!-- Sponsor acknowledgment (FICCI FLO already shown above as title sponsor) -->
     <div class="reg-sponsors">
@@ -486,14 +607,21 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-// Valid categories and their prices
+// Valid categories and their prices (base, pre-discount)
 const VALID_CATEGORIES = { '1 Hour': 799, '2 Hours': 899, '4 Hours': 999 };
 
 // Read category from URL params, validate against whitelist
 const params = new URLSearchParams(window.location.search);
 const rawCategory = params.get('category') || '1 Hour';
 const selectedCategory = VALID_CATEGORIES[rawCategory] ? rawCategory : '1 Hour';
-const selectedAmount = VALID_CATEGORIES[selectedCategory];
+const baseAmount = VALID_CATEGORIES[selectedCategory];
+
+// Working amount = base unless an ambassador code applies a discount.
+// Reassigned by applyAmbassadorCode() \u2014 referenced by Razorpay options + POST payload.
+let selectedAmount = baseAmount;
+
+// Ambassador state \u2014 populated when a valid code is applied.
+let appliedAmbassador = null; // { code, name, discountPercent, discountAmount }
 
 // Set header
 document.getElementById('regCategory').textContent = selectedCategory;
@@ -501,6 +629,117 @@ document.getElementById('regPrice').textContent = '\u20B9' + selectedAmount;
 
 const RAZORPAY_KEY = 'rzp_live_Scw49LtUExJvGX';
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXci31n_qxWREx3jt6SWUXZQO3MnjsdKbmV-72oTV1Sx8z58/exec';
+
+// ============================================================
+// AMBASSADOR / PROMO CODE
+// User can arrive with ?ref=SNEHA10 in the URL, or type a code into
+// the promo field. We validate via Apps Script ?action=validateCode,
+// then update the displayed price + global selectedAmount so Razorpay
+// charges the discounted amount.
+// ============================================================
+
+const promoEl       = document.getElementById('regPromo');
+const promoOpenEl   = document.getElementById('regPromoOpen');
+const promoInputEl  = document.getElementById('regPromoInput');
+const promoBtnEl    = document.getElementById('regPromoBtn');
+const promoStatusEl = document.getElementById('regPromoStatus');
+const promoLabelEl  = document.getElementById('regPromoLabel');
+
+function openPromoBlock() {
+  promoEl.style.display = 'block';
+  promoOpenEl.style.display = 'none';
+  promoInputEl.focus();
+}
+promoOpenEl.addEventListener('click', openPromoBlock);
+promoBtnEl.addEventListener('click', function() { applyAmbassadorCode(promoInputEl.value); });
+promoInputEl.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); applyAmbassadorCode(promoInputEl.value); }
+});
+
+function setPromoState(state, statusHtml, labelText) {
+  promoEl.classList.remove('applied', 'error');
+  if (state === 'applied') promoEl.classList.add('applied');
+  if (state === 'error')   promoEl.classList.add('error');
+  if (labelText) promoLabelEl.textContent = labelText;
+  promoStatusEl.innerHTML = statusHtml || '';
+}
+
+function updatePriceDisplay() {
+  const el = document.getElementById('regPrice');
+  if (appliedAmbassador && appliedAmbassador.discountAmount > 0) {
+    el.innerHTML = '<span class="reg-price-strike">\u20B9' + baseAmount + '</span>\u20B9' + selectedAmount;
+  } else {
+    el.textContent = '\u20B9' + selectedAmount;
+  }
+}
+
+function clearAmbassador() {
+  appliedAmbassador = null;
+  selectedAmount = baseAmount;
+  updatePriceDisplay();
+}
+
+function applyAmbassadorCode(rawCode) {
+  const code = (rawCode || '').trim().toUpperCase();
+  if (!code) {
+    setPromoState('error', 'Please enter a code.', 'Have a promo code?');
+    return;
+  }
+  promoBtnEl.disabled = true;
+  promoBtnEl.textContent = 'Checking...';
+  setPromoState('', 'Validating ' + code + '...', 'Have a promo code?');
+
+  fetch(SHEET_URL + '?action=validateCode&code=' + encodeURIComponent(code))
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      promoBtnEl.disabled = false;
+      promoBtnEl.textContent = 'Apply';
+      if (res.valid) {
+        const discountAmount = Math.round(baseAmount * res.discountPercent / 100);
+        appliedAmbassador = {
+          code: res.code,
+          name: res.ambassadorName,
+          discountPercent: res.discountPercent,
+          discountAmount: discountAmount
+        };
+        selectedAmount = baseAmount - discountAmount;
+        promoInputEl.value = res.code;
+        promoInputEl.disabled = true;
+        promoBtnEl.style.display = 'none';
+        updatePriceDisplay();
+        setPromoState(
+          'applied',
+          '\u2713 ' + res.discountPercent + '% off applied. Referred by <strong>' + res.ambassadorName + '</strong>.',
+          'Promo code applied'
+        );
+      } else if (res.full) {
+        clearAmbassador();
+        setPromoState('error',
+          '<strong>' + (res.ambassadorName || code) + '</strong>\u2019s code is full (' + res.maxUses + '/' + res.maxUses + ' used). You can still register at the regular price.',
+          'Code full'
+        );
+      } else {
+        clearAmbassador();
+        setPromoState('error', res.message || 'Code not recognised.', 'Code not valid');
+      }
+    })
+    .catch(function() {
+      promoBtnEl.disabled = false;
+      promoBtnEl.textContent = 'Apply';
+      clearAmbassador();
+      setPromoState('error', 'Couldn\u2019t validate \u2014 please try again or register at regular price.', 'Network error');
+    });
+}
+
+// Auto-apply if URL has ?ref=SNEHA10
+(function autoApplyFromUrl() {
+  const refCode = params.get('ref') || params.get('code') || '';
+  if (refCode) {
+    openPromoBlock();
+    promoInputEl.value = refCode.toUpperCase();
+    applyAmbassadorCode(refCode);
+  }
+})();
 
 // RunRiot opt-in toggle
 document.getElementById('regRunriot').addEventListener('change', function() {
@@ -656,6 +895,10 @@ function initiatePayment(e) {
     return;
   }
 
+  const ambassadorCode    = appliedAmbassador ? appliedAmbassador.code : '';
+  const ambassadorName    = appliedAmbassador ? appliedAmbassador.name : '';
+  const ambassadorDiscount = appliedAmbassador ? appliedAmbassador.discountAmount : 0;
+
   const options = {
     key: RAZORPAY_KEY,
     amount: selectedAmount * 100,
@@ -676,7 +919,9 @@ function initiatePayment(e) {
       blood_group: blood,
       emergency_contact: emergency,
       runriot: runriotOptIn ? 'Yes' : 'No',
-      source: 'website'
+      source: 'website',
+      ambassador_code: ambassadorCode,
+      ambassador_name: ambassadorName
     },
     theme: { color: '#3b82f6' },
     handler: function(response) {
@@ -688,7 +933,9 @@ function initiatePayment(e) {
         payment_id: response.razorpay_payment_id,
         timestamp: new Date().toISOString(),
         source: 'razorpay-website',
-        runriot: runriotOptIn ? 'Yes' : 'No'
+        runriot: runriotOptIn ? 'Yes' : 'No',
+        ambassador_code: ambassadorCode,
+        discount: ambassadorDiscount
       };
 
       // Belt-and-suspenders: try browser POST with retry.
