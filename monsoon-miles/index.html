@@ -1772,6 +1772,118 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 }
 
 /* ============================================================
+   AMBASSADORS
+   Community leaders bringing their crews to MM 2026.
+   ============================================================ */
+.ambassadors-section {
+  padding: clamp(5rem, 12vh, 9rem) clamp(1.5rem, 4vw, 4rem) clamp(4rem, 9vh, 6rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+.ambassadors-section-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(20,184,166,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ambassadors-section > * { position: relative; z-index: 1; }
+
+.ambassadors-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--rain-light);
+  margin-bottom: 1.5rem;
+}
+.ambassadors-title {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+}
+.ambassadors-title em { font-style: italic; color: var(--rain-light); }
+.ambassadors-sub {
+  font-size: 1rem;
+  color: var(--silver);
+  line-height: 1.6;
+  max-width: 640px;
+  margin-bottom: clamp(2.5rem, 6vh, 4rem);
+}
+
+.ambassadors-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+.amb-card {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ink);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.amb-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(20,184,166,0.45);
+  box-shadow: 0 12px 32px rgba(20,184,166,0.16);
+}
+.amb-photo {
+  position: absolute;
+  inset: 0;
+}
+.amb-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.amb-card::after {
+  /* readability gradient — dark from bottom for the name overlay */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(10,10,10,0.85) 100%);
+  pointer-events: none;
+}
+.amb-info {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 1rem 1rem 1.1rem;
+  z-index: 2;
+}
+.amb-name {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  margin-bottom: 0.35rem;
+}
+.amb-community {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rain-light);
+  line-height: 1.2;
+}
+
+/* mobile */
+@media (max-width: 900px) {
+  .ambassadors-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 540px) {
+  .ambassadors-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  .amb-name { font-size: 1.2rem; }
+}
+
+/* ============================================================
    FOOTER
    ============================================================ */
 .footer {
@@ -2685,6 +2797,51 @@ input[type="date"].form-input {
   <div class="physio-partner-row">
     <div class="sponsor-card physio-partner-card">
       <img src="Photos/sponsors/visit-physio.png" alt="Visit Physio" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- AMBASSADORS -->
+<section class="ambassadors-section" id="ambassadors">
+  <div class="ambassadors-section-bg"></div>
+  <div class="ambassadors-label">Run with the community</div>
+  <h2 class="ambassadors-title">Our <em>ambassadors.</em></h2>
+  <p class="ambassadors-sub">Five community leaders from Vadodara are bringing their crews to Monsoon Miles 2026. Their squads. Your start line. The whole city, running through the rain.</p>
+  <div class="ambassadors-grid">
+    <div class="amb-card">
+      <div class="amb-photo"><img src="Photos/ambassadors/ambrish.jpg" alt="Ambrish" loading="lazy"></div>
+      <div class="amb-info">
+        <div class="amb-name">Ambrish</div>
+        <div class="amb-community">RunwithDina</div>
+      </div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><img src="Photos/ambassadors/aneel.jpg" alt="Aneel" loading="lazy"></div>
+      <div class="amb-info">
+        <div class="amb-name">Aneel</div>
+        <div class="amb-community">RWR</div>
+      </div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><img src="Photos/ambassadors/anniket.jpg" alt="Anniket" loading="lazy"></div>
+      <div class="amb-info">
+        <div class="amb-name">Anniket</div>
+        <div class="amb-community">Cycle N' Chai</div>
+      </div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><img src="Photos/ambassadors/mohit.jpg" alt="Mohit" loading="lazy"></div>
+      <div class="amb-info">
+        <div class="amb-name">Mohit</div>
+        <div class="amb-community">OneStep Run Club</div>
+      </div>
+    </div>
+    <div class="amb-card">
+      <div class="amb-photo"><img src="Photos/ambassadors/pujan.jpg" alt="Pujan" loading="lazy"></div>
+      <div class="amb-info">
+        <div class="amb-name">Pujan</div>
+        <div class="amb-community">Alite Fit</div>
+      </div>
     </div>
   </div>
 </section>
