@@ -849,15 +849,31 @@ function initiatePayment(e) {
     return;
   }
 
-  // Phone normalization — strip +91, spaces, dashes; enforce exactly 10 digits
-  phone = phone.replace(/^\+?91[\s-]?/, '').replace(/[\s\-]/g, '');
-  if (!/^\d{10}$/.test(phone)) {
-    alert('Please enter a valid 10-digit phone number (without +91 prefix).');
+  // Phone normalization — return a clean 10-digit Indian mobile number.
+  // Handles +91 / 91 / 0091 country-code prefixes AND a leading 0,
+  // WITHOUT corrupting valid 10-digit numbers that happen to start with 91
+  // (e.g. 9123456789 — a legitimate Jio number). The country-code strip
+  // only fires when the total digit count makes the prefix unambiguous.
+  function normalizePhone(raw) {
+    // Strip + , spaces, dashes, parens, dots
+    let p = (raw || '').replace(/[\s\-\(\)\.\+]/g, '');
+    // International "0091" prefix (length 14) — strip
+    if (p.length === 14 && p.startsWith('0091')) p = p.substring(4);
+    // Country-code "91" prefix (length 12) — strip
+    if (p.length === 12 && p.startsWith('91'))   p = p.substring(2);
+    // Domestic STD leading "0" (length 11) — strip
+    if (p.length === 11 && p.startsWith('0'))    p = p.substring(1);
+    return p;
+  }
+
+  phone = normalizePhone(phone);
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    alert('Please enter a valid 10-digit Indian mobile number.');
     return;
   }
-  emergency = emergency.replace(/^\+?91[\s-]?/, '').replace(/[\s\-]/g, '');
-  if (!/^\d{10}$/.test(emergency)) {
-    alert('Please enter a valid 10-digit emergency contact number (without +91 prefix).');
+  emergency = normalizePhone(emergency);
+  if (!/^[6-9]\d{9}$/.test(emergency)) {
+    alert('Please enter a valid 10-digit Indian emergency contact number.');
     return;
   }
   if (emergency === phone) {
