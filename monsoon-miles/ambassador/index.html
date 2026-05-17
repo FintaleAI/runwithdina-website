@@ -7,6 +7,10 @@
 <meta name="description" content="Live ambassador leaderboard for Monsoon Miles 2026.">
 <meta name="theme-color" content="#050505">
 <meta name="robots" content="noindex,nofollow">
+<!-- Cache busting: leaderboard is live data, page must reflect latest JS -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="icon" href="../../img/logo-icon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2181,7 +2185,11 @@ function renderBoard(data) {
   if (rest.length > 0) {
     packTitleEl.style.display = 'flex';
     let packHtml = '';
-    rest.forEach(function(row) {
+    rest.forEach(function(row, packIdx) {
+      // Display rank = position in the pack + 4 (since podium takes ranks 1-3).
+      // Using packIdx instead of row.rank defensively — if anything ever mutates
+      // row.rank, the visible labels still stay sequential and match the order.
+      const displayRank = packIdx + 4;
       const max = row.maxUses || MAX_USES_DEFAULT;
       const gap = leaderUses - row.uses;
       const gapText = row.capped ? 'Goal hit ✨' : (gap === 0 ? 'Tied for the top' : '−' + gap + ' to top');
@@ -2191,7 +2199,7 @@ function renderBoard(data) {
                    (paused ? '<span class="pack-tag paused">Paused</span>' : '');
       packHtml +=
         '<div class="pack-row ' + capped + ' ' + paused + '">' +
-          '<div class="pack-rank">' + row.rank + '</div>' +
+          '<div class="pack-rank">' + displayRank + '</div>' +
           '<div class="pack-photo">' + avatarBlock(row) + '</div>' +
           '<div class="pack-info">' +
             '<div class="pack-info-line1">' +
