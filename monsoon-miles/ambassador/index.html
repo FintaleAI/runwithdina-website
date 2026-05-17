@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ambassador Leaderboard — RWD Monsoon Miles 2026</title>
-<meta name="description" content="Live ambassador leaderboard for Monsoon Miles 2026 — track who's leading the race to bring the most runners.">
+<title>The Race · Ambassador Leaderboard — RWD Monsoon Miles 2026</title>
+<meta name="description" content="Live ambassador leaderboard for Monsoon Miles 2026.">
 <meta name="theme-color" content="#050505">
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="../../img/logo-icon.png" type="image/png">
@@ -29,11 +29,13 @@
     --green: #22c55e;
     --green-light: #34d399;
     --amber: #f59e0b;
+    --amber-light: #fbbf24;
     --rose: #f43f5e;
     --gold: #eab308;
     --gold-light: #fcd34d;
-    --silver-medal: #a3a3a3;
+    --silver-medal: #d4d4d8;
     --bronze: #b45309;
+    --bronze-light: #d97706;
     --serif: 'Instrument Serif', Georgia, serif;
     --sans: 'Space Grotesk', system-ui, sans-serif;
     --mono: 'JetBrains Mono', monospace;
@@ -42,18 +44,19 @@
   body {
     font-family: var(--sans);
     background:
-      radial-gradient(ellipse at 80% 0%, rgba(20,184,166,0.08), transparent 50%),
-      radial-gradient(ellipse at 0% 100%, rgba(59,130,246,0.05), transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgba(234,179,8,0.10), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 0% 100%, rgba(59,130,246,0.06), transparent 60%),
       var(--black);
     color: var(--white);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
   img { display: block; max-width: 100%; }
 
   /* HEADER */
   .header {
-    padding: 2rem 1.5rem 1rem;
+    padding: 2rem 1.5rem 1.5rem;
     max-width: 1100px;
     margin: 0 auto;
   }
@@ -69,19 +72,54 @@
   .header-back:hover { color: var(--silver); }
   .header h1 {
     font-family: var(--serif);
-    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-size: clamp(2.6rem, 7vw, 4.5rem);
     font-style: italic;
     font-weight: 400;
-    line-height: 1.05;
+    line-height: 1;
     color: var(--white);
-    margin: 1rem 0 0.4rem;
+    margin: 1.2rem 0 0.6rem;
+    letter-spacing: -0.01em;
   }
-  .header h1 em { color: var(--teal); }
-  .header p {
-    font-size: 0.92rem;
+  .header h1 em {
+    background: linear-gradient(135deg, var(--gold-light), var(--amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header-sub {
+    font-size: 0.95rem;
     color: var(--silver);
-    line-height: 1.55;
+    line-height: 1.5;
     max-width: 640px;
+    margin-bottom: 0.85rem;
+  }
+  .header-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.35rem 0.85rem;
+  }
+  .header-live .dot {
+    width: 7px; height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  .header-live .countdown {
+    color: var(--amber-light);
+    font-weight: 700;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+    50% { opacity: 0.6; transform: scale(1.4); box-shadow: 0 0 0 8px rgba(34,197,94,0); }
   }
 
   /* PIN LOGIN */
@@ -146,7 +184,7 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: background 0.2s, opacity 0.2s;
+    transition: background 0.2s;
   }
   .pin-btn:hover { background: var(--green-light); }
   .pin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -157,186 +195,159 @@
     min-height: 1.1em;
   }
 
-  /* MAIN CONTAINER */
+  /* CONTAINER */
   .container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 1.5rem 4rem;
   }
 
-  /* HERO LEADER CARD */
+  /* HERO LEADER — dominant card, animated glow */
   .hero-leader {
     background:
-      linear-gradient(135deg, rgba(234,179,8,0.16), rgba(20,184,166,0.06)),
+      linear-gradient(135deg, rgba(234,179,8,0.20), rgba(234,179,8,0.04) 50%, rgba(20,184,166,0.04) 100%),
       var(--surface);
-    border: 1px solid rgba(234,179,8,0.4);
-    border-radius: 16px;
-    padding: 1.6rem;
+    border: 1px solid rgba(234,179,8,0.5);
+    border-radius: 20px;
+    padding: 1.8rem;
     margin-bottom: 1.5rem;
     display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 160px 1fr;
+    gap: 1.8rem;
     align-items: center;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 0 60px rgba(234,179,8,0.12), 0 0 0 1px rgba(234,179,8,0.2);
   }
   .hero-leader::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 60%; height: 200%;
+    background: radial-gradient(ellipse 50% 30% at center, rgba(234,179,8,0.18), transparent 70%);
+    pointer-events: none;
+    animation: floatGlow 6s ease-in-out infinite;
+  }
+  @keyframes floatGlow {
+    0%, 100% { transform: translateY(0) rotate(0); opacity: 0.7; }
+    50% { transform: translateY(20px) rotate(5deg); opacity: 1; }
+  }
+  .hero-leader::after {
     content: '🏆';
     position: absolute;
-    top: -30px; right: -30px;
+    bottom: -60px; right: -30px;
     font-size: 14rem;
-    opacity: 0.05;
+    opacity: 0.06;
     line-height: 1;
     pointer-events: none;
+    transform: rotate(-10deg);
   }
   .hero-leader-photo {
-    width: 140px; height: 140px;
+    width: 160px; height: 160px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid var(--gold);
-    box-shadow: 0 0 30px rgba(234,179,8,0.35);
+    border: 4px solid var(--gold);
+    box-shadow: 0 0 0 4px rgba(0,0,0,0.4), 0 0 40px rgba(234,179,8,0.5);
     background: var(--surface-2);
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
   }
   .hero-leader-photo img {
     width: 100%; height: 100%;
     object-fit: cover;
     object-position: center 15%;
   }
+  .hero-leader-body { position: relative; z-index: 2; }
   .hero-leader-eyebrow {
     font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
+    font-size: 0.7rem;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--gold-light);
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero-leader-eyebrow::before {
+    content: '🏆';
+    font-size: 1rem;
   }
   .hero-leader-name {
     font-family: var(--serif);
     font-style: italic;
-    font-size: clamp(2rem, 5vw, 2.6rem);
+    font-size: clamp(2.2rem, 5.5vw, 3rem);
     color: var(--white);
     line-height: 1;
     margin-bottom: 0.3rem;
   }
   .hero-leader-community {
     font-family: var(--mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--teal-light);
-    margin-bottom: 0.85rem;
+    margin-bottom: 1rem;
   }
   .hero-leader-stats {
-    display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap;
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.85rem;
   }
   .hero-leader-count {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 2.2rem;
+    font-size: 3rem;
     color: var(--gold-light);
     line-height: 1;
+    font-weight: 600;
   }
-  .hero-leader-meta {
-    font-size: 0.85rem;
+  .hero-leader-count-of {
+    font-family: var(--mono);
+    font-size: 0.9rem;
     color: var(--silver);
+  }
+  .hero-leader-bar-wrap {
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.85rem;
+  }
+  .hero-leader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transition: width 1.2s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 0 12px rgba(234,179,8,0.5);
+  }
+  .hero-leader-gap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    padding: 0.45rem 0.85rem;
+    background: rgba(234,179,8,0.12);
+    border: 1px solid rgba(234,179,8,0.3);
+    border-radius: 100px;
+    font-weight: 700;
+  }
+  .hero-leader-gap::before {
+    content: '⚡';
   }
   .hero-leader-empty {
     grid-column: 1 / -1;
     text-align: center;
     color: var(--silver);
     font-style: italic;
-    padding: 1.5rem 0;
+    padding: 2rem 0;
   }
-
-  /* PODIUM */
-  .podium {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.85rem;
-    margin-bottom: 1.5rem;
-  }
-  .podium-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.1rem 0.85rem;
-    text-align: center;
-    position: relative;
-  }
-  .podium-card.rank-1 {
-    border-color: rgba(234,179,8,0.5);
-    background: linear-gradient(180deg, rgba(234,179,8,0.06), var(--surface) 60%);
-  }
-  .podium-card.rank-2 {
-    border-color: rgba(163,163,163,0.5);
-  }
-  .podium-card.rank-3 {
-    border-color: rgba(180,83,9,0.5);
-  }
-  .podium-medal {
-    font-size: 1.5rem;
-    margin-bottom: 0.4rem;
-    line-height: 1;
-  }
-  .podium-photo {
-    width: 70px; height: 70px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 0 auto 0.7rem;
-    border: 2px solid var(--border);
-    background: var(--surface-2);
-  }
-  .podium-card.rank-1 .podium-photo { border-color: var(--gold); }
-  .podium-card.rank-2 .podium-photo { border-color: var(--silver-medal); }
-  .podium-card.rank-3 .podium-photo { border-color: var(--bronze); }
-  .podium-photo img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: center 15%;
-  }
-  .podium-name {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.1rem;
-    color: var(--white);
-    line-height: 1.15;
-    margin-bottom: 0.18rem;
-  }
-  .podium-community {
-    font-family: var(--mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--mist);
-    margin-bottom: 0.55rem;
-    min-height: 0.9em;
-  }
-  .podium-count {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 1rem;
-    color: var(--white);
-  }
-  .podium-count-max {
-    color: var(--mist);
-    font-weight: 400;
-  }
-  .podium-bar-wrap {
-    height: 4px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 2px;
-    margin-top: 0.55rem;
-    overflow: hidden;
-  }
-  .podium-bar {
-    height: 100%;
-    background: var(--teal);
-    transition: width 0.6s ease-out;
-  }
-  .podium-card.rank-1 .podium-bar { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
-  .podium-card.rank-2 .podium-bar { background: var(--silver-medal); }
-  .podium-card.rank-3 .podium-bar { background: var(--bronze); }
 
   /* STATS STRIP */
   .stats-strip {
@@ -348,119 +359,354 @@
   .stat-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    opacity: 0.5;
   }
   .stat-card-val {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+  }
+  .stat-card-val.teal { color: var(--teal-light); }
+  .stat-card-val.amber { color: var(--amber-light); }
+  .stat-card-lbl {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin: 1.75rem 0 0.85rem;
+    padding-left: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .section-title::before {
+    content: '';
+    width: 18px; height: 1px;
+    background: var(--teal);
+  }
+
+  /* PODIUM (TOP 3) */
+  .podium {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    grid-template-areas: "second first third";
+    gap: 0.8rem;
+    align-items: end;
+    margin-bottom: 1.25rem;
+  }
+  .podium-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem 0.9rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .podium-card:hover { transform: translateY(-3px); }
+  .podium-card.rank-1 {
+    grid-area: first;
+    border-color: rgba(234,179,8,0.6);
+    background: linear-gradient(180deg, rgba(234,179,8,0.10), var(--surface) 60%);
+    padding: 1.5rem 0.9rem 1.2rem;
+    box-shadow: 0 8px 30px rgba(234,179,8,0.15), 0 0 0 1px rgba(234,179,8,0.25);
+  }
+  .podium-card.rank-2 {
+    grid-area: second;
+    border-color: rgba(212,212,216,0.5);
+    background: linear-gradient(180deg, rgba(212,212,216,0.06), var(--surface) 70%);
+  }
+  .podium-card.rank-3 {
+    grid-area: third;
+    border-color: rgba(180,83,9,0.5);
+    background: linear-gradient(180deg, rgba(180,83,9,0.06), var(--surface) 70%);
+  }
+  .podium-medal {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+  }
+  .podium-card.rank-1 .podium-medal { font-size: 2rem; }
+  .podium-photo {
+    width: 76px; height: 76px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 0.75rem;
+    border: 3px solid var(--border);
+    background: var(--surface-2);
+  }
+  .podium-card.rank-1 .podium-photo {
+    width: 92px; height: 92px;
+    border-color: var(--gold);
+    box-shadow: 0 0 24px rgba(234,179,8,0.4);
+  }
+  .podium-card.rank-2 .podium-photo { border-color: var(--silver-medal); }
+  .podium-card.rank-3 .podium-photo { border-color: var(--bronze-light); }
+  .podium-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .podium-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 0.2rem;
+  }
+  .podium-card.rank-1 .podium-name { font-size: 1.35rem; }
+  .podium-community {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.7rem;
+    min-height: 0.9em;
+  }
+  .podium-count {
     font-family: var(--serif);
     font-style: italic;
     font-size: 1.6rem;
     color: var(--white);
     line-height: 1;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
   }
-  .stat-card-val.teal { color: var(--teal-light); }
-  .stat-card-val.amber { color: var(--amber); }
-  .stat-card-lbl {
+  .podium-card.rank-1 .podium-count {
+    font-size: 2rem;
+    color: var(--gold-light);
+  }
+  .podium-count-max {
     font-family: var(--mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.18em;
+    color: var(--mist);
+    font-size: 0.75rem;
+    font-weight: 400;
+    font-style: normal;
+  }
+  .podium-bar-wrap {
+    height: 5px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    margin: 0.55rem 0 0.55rem;
+    overflow: hidden;
+  }
+  .podium-bar {
+    height: 100%;
+    background: var(--teal);
+    transition: width 1s cubic-bezier(.34,1.56,.64,1);
+  }
+  .podium-card.rank-1 .podium-bar { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+  .podium-card.rank-2 .podium-bar { background: var(--silver-medal); }
+  .podium-card.rank-3 .podium-bar { background: var(--bronze-light); }
+  .podium-gap {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--mist);
+    min-height: 0.9em;
+  }
+  .podium-card.rank-1 .podium-gap {
+    color: var(--gold-light);
+    font-weight: 700;
   }
 
   /* REST OF THE PACK */
-  .pack-title {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--mist);
-    margin-bottom: 0.85rem;
-    padding-left: 0.25rem;
-  }
-  .pack-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .pack-list { display: flex; flex-direction: column; gap: 0.55rem; }
   .pack-row {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.7rem 0.9rem;
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
     display: grid;
-    grid-template-columns: 32px 48px 1fr auto;
+    grid-template-columns: 36px 52px 1fr auto;
     gap: 0.85rem;
     align-items: center;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, transform 0.2s, background 0.2s;
   }
-  .pack-row:hover { border-color: rgba(20,184,166,0.3); }
-  .pack-row.capped { border-color: rgba(34,197,94,0.5); }
+  .pack-row:hover {
+    border-color: rgba(20,184,166,0.4);
+    transform: translateX(2px);
+    background: linear-gradient(90deg, rgba(20,184,166,0.04), var(--surface) 40%);
+  }
+  .pack-row.capped {
+    border-color: rgba(34,197,94,0.55);
+    background: linear-gradient(90deg, rgba(34,197,94,0.06), var(--surface) 50%);
+  }
   .pack-row.paused { opacity: 0.55; }
   .pack-rank {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: var(--mist);
     text-align: center;
+    font-weight: 500;
   }
   .pack-photo {
-    width: 48px; height: 48px;
+    width: 52px; height: 52px;
     border-radius: 50%;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
     background: var(--surface-2);
   }
+  .pack-row.capped .pack-photo { border-color: var(--green); }
   .pack-photo img {
     width: 100%; height: 100%;
     object-fit: cover;
     object-position: center 15%;
   }
   .pack-info { min-width: 0; }
+  .pack-info-line1 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.3rem;
+  }
   .pack-name {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     color: var(--white);
-    line-height: 1.1;
-    margin-bottom: 0.2rem;
+    line-height: 1.05;
   }
   .pack-community {
     font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--mist);
   }
+  .pack-gap {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber-light);
+    margin-top: 0.35rem;
+  }
+  .pack-row.capped .pack-gap { color: var(--green-light); }
   .pack-tag {
     font-family: var(--mono);
-    font-size: 0.55rem;
-    letter-spacing: 0.13em;
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    padding: 0.18rem 0.45rem;
-    border-radius: 3px;
-    margin-left: 0.4rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
   }
-  .pack-tag.cap {
-    background: rgba(34,197,94,0.15);
-    color: var(--green-light);
-  }
-  .pack-tag.paused {
-    background: rgba(255,255,255,0.05);
-    color: var(--mist);
+  .pack-tag.cap { background: rgba(34,197,94,0.18); color: var(--green-light); }
+  .pack-tag.paused { background: rgba(255,255,255,0.06); color: var(--mist); }
+  .pack-count-wrap {
+    text-align: right;
+    min-width: 80px;
   }
   .pack-count {
-    font-family: var(--mono);
-    font-weight: 700;
-    font-size: 1rem;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
     color: var(--white);
-    white-space: nowrap;
+    line-height: 1;
+    font-weight: 500;
   }
   .pack-count-max {
+    font-family: var(--mono);
     color: var(--mist);
+    font-size: 0.7rem;
     font-weight: 400;
-    font-size: 0.78rem;
+    font-style: normal;
+    margin-left: 0.15rem;
   }
+  .pack-bar-wrap {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    margin-top: 0.4rem;
+    overflow: hidden;
+  }
+  .pack-bar {
+    height: 100%;
+    background: var(--teal);
+    transition: width 0.9s cubic-bezier(.34,1.56,.64,1);
+  }
+  .pack-row.capped .pack-bar { background: var(--green); }
 
-  /* AVATAR FALLBACK (no photo) */
+  /* MILESTONES */
+  .milestones {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.9rem;
+  }
+  .milestone {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0.85rem;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .milestone.unlocked { border-color: rgba(20,184,166,0.4); }
+  .milestone-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    filter: grayscale(1);
+    opacity: 0.4;
+  }
+  .milestone.unlocked .milestone-icon { filter: none; opacity: 1; }
+  .milestone-text { min-width: 0; }
+  .milestone-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.15rem;
+  }
+  .milestone.unlocked .milestone-label { color: var(--teal-light); }
+  .milestone-count {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--silver);
+    line-height: 1;
+  }
+  .milestone.unlocked .milestone-count { color: var(--white); }
+
+  /* AVATAR FALLBACK */
   .avatar-fallback {
     width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
@@ -481,19 +727,6 @@
     line-height: 1.6;
   }
   .footer-note a { color: var(--silver); text-decoration: underline; }
-  .footer-note .pulse {
-    display: inline-block;
-    width: 6px; height: 6px;
-    background: var(--green);
-    border-radius: 50%;
-    margin-right: 6px;
-    vertical-align: middle;
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
-  }
 
   /* LOADING / ERROR */
   .state-block {
@@ -512,24 +745,37 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* RESPONSIVE */
   @media (max-width: 720px) {
     .hero-leader {
-      grid-template-columns: 100px 1fr;
-      gap: 1rem;
-      padding: 1.2rem;
+      grid-template-columns: 110px 1fr;
+      gap: 1.1rem;
+      padding: 1.3rem;
     }
-    .hero-leader-photo { width: 100px; height: 100px; }
-    .hero-leader-count { font-size: 1.8rem; }
-    .podium { grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
-    .podium-card { padding: 0.85rem 0.45rem; }
-    .podium-photo { width: 56px; height: 56px; margin-bottom: 0.5rem; }
-    .podium-name { font-size: 0.95rem; }
+    .hero-leader-photo { width: 110px; height: 110px; }
+    .hero-leader-count { font-size: 2.4rem; }
     .stats-strip { gap: 0.5rem; }
     .stat-card { padding: 0.7rem 0.5rem; }
-    .stat-card-val { font-size: 1.3rem; }
-    .pack-row { grid-template-columns: 26px 40px 1fr auto; gap: 0.6rem; padding: 0.6rem 0.7rem; }
-    .pack-photo { width: 40px; height: 40px; }
-    .pack-name { font-size: 0.95rem; }
+    .stat-card-val { font-size: 1.4rem; }
+    .podium {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-areas: "first first first" "second . third";
+      gap: 0.5rem;
+    }
+    .podium-card.rank-1 { padding: 1.1rem 0.9rem 1rem; }
+    .podium-card.rank-1 .podium-photo { width: 76px; height: 76px; }
+    .podium-card { padding: 0.85rem 0.5rem; }
+    .podium-photo { width: 58px; height: 58px; margin-bottom: 0.5rem; }
+    .podium-name { font-size: 0.95rem; }
+    .podium-count { font-size: 1.3rem; }
+    .pack-row {
+      grid-template-columns: 28px 44px 1fr auto;
+      gap: 0.6rem;
+      padding: 0.6rem 0.75rem;
+    }
+    .pack-photo { width: 44px; height: 44px; }
+    .pack-name { font-size: 1rem; }
+    .pack-count { font-size: 1.2rem; }
   }
 </style>
 </head>
@@ -538,7 +784,11 @@
 <div class="header">
   <a href="../" class="header-back">&larr; Back to Monsoon Miles</a>
   <h1>The <em>Race</em>.</h1>
-  <p>Most referrals on race day takes the top spot. Every code is capped at 20. Refreshes live — check back any time, brag at any time.</p>
+  <p class="header-sub">Most referrals on race day wins. 25 max per ambassador. Refer with your code. See where you stand.</p>
+  <div class="header-live">
+    <span class="dot"></span>
+    Live · <span class="countdown" id="hdrCountdown">— days to go</span> · Updated <span id="hdrUpdated">just now</span>
+  </div>
 </div>
 
 <!-- PIN LOGIN -->
@@ -553,28 +803,28 @@
   </div>
 </div>
 
-<!-- BOARD CONTENT -->
+<!-- BOARD -->
 <div class="container" id="boardContent" style="display:none;">
-  <!-- Hero leader card -->
+
   <div class="hero-leader" id="heroLeader"></div>
 
-  <!-- Stats strip -->
   <div class="stats-strip" id="statsStrip"></div>
 
-  <!-- Podium (top 3) -->
+  <div class="section-title">The Podium</div>
   <div class="podium" id="podium"></div>
 
-  <!-- Rest of the pack -->
-  <div class="pack-title" id="packTitle" style="display:none;">The rest of the pack</div>
+  <div class="section-title" id="packTitle" style="display:none;">The rest of the pack</div>
   <div class="pack-list" id="packList"></div>
 
+  <div class="section-title">Milestones</div>
+  <div class="milestones" id="milestones"></div>
+
   <p class="footer-note">
-    <span class="pulse"></span>Live · refreshes every 30 seconds<br>
-    Need anything? WhatsApp Dina: <a href="https://wa.me/919099906174" target="_blank">+91 90999 06174</a>
+    Auto-refreshes every 30 seconds. Need anything? WhatsApp Dina: <a href="https://wa.me/919099906174" target="_blank">+91 90999 06174</a>
   </p>
 </div>
 
-<!-- Loading state -->
+<!-- Loading -->
 <div class="state-block" id="loadingState" style="display:none;">
   <div class="spinner"></div>
   <div>Loading the leaderboard...</div>
@@ -582,6 +832,7 @@
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXci31n_qxWREx3jt6SWUXZQO3MnjsdKbmV-72oTV1Sx8z58/exec';
+const MAX_USES_DEFAULT = 25;
 
 const pinScreen = document.getElementById('pinScreen');
 const pinInput  = document.getElementById('pinInput');
@@ -592,21 +843,17 @@ const loadingState = document.getElementById('loadingState');
 
 let cachedPin = '';
 let refreshTimer = null;
+let lastLoadedAt = null;
+let updatedTimer = null;
 
-// Auto-login if PIN is remembered
+// Auto-login
 const stored = (function() {
   try { return sessionStorage.getItem('mm_amb_pin') || ''; } catch (e) { return ''; }
 })();
-if (stored) {
-  cachedPin = stored;
-  showLoading();
-  loadBoard(stored);
-}
+if (stored) { cachedPin = stored; showLoading(); loadBoard(stored); }
 
 pinBtn.addEventListener('click', submitPin);
-pinInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') submitPin();
-});
+pinInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') submitPin(); });
 
 function submitPin() {
   const pin = pinInput.value.trim();
@@ -617,11 +864,7 @@ function submitPin() {
   loadBoard(pin);
 }
 
-function showLoading() {
-  pinScreen.style.display = 'none';
-  boardContent.style.display = 'none';
-  loadingState.style.display = 'block';
-}
+function showLoading() { pinScreen.style.display = 'none'; boardContent.style.display = 'none'; loadingState.style.display = 'block'; }
 function showPin(errorMsg) {
   pinScreen.style.display = 'block';
   boardContent.style.display = 'none';
@@ -630,11 +873,7 @@ function showPin(errorMsg) {
   pinBtn.textContent = 'Enter';
   if (errorMsg) pinError.textContent = errorMsg;
 }
-function showBoard() {
-  pinScreen.style.display = 'none';
-  loadingState.style.display = 'none';
-  boardContent.style.display = 'block';
-}
+function showBoard() { pinScreen.style.display = 'none'; loadingState.style.display = 'none'; boardContent.style.display = 'block'; }
 
 async function loadBoard(pin) {
   try {
@@ -647,9 +886,11 @@ async function loadBoard(pin) {
     }
     cachedPin = pin;
     try { sessionStorage.setItem('mm_amb_pin', pin); } catch (e) {}
+    lastLoadedAt = Date.now();
     renderBoard(json);
     showBoard();
     scheduleRefresh();
+    scheduleUpdatedTicker();
   } catch (err) {
     showPin('Network error. Try again.');
   }
@@ -657,29 +898,36 @@ async function loadBoard(pin) {
 
 function scheduleRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(function() {
-    if (cachedPin) loadBoard(cachedPin);
-  }, 30000);
+  refreshTimer = setTimeout(function() { if (cachedPin) loadBoard(cachedPin); }, 30000);
 }
 
-// Build a photo URL from the photo filename. Photos live at
-// /monsoon-miles/Photos/ambassadors/<filename>. Falls back to initials.
+function scheduleUpdatedTicker() {
+  if (updatedTimer) clearInterval(updatedTimer);
+  updatedTimer = setInterval(function() {
+    const updEl = document.getElementById('hdrUpdated');
+    if (updEl && lastLoadedAt) updEl.textContent = relativeTime(Date.now() - lastLoadedAt);
+  }, 5000);
+}
+
+function relativeTime(ms) {
+  const s = Math.floor(ms / 1000);
+  if (s < 10) return 'just now';
+  if (s < 60) return s + 's ago';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + ' min ago';
+  const h = Math.floor(m / 60);
+  return h + 'h ago';
+}
+
 function photoSrc(row) {
   if (!row.photo) return null;
   return '../Photos/ambassadors/' + row.photo;
 }
-
-function avatarBlock(row, size) {
+function avatarBlock(row) {
   const src = photoSrc(row);
-  if (src) {
-    return '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(row.name) + '" onerror="this.outerHTML = \'' +
-      avatarFallback(row).replace(/'/g, "\\'") + '\'">';
-  }
-  return avatarFallback(row);
-}
-function avatarFallback(row) {
+  if (src) return '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(row.name) + '">';
   const initials = (row.name || '?').split(/\s+/).map(function(s) { return s[0] || ''; }).join('').substring(0, 2).toUpperCase();
-  return '<div class="avatar-fallback" style="font-size:0.95rem;">' + escapeHtml(initials) + '</div>';
+  return '<div class="avatar-fallback">' + escapeHtml(initials) + '</div>';
 }
 
 function renderBoard(data) {
@@ -687,24 +935,34 @@ function renderBoard(data) {
   const leader = data.leader && data.leader.uses > 0 ? data.leader : null;
   const stats  = data.stats || {};
 
+  // Header countdown + updated
+  document.getElementById('hdrCountdown').textContent = (stats.daysToGo || 0) + ' days to go';
+  document.getElementById('hdrUpdated').textContent = 'just now';
+
   // ---- HERO LEADER ----
   const heroEl = document.getElementById('heroLeader');
   if (leader) {
+    const max = leader.maxUses || MAX_USES_DEFAULT;
     const secondPlace = lb.length > 1 ? lb[1] : null;
     const gap = secondPlace ? leader.uses - secondPlace.uses : leader.uses;
-    const gapLabel = secondPlace
-      ? (gap === 0 ? 'Tied at the top' : 'Leading by ' + gap + ' referral' + (gap === 1 ? '' : 's'))
-      : 'First on the board';
+    let gapText;
+    if (!secondPlace) gapText = 'First on the board';
+    else if (gap === 0) gapText = 'Tied at the top';
+    else gapText = 'Leads by ' + gap + ' referral' + (gap === 1 ? '' : 's');
+    const toCap = max - leader.uses;
+    const capText = toCap > 0 ? ' · ' + toCap + ' to hit ' + max : ' · Hit the cap';
     heroEl.innerHTML =
-      '<div class="hero-leader-photo">' + avatarBlock(leader, 140) + '</div>' +
-      '<div>' +
-        '<div class="hero-leader-eyebrow">Current Leader</div>' +
+      '<div class="hero-leader-photo">' + avatarBlock(leader) + '</div>' +
+      '<div class="hero-leader-body">' +
+        '<div class="hero-leader-eyebrow">Leading the race</div>' +
         '<div class="hero-leader-name">' + escapeHtml(leader.name) + '</div>' +
         '<div class="hero-leader-community">' + (leader.community ? escapeHtml(leader.community) : 'Solo Ambassador') + '</div>' +
         '<div class="hero-leader-stats">' +
           '<span class="hero-leader-count">' + leader.uses + '</span>' +
-          '<span class="hero-leader-meta">of ' + leader.maxUses + ' · ' + escapeHtml(gapLabel) + '</span>' +
+          '<span class="hero-leader-count-of">/ ' + max + ' referrals</span>' +
         '</div>' +
+        '<div class="hero-leader-bar-wrap"><div class="hero-leader-bar" style="width:' + leader.percentage + '%;"></div></div>' +
+        '<div class="hero-leader-gap">' + escapeHtml(gapText) + capText + '</div>' +
       '</div>';
   } else {
     heroEl.innerHTML = '<div class="hero-leader-empty">The leaderboard is wide open. Whoever scores first takes this spot. Will it be you?</div>';
@@ -716,58 +974,72 @@ function renderBoard(data) {
     '<div class="stat-card"><div class="stat-card-val">' + (stats.activeAmbassadors || lb.length) + '</div><div class="stat-card-lbl">Ambassadors in</div></div>' +
     '<div class="stat-card"><div class="stat-card-val amber">' + (stats.daysToGo || 0) + '</div><div class="stat-card-lbl">Days to race day</div></div>';
 
-  // ---- PODIUM (top 3) ----
+  // ---- PODIUM ----
   const podiumEl = document.getElementById('podium');
   const top3 = lb.slice(0, 3);
-  let podiumHtml = '';
+  const leaderUses = top3.length > 0 ? top3[0].uses : 0;
   const medals = ['🥇', '🥈', '🥉'];
+  let podiumHtml = '';
   top3.forEach(function(row, idx) {
+    const gap = leaderUses - row.uses;
+    let gapText = idx === 0
+      ? (top3.length > 1 ? '+' + (row.uses - top3[1].uses) + ' ahead' : 'On the board')
+      : (gap === 0 ? 'Tied with #1' : '−' + gap + ' to top');
     podiumHtml +=
       '<div class="podium-card rank-' + (idx + 1) + '">' +
         '<div class="podium-medal">' + medals[idx] + '</div>' +
-        '<div class="podium-photo">' + avatarBlock(row, 70) + '</div>' +
+        '<div class="podium-photo">' + avatarBlock(row) + '</div>' +
         '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
-        '<div class="podium-community">' + (row.community ? escapeHtml(row.community) : ' ') + '</div>' +
-        '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + row.maxUses + '</span></div>' +
+        '<div class="podium-community">' + (row.community ? escapeHtml(row.community) : 'Solo') + '</div>' +
+        '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + (row.maxUses || MAX_USES_DEFAULT) + '</span></div>' +
         '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
+        '<div class="podium-gap">' + escapeHtml(gapText) + '</div>' +
       '</div>';
   });
-  // Pad podium with placeholder cards if fewer than 3 ambassadors
   for (let i = top3.length; i < 3; i++) {
     podiumHtml +=
-      '<div class="podium-card">' +
+      '<div class="podium-card rank-' + (i + 1) + '">' +
         '<div class="podium-medal">' + medals[i] + '</div>' +
-        '<div class="podium-photo"><div class="avatar-fallback" style="font-size:0.85rem;">?</div></div>' +
+        '<div class="podium-photo"><div class="avatar-fallback">?</div></div>' +
         '<div class="podium-name" style="color:var(--mist);">Open spot</div>' +
         '<div class="podium-community">&nbsp;</div>' +
         '<div class="podium-count" style="color:var(--mist);">0</div>' +
         '<div class="podium-bar-wrap"></div>' +
+        '<div class="podium-gap">Up for grabs</div>' +
       '</div>';
   }
   podiumEl.innerHTML = podiumHtml;
 
-  // ---- REST OF THE PACK (rank 4+) ----
+  // ---- REST OF THE PACK ----
   const packEl = document.getElementById('packList');
   const packTitleEl = document.getElementById('packTitle');
   const rest = lb.slice(3);
   if (rest.length > 0) {
-    packTitleEl.style.display = 'block';
+    packTitleEl.style.display = 'flex';
     let packHtml = '';
     rest.forEach(function(row) {
+      const max = row.maxUses || MAX_USES_DEFAULT;
+      const gap = leaderUses - row.uses;
+      const gapText = row.capped ? 'Goal hit ✨' : (gap === 0 ? 'Tied for the top' : '−' + gap + ' to top');
       const capped = row.capped ? 'capped' : '';
       const paused = (row.status || '').toLowerCase() !== 'active' ? 'paused' : '';
-      const tags =
-        (row.capped ? '<span class="pack-tag cap">✓ Goal hit</span>' : '') +
-        (paused ? '<span class="pack-tag paused">Paused</span>' : '');
+      const tags = (row.capped ? '<span class="pack-tag cap">Goal hit</span>' : '') +
+                   (paused ? '<span class="pack-tag paused">Paused</span>' : '');
       packHtml +=
         '<div class="pack-row ' + capped + ' ' + paused + '">' +
           '<div class="pack-rank">' + row.rank + '</div>' +
-          '<div class="pack-photo">' + avatarBlock(row, 48) + '</div>' +
+          '<div class="pack-photo">' + avatarBlock(row) + '</div>' +
           '<div class="pack-info">' +
-            '<div class="pack-name">' + escapeHtml(row.name) + tags + '</div>' +
+            '<div class="pack-info-line1">' +
+              '<span class="pack-name">' + escapeHtml(row.name) + '</span>' + tags +
+            '</div>' +
             '<div class="pack-community">' + (row.community ? escapeHtml(row.community) : 'Solo Ambassador') + '</div>' +
+            '<div class="pack-bar-wrap"><div class="pack-bar" style="width:' + row.percentage + '%;"></div></div>' +
+            '<div class="pack-gap">' + escapeHtml(gapText) + '</div>' +
           '</div>' +
-          '<div class="pack-count">' + row.uses + '<span class="pack-count-max"> / ' + row.maxUses + '</span></div>' +
+          '<div class="pack-count-wrap">' +
+            '<span class="pack-count">' + row.uses + '<span class="pack-count-max">/ ' + max + '</span></span>' +
+          '</div>' +
         '</div>';
     });
     packEl.innerHTML = packHtml;
@@ -775,6 +1047,30 @@ function renderBoard(data) {
     packTitleEl.style.display = 'none';
     packEl.innerHTML = '';
   }
+
+  // ---- MILESTONES ----
+  const milestoneTiers = [
+    { threshold: 1,  icon: '🏃', label: 'First Referral' },
+    { threshold: 5,  icon: '🔥', label: '5+ Club' },
+    { threshold: 10, icon: '💪', label: '10+ Crew' },
+    { threshold: 15, icon: '⚡', label: '15+ Force' },
+    { threshold: 20, icon: '🚀', label: '20+ Legend' },
+    { threshold: 25, icon: '🏆', label: 'Goal Hit (25)' }
+  ];
+  let milestonesHtml = '';
+  milestoneTiers.forEach(function(tier) {
+    const count = lb.filter(function(r) { return r.uses >= tier.threshold; }).length;
+    const unlocked = count > 0 ? 'unlocked' : '';
+    milestonesHtml +=
+      '<div class="milestone ' + unlocked + '">' +
+        '<div class="milestone-icon">' + tier.icon + '</div>' +
+        '<div class="milestone-text">' +
+          '<div class="milestone-label">' + escapeHtml(tier.label) + '</div>' +
+          '<div class="milestone-count">' + count + ' ambassador' + (count === 1 ? '' : 's') + '</div>' +
+        '</div>' +
+      '</div>';
+  });
+  document.getElementById('milestones').innerHTML = milestonesHtml;
 }
 
 function escapeHtml(s) {
