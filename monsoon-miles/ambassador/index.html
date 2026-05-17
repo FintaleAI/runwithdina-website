@@ -68,6 +68,10 @@
     color: var(--slate);
     text-decoration: none;
     transition: color 0.3s;
+    display: inline-block;
+    padding: 0.75rem 0.85rem 0.75rem 0;
+    margin: -0.75rem 0 -0.5rem -0.25rem;
+    /* negative margin keeps visual position, padding gives the tap area */
   }
   .header-back:hover { color: var(--silver); }
 
@@ -610,10 +614,11 @@
     color: var(--slate);
     background: transparent;
     border: 1px solid var(--border);
-    padding: 0.45rem 0.7rem;
+    padding: 0.65rem 0.9rem;
     border-radius: 6px;
     cursor: pointer;
     transition: color 0.2s, border-color 0.2s;
+    min-height: 38px;
   }
   .share-kit-change:hover { color: var(--silver); border-color: var(--silver); }
 
@@ -646,7 +651,7 @@
     background: transparent;
     border: 1px solid var(--border);
     color: var(--silver);
-    padding: 0.4rem 0.75rem;
+    padding: 0.65rem 0.95rem;
     border-radius: 6px;
     cursor: pointer;
     font-family: var(--mono);
@@ -654,6 +659,7 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     transition: border-color 0.2s, color 0.2s;
+    min-height: 38px;
   }
   .share-kit-copy-code:hover { color: var(--white); border-color: var(--teal); }
   .share-kit-copy-code.copied { color: var(--green-light); border-color: var(--green); }
@@ -1386,7 +1392,13 @@
     color: var(--slate);
     line-height: 1.6;
   }
-  .footer-note a { color: var(--silver); text-decoration: underline; }
+  .footer-note a {
+    color: var(--silver);
+    text-decoration: underline;
+    display: inline-block;
+    padding: 0.55rem 0.35rem;
+    min-height: 36px;
+  }
 
   /* LOADING / ERROR */
   .state-block {
