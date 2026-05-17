@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ambassador Leaderboard — RWD Monsoon Miles 2026</title>
-<meta name="description" content="Live ambassador leaderboard for Monsoon Miles 2026 — track referrals, compete for the top spot, see who's leading.">
+<meta name="description" content="Live ambassador leaderboard for Monsoon Miles 2026 — track who's leading the race to bring the most runners.">
 <meta name="theme-color" content="#050505">
 <meta name="robots" content="noindex,nofollow">
-<link rel="icon" href="../img/logo-icon.png" type="image/png">
+<link rel="icon" href="../../img/logo-icon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -16,6 +16,7 @@
     --black: #050505;
     --ink: #0a0a0a;
     --surface: #111111;
+    --surface-2: #161616;
     --border: #1f1f1f;
     --slate: #525252;
     --mist: #737373;
@@ -24,11 +25,15 @@
     --rain: #3b82f6;
     --rain-light: #60a5fa;
     --teal: #14b8a6;
+    --teal-light: #5eead4;
     --green: #22c55e;
     --green-light: #34d399;
     --amber: #f59e0b;
     --rose: #f43f5e;
     --gold: #eab308;
+    --gold-light: #fcd34d;
+    --silver-medal: #a3a3a3;
+    --bronze: #b45309;
     --serif: 'Instrument Serif', Georgia, serif;
     --sans: 'Space Grotesk', system-ui, sans-serif;
     --mono: 'JetBrains Mono', monospace;
@@ -37,18 +42,19 @@
   body {
     font-family: var(--sans);
     background:
-      radial-gradient(ellipse at 80% 0%, rgba(20,184,166,0.07), transparent 50%),
+      radial-gradient(ellipse at 80% 0%, rgba(20,184,166,0.08), transparent 50%),
       radial-gradient(ellipse at 0% 100%, rgba(59,130,246,0.05), transparent 50%),
       var(--black);
     color: var(--white);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
+  img { display: block; max-width: 100%; }
 
   /* HEADER */
   .header {
-    padding: 2rem 1.5rem 1.5rem;
-    max-width: 980px;
+    padding: 2rem 1.5rem 1rem;
+    max-width: 1100px;
     margin: 0 auto;
   }
   .header-back {
@@ -63,7 +69,7 @@
   .header-back:hover { color: var(--silver); }
   .header h1 {
     font-family: var(--serif);
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
     font-style: italic;
     font-weight: 400;
     line-height: 1.05;
@@ -72,10 +78,10 @@
   }
   .header h1 em { color: var(--teal); }
   .header p {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     color: var(--silver);
-    line-height: 1.5;
-    max-width: 540px;
+    line-height: 1.55;
+    max-width: 640px;
   }
 
   /* PIN LOGIN */
@@ -151,201 +157,319 @@
     min-height: 1.1em;
   }
 
-  /* MAIN CONTENT */
+  /* MAIN CONTAINER */
   .container {
-    max-width: 980px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 1.5rem 4rem;
   }
 
-  /* COMPETITION HERO */
-  .comp-hero {
+  /* HERO LEADER CARD */
+  .hero-leader {
     background:
-      linear-gradient(135deg, rgba(20,184,166,0.18), rgba(20,184,166,0.04)),
+      linear-gradient(135deg, rgba(234,179,8,0.16), rgba(20,184,166,0.06)),
       var(--surface);
-    border: 1px solid rgba(20,184,166,0.4);
-    border-radius: 14px;
-    padding: 1.75rem 1.5rem;
+    border: 1px solid rgba(234,179,8,0.4);
+    border-radius: 16px;
+    padding: 1.6rem;
     margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1.5rem;
+    align-items: center;
     position: relative;
     overflow: hidden;
   }
-  .comp-hero::before {
+  .hero-leader::before {
     content: '🏆';
     position: absolute;
-    top: -20px; right: -20px;
-    font-size: 12rem;
-    opacity: 0.04;
+    top: -30px; right: -30px;
+    font-size: 14rem;
+    opacity: 0.05;
     line-height: 1;
+    pointer-events: none;
   }
-  .comp-eyebrow {
+  .hero-leader-photo {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 30px rgba(234,179,8,0.35);
+    background: var(--surface-2);
+    flex-shrink: 0;
+  }
+  .hero-leader-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .hero-leader-eyebrow {
     font-family: var(--mono);
-    font-size: 0.62rem;
+    font-size: 0.65rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 0.5rem;
-  }
-  .comp-title {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.7rem;
-    color: var(--white);
+    color: var(--gold-light);
     margin-bottom: 0.4rem;
-    line-height: 1.1;
   }
-  .comp-desc {
-    font-size: 0.9rem;
-    color: var(--silver);
-    line-height: 1.5;
-    margin-bottom: 1rem;
-  }
-  .comp-leader {
-    display: flex; align-items: center; gap: 0.85rem;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
-    padding: 0.85rem 1rem;
-    flex-wrap: wrap;
-  }
-  .comp-leader-medal { font-size: 1.5rem; }
-  .comp-leader-name {
+  .hero-leader-name {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 1.2rem;
+    font-size: clamp(2rem, 5vw, 2.6rem);
     color: var(--white);
-    flex: 1; min-width: 150px;
+    line-height: 1;
+    margin-bottom: 0.3rem;
   }
-  .comp-leader-count {
+  .hero-leader-community {
     font-family: var(--mono);
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--teal);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 0.85rem;
   }
-  .comp-leader-empty {
+  .hero-leader-stats {
+    display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap;
+  }
+  .hero-leader-count {
+    font-family: var(--serif);
     font-style: italic;
-    color: var(--silver);
-    font-size: 0.9rem;
+    font-size: 2.2rem;
+    color: var(--gold-light);
+    line-height: 1;
   }
+  .hero-leader-meta {
+    font-size: 0.85rem;
+    color: var(--silver);
+  }
+  .hero-leader-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--silver);
+    font-style: italic;
+    padding: 1.5rem 0;
+  }
+
+  /* PODIUM */
+  .podium {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+  .podium-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 0.85rem;
+    text-align: center;
+    position: relative;
+  }
+  .podium-card.rank-1 {
+    border-color: rgba(234,179,8,0.5);
+    background: linear-gradient(180deg, rgba(234,179,8,0.06), var(--surface) 60%);
+  }
+  .podium-card.rank-2 {
+    border-color: rgba(163,163,163,0.5);
+  }
+  .podium-card.rank-3 {
+    border-color: rgba(180,83,9,0.5);
+  }
+  .podium-medal {
+    font-size: 1.5rem;
+    margin-bottom: 0.4rem;
+    line-height: 1;
+  }
+  .podium-photo {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 0.7rem;
+    border: 2px solid var(--border);
+    background: var(--surface-2);
+  }
+  .podium-card.rank-1 .podium-photo { border-color: var(--gold); }
+  .podium-card.rank-2 .podium-photo { border-color: var(--silver-medal); }
+  .podium-card.rank-3 .podium-photo { border-color: var(--bronze); }
+  .podium-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .podium-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--white);
+    line-height: 1.15;
+    margin-bottom: 0.18rem;
+  }
+  .podium-community {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.55rem;
+    min-height: 0.9em;
+  }
+  .podium-count {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--white);
+  }
+  .podium-count-max {
+    color: var(--mist);
+    font-weight: 400;
+  }
+  .podium-bar-wrap {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    margin-top: 0.55rem;
+    overflow: hidden;
+  }
+  .podium-bar {
+    height: 100%;
+    background: var(--teal);
+    transition: width 0.6s ease-out;
+  }
+  .podium-card.rank-1 .podium-bar { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+  .podium-card.rank-2 .podium-bar { background: var(--silver-medal); }
+  .podium-card.rank-3 .podium-bar { background: var(--bronze); }
 
   /* STATS STRIP */
   .stats-strip {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.85rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
     margin-bottom: 1.5rem;
   }
   .stat-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 1rem 1.1rem;
+    padding: 0.85rem 1rem;
+    text-align: center;
   }
   .stat-card-val {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     color: var(--white);
     line-height: 1;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.25rem;
   }
-  .stat-card-val.teal { color: var(--teal); }
+  .stat-card-val.teal { color: var(--teal-light); }
   .stat-card-val.amber { color: var(--amber); }
   .stat-card-lbl {
     font-family: var(--mono);
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--mist);
   }
 
-  /* LEADERBOARD */
-  .board-title {
+  /* REST OF THE PACK */
+  .pack-title {
     font-family: var(--mono);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--mist);
     margin-bottom: 0.85rem;
     padding-left: 0.25rem;
   }
-  .board-list { display: flex; flex-direction: column; gap: 0.5rem; }
-  .board-row {
+  .pack-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .pack-row {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 1rem 1.1rem;
+    padding: 0.7rem 0.9rem;
     display: grid;
-    grid-template-columns: 36px 1fr auto;
-    gap: 0.9rem;
+    grid-template-columns: 32px 48px 1fr auto;
+    gap: 0.85rem;
     align-items: center;
-    transition: border-color 0.2s, transform 0.2s;
+    transition: border-color 0.2s;
   }
-  .board-row:hover { border-color: rgba(20,184,166,0.4); transform: translateX(2px); }
-  .board-row.rank-1 { border-color: rgba(234,179,8,0.45); background: linear-gradient(90deg, rgba(234,179,8,0.06), var(--surface) 40%); }
-  .board-row.rank-2 { border-color: rgba(163,163,163,0.35); }
-  .board-row.rank-3 { border-color: rgba(180,83,9,0.35); }
-  .board-row.capped { border-color: rgba(34,197,94,0.55); }
-  .board-row.paused { opacity: 0.55; }
-  .board-rank {
+  .pack-row:hover { border-color: rgba(20,184,166,0.3); }
+  .pack-row.capped { border-color: rgba(34,197,94,0.5); }
+  .pack-row.paused { opacity: 0.55; }
+  .pack-rank {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     color: var(--mist);
     text-align: center;
   }
-  .board-row.rank-1 .board-rank { color: var(--gold); }
-  .board-row.rank-2 .board-rank { color: var(--silver); }
-  .board-row.rank-3 .board-rank { color: #b45309; }
-  .board-info { min-width: 0; }
-  .board-info-line1 { display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
-  .board-code {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--teal);
-    letter-spacing: 0.08em;
+  .pack-photo {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
   }
-  .board-name {
+  .pack-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .pack-info { min-width: 0; }
+  .pack-name {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 1rem;
+    font-size: 1.05rem;
     color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 0.2rem;
   }
-  .board-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-  .board-tag {
+  .pack-community {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+  .pack-tag {
     font-family: var(--mono);
     font-size: 0.55rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
     padding: 0.18rem 0.45rem;
     border-radius: 3px;
+    margin-left: 0.4rem;
   }
-  .board-tag.cap { background: rgba(34,197,94,0.18); color: var(--green-light); }
-  .board-tag.paused { background: rgba(255,255,255,0.06); color: var(--mist); }
-  .board-bar-wrap {
-    height: 5px;
+  .pack-tag.cap {
+    background: rgba(34,197,94,0.15);
+    color: var(--green-light);
+  }
+  .pack-tag.paused {
     background: rgba(255,255,255,0.05);
-    border-radius: 3px;
-    overflow: hidden;
+    color: var(--mist);
   }
-  .board-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--teal), var(--green-light));
-    transition: width 0.6s ease-out;
-  }
-  .board-count {
-    text-align: right;
+  .pack-count {
     font-family: var(--mono);
-    font-size: 1rem;
     font-weight: 700;
+    font-size: 1rem;
     color: var(--white);
     white-space: nowrap;
   }
-  .board-count-max {
-    font-size: 0.7rem;
+  .pack-count-max {
     color: var(--mist);
     font-weight: 400;
+    font-size: 0.78rem;
+  }
+
+  /* AVATAR FALLBACK (no photo) */
+  .avatar-fallback {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(59,130,246,0.15));
+    color: var(--white);
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 600;
+    text-transform: uppercase;
   }
 
   /* FOOTER NOTE */
@@ -357,6 +481,19 @@
     line-height: 1.6;
   }
   .footer-note a { color: var(--silver); text-decoration: underline; }
+  .footer-note .pulse {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
 
   /* LOADING / ERROR */
   .state-block {
@@ -375,22 +512,33 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  @media (max-width: 600px) {
-    .comp-title { font-size: 1.4rem; }
-    .comp-leader-name { font-size: 1rem; }
-    .stat-card-val { font-size: 1.5rem; }
-    .board-row { grid-template-columns: 30px 1fr auto; gap: 0.6rem; padding: 0.85rem; }
-    .board-rank { font-size: 1.2rem; }
-    .board-name { font-size: 0.9rem; }
+  @media (max-width: 720px) {
+    .hero-leader {
+      grid-template-columns: 100px 1fr;
+      gap: 1rem;
+      padding: 1.2rem;
+    }
+    .hero-leader-photo { width: 100px; height: 100px; }
+    .hero-leader-count { font-size: 1.8rem; }
+    .podium { grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+    .podium-card { padding: 0.85rem 0.45rem; }
+    .podium-photo { width: 56px; height: 56px; margin-bottom: 0.5rem; }
+    .podium-name { font-size: 0.95rem; }
+    .stats-strip { gap: 0.5rem; }
+    .stat-card { padding: 0.7rem 0.5rem; }
+    .stat-card-val { font-size: 1.3rem; }
+    .pack-row { grid-template-columns: 26px 40px 1fr auto; gap: 0.6rem; padding: 0.6rem 0.7rem; }
+    .pack-photo { width: 40px; height: 40px; }
+    .pack-name { font-size: 0.95rem; }
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <a href="./" class="header-back">&larr; Back to Monsoon Miles</a>
-  <h1>The <em>Leaderboard</em></h1>
-  <p>Live tracker for the Monsoon Miles 2026 ambassador competition. Whoever has the most referrals on race day takes the top spot &mdash; everyone gets recognised at the event.</p>
+  <a href="../" class="header-back">&larr; Back to Monsoon Miles</a>
+  <h1>The <em>Race</em>.</h1>
+  <p>Most referrals on race day takes the top spot. Every code is capped at 20. Refreshes live — check back any time, brag at any time.</p>
 </div>
 
 <!-- PIN LOGIN -->
@@ -407,31 +555,29 @@
 
 <!-- BOARD CONTENT -->
 <div class="container" id="boardContent" style="display:none;">
-  <!-- Competition hero -->
-  <div class="comp-hero">
-    <div class="comp-eyebrow">Active competition</div>
-    <div class="comp-title" id="compTitle">Top of the Leaderboard</div>
-    <p class="comp-desc" id="compDesc">Most referrals on race day wins.</p>
-    <div class="comp-leader" id="compLeader"></div>
-  </div>
+  <!-- Hero leader card -->
+  <div class="hero-leader" id="heroLeader"></div>
 
   <!-- Stats strip -->
   <div class="stats-strip" id="statsStrip"></div>
 
-  <!-- Leaderboard -->
-  <div class="board-title">Every code, ranked</div>
-  <div class="board-list" id="boardList"></div>
+  <!-- Podium (top 3) -->
+  <div class="podium" id="podium"></div>
+
+  <!-- Rest of the pack -->
+  <div class="pack-title" id="packTitle" style="display:none;">The rest of the pack</div>
+  <div class="pack-list" id="packList"></div>
 
   <p class="footer-note">
-    Refreshes automatically every 30 seconds.<br>
-    Questions? WhatsApp Dina: <a href="https://wa.me/919099906174" target="_blank">+91 90999 06174</a>
+    <span class="pulse"></span>Live · refreshes every 30 seconds<br>
+    Need anything? WhatsApp Dina: <a href="https://wa.me/919099906174" target="_blank">+91 90999 06174</a>
   </p>
 </div>
 
 <!-- Loading state -->
 <div class="state-block" id="loadingState" style="display:none;">
   <div class="spinner"></div>
-  <div>Loading leaderboard...</div>
+  <div>Loading the leaderboard...</div>
 </div>
 
 <script>
@@ -447,7 +593,7 @@ const loadingState = document.getElementById('loadingState');
 let cachedPin = '';
 let refreshTimer = null;
 
-// Auto-login if PIN is remembered from previous visit
+// Auto-login if PIN is remembered
 const stored = (function() {
   try { return sessionStorage.getItem('mm_amb_pin') || ''; } catch (e) { return ''; }
 })();
@@ -464,10 +610,7 @@ pinInput.addEventListener('keypress', function(e) {
 
 function submitPin() {
   const pin = pinInput.value.trim();
-  if (!pin) {
-    pinError.textContent = 'Please enter the PIN.';
-    return;
-  }
+  if (!pin) { pinError.textContent = 'Please enter the PIN.'; return; }
   pinError.textContent = '';
   pinBtn.disabled = true;
   pinBtn.textContent = 'Checking...';
@@ -479,7 +622,6 @@ function showLoading() {
   boardContent.style.display = 'none';
   loadingState.style.display = 'block';
 }
-
 function showPin(errorMsg) {
   pinScreen.style.display = 'block';
   boardContent.style.display = 'none';
@@ -488,7 +630,6 @@ function showPin(errorMsg) {
   pinBtn.textContent = 'Enter';
   if (errorMsg) pinError.textContent = errorMsg;
 }
-
 function showBoard() {
   pinScreen.style.display = 'none';
   loadingState.style.display = 'none';
@@ -499,13 +640,11 @@ async function loadBoard(pin) {
   try {
     const res = await fetch(API_URL + '?action=ambassadorBoard&pin=' + encodeURIComponent(pin));
     const json = await res.json();
-
     if (json.error) {
       try { sessionStorage.removeItem('mm_amb_pin'); } catch (e) {}
       showPin(json.message || 'Access denied. Check the PIN.');
       return;
     }
-
     cachedPin = pin;
     try { sessionStorage.setItem('mm_amb_pin', pin); } catch (e) {}
     renderBoard(json);
@@ -520,60 +659,122 @@ function scheduleRefresh() {
   if (refreshTimer) clearTimeout(refreshTimer);
   refreshTimer = setTimeout(function() {
     if (cachedPin) loadBoard(cachedPin);
-  }, 30000); // 30 sec
+  }, 30000);
+}
+
+// Build a photo URL from the photo filename. Photos live at
+// /monsoon-miles/Photos/ambassadors/<filename>. Falls back to initials.
+function photoSrc(row) {
+  if (!row.photo) return null;
+  return '../Photos/ambassadors/' + row.photo;
+}
+
+function avatarBlock(row, size) {
+  const src = photoSrc(row);
+  if (src) {
+    return '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(row.name) + '" onerror="this.outerHTML = \'' +
+      avatarFallback(row).replace(/'/g, "\\'") + '\'">';
+  }
+  return avatarFallback(row);
+}
+function avatarFallback(row) {
+  const initials = (row.name || '?').split(/\s+/).map(function(s) { return s[0] || ''; }).join('').substring(0, 2).toUpperCase();
+  return '<div class="avatar-fallback" style="font-size:0.95rem;">' + escapeHtml(initials) + '</div>';
 }
 
 function renderBoard(data) {
-  // Competition hero
-  document.getElementById('compTitle').textContent = data.competition.title;
-  document.getElementById('compDesc').textContent  = data.competition.description;
-  const leaderEl = document.getElementById('compLeader');
-  if (data.leader && data.leader.uses > 0) {
-    leaderEl.innerHTML = ''
-      + '<div class="comp-leader-medal">🥇</div>'
-      + '<div class="comp-leader-name">' + escapeHtml(data.leader.name) + ' <span style="color:var(--mist);font-size:0.8rem;">(' + escapeHtml(data.leader.code) + ')</span></div>'
-      + '<div class="comp-leader-count">' + data.leader.uses + ' referrals</div>';
+  const lb = data.leaderboard || [];
+  const leader = data.leader && data.leader.uses > 0 ? data.leader : null;
+  const stats  = data.stats || {};
+
+  // ---- HERO LEADER ----
+  const heroEl = document.getElementById('heroLeader');
+  if (leader) {
+    const secondPlace = lb.length > 1 ? lb[1] : null;
+    const gap = secondPlace ? leader.uses - secondPlace.uses : leader.uses;
+    const gapLabel = secondPlace
+      ? (gap === 0 ? 'Tied at the top' : 'Leading by ' + gap + ' referral' + (gap === 1 ? '' : 's'))
+      : 'First on the board';
+    heroEl.innerHTML =
+      '<div class="hero-leader-photo">' + avatarBlock(leader, 140) + '</div>' +
+      '<div>' +
+        '<div class="hero-leader-eyebrow">Current Leader</div>' +
+        '<div class="hero-leader-name">' + escapeHtml(leader.name) + '</div>' +
+        '<div class="hero-leader-community">' + (leader.community ? escapeHtml(leader.community) : 'Solo Ambassador') + '</div>' +
+        '<div class="hero-leader-stats">' +
+          '<span class="hero-leader-count">' + leader.uses + '</span>' +
+          '<span class="hero-leader-meta">of ' + leader.maxUses + ' · ' + escapeHtml(gapLabel) + '</span>' +
+        '</div>' +
+      '</div>';
   } else {
-    leaderEl.innerHTML = '<div class="comp-leader-empty">No referrals yet &mdash; the leaderboard is wide open. Be the first to score.</div>';
+    heroEl.innerHTML = '<div class="hero-leader-empty">The leaderboard is wide open. Whoever scores first takes this spot. Will it be you?</div>';
   }
 
-  // Stats strip
-  const stats = data.stats;
-  document.getElementById('statsStrip').innerHTML = ''
-    + '<div class="stat-card"><div class="stat-card-val teal">' + stats.totalReferrals + '</div><div class="stat-card-lbl">Total referrals</div></div>'
-    + '<div class="stat-card"><div class="stat-card-val">' + stats.activeAmbassadors + '</div><div class="stat-card-lbl">Active codes</div></div>'
-    + '<div class="stat-card"><div class="stat-card-val amber">' + stats.daysToGo + '</div><div class="stat-card-lbl">Days to race day</div></div>';
+  // ---- STATS STRIP ----
+  document.getElementById('statsStrip').innerHTML =
+    '<div class="stat-card"><div class="stat-card-val teal">' + (stats.totalReferrals || 0) + '</div><div class="stat-card-lbl">Total referrals</div></div>' +
+    '<div class="stat-card"><div class="stat-card-val">' + (stats.activeAmbassadors || lb.length) + '</div><div class="stat-card-lbl">Ambassadors in</div></div>' +
+    '<div class="stat-card"><div class="stat-card-val amber">' + (stats.daysToGo || 0) + '</div><div class="stat-card-lbl">Days to race day</div></div>';
 
-  // Leaderboard
-  const list = document.getElementById('boardList');
-  if (!data.leaderboard || data.leaderboard.length === 0) {
-    list.innerHTML = '<div class="state-block">No ambassadors set up yet.</div>';
-    return;
-  }
-  let html = '';
-  data.leaderboard.forEach(function(row) {
-    const rankClass = row.rank <= 3 ? 'rank-' + row.rank : '';
-    const cappedClass = row.capped ? 'capped' : '';
-    const pausedClass = (row.status || '').toLowerCase() !== 'active' ? 'paused' : '';
-    const rowClasses = ['board-row', rankClass, cappedClass, pausedClass].filter(Boolean).join(' ');
-    let tags = '';
-    if (row.capped) tags += '<span class="board-tag cap">✓ Goal hit</span>';
-    if ((row.status || '').toLowerCase() !== 'active') tags += '<span class="board-tag paused">Paused</span>';
-    html += ''
-      + '<div class="' + rowClasses + '">'
-      + '<div class="board-rank">' + row.rank + '</div>'
-      + '<div class="board-info">'
-      +   '<div class="board-info-line1">'
-      +     '<span class="board-code">' + escapeHtml(row.code) + '</span>'
-      +     '<span class="board-name">' + escapeHtml(row.name) + '</span>'
-      +     (tags ? '<div class="board-tags">' + tags + '</div>' : '')
-      +   '</div>'
-      +   '<div class="board-bar-wrap"><div class="board-bar" style="width:' + row.percentage + '%;"></div></div>'
-      + '</div>'
-      + '<div class="board-count">' + row.uses + '<span class="board-count-max"> / ' + row.maxUses + '</span></div>'
-      + '</div>';
+  // ---- PODIUM (top 3) ----
+  const podiumEl = document.getElementById('podium');
+  const top3 = lb.slice(0, 3);
+  let podiumHtml = '';
+  const medals = ['🥇', '🥈', '🥉'];
+  top3.forEach(function(row, idx) {
+    podiumHtml +=
+      '<div class="podium-card rank-' + (idx + 1) + '">' +
+        '<div class="podium-medal">' + medals[idx] + '</div>' +
+        '<div class="podium-photo">' + avatarBlock(row, 70) + '</div>' +
+        '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
+        '<div class="podium-community">' + (row.community ? escapeHtml(row.community) : ' ') + '</div>' +
+        '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + row.maxUses + '</span></div>' +
+        '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
+      '</div>';
   });
-  list.innerHTML = html;
+  // Pad podium with placeholder cards if fewer than 3 ambassadors
+  for (let i = top3.length; i < 3; i++) {
+    podiumHtml +=
+      '<div class="podium-card">' +
+        '<div class="podium-medal">' + medals[i] + '</div>' +
+        '<div class="podium-photo"><div class="avatar-fallback" style="font-size:0.85rem;">?</div></div>' +
+        '<div class="podium-name" style="color:var(--mist);">Open spot</div>' +
+        '<div class="podium-community">&nbsp;</div>' +
+        '<div class="podium-count" style="color:var(--mist);">0</div>' +
+        '<div class="podium-bar-wrap"></div>' +
+      '</div>';
+  }
+  podiumEl.innerHTML = podiumHtml;
+
+  // ---- REST OF THE PACK (rank 4+) ----
+  const packEl = document.getElementById('packList');
+  const packTitleEl = document.getElementById('packTitle');
+  const rest = lb.slice(3);
+  if (rest.length > 0) {
+    packTitleEl.style.display = 'block';
+    let packHtml = '';
+    rest.forEach(function(row) {
+      const capped = row.capped ? 'capped' : '';
+      const paused = (row.status || '').toLowerCase() !== 'active' ? 'paused' : '';
+      const tags =
+        (row.capped ? '<span class="pack-tag cap">✓ Goal hit</span>' : '') +
+        (paused ? '<span class="pack-tag paused">Paused</span>' : '');
+      packHtml +=
+        '<div class="pack-row ' + capped + ' ' + paused + '">' +
+          '<div class="pack-rank">' + row.rank + '</div>' +
+          '<div class="pack-photo">' + avatarBlock(row, 48) + '</div>' +
+          '<div class="pack-info">' +
+            '<div class="pack-name">' + escapeHtml(row.name) + tags + '</div>' +
+            '<div class="pack-community">' + (row.community ? escapeHtml(row.community) : 'Solo Ambassador') + '</div>' +
+          '</div>' +
+          '<div class="pack-count">' + row.uses + '<span class="pack-count-max"> / ' + row.maxUses + '</span></div>' +
+        '</div>';
+    });
+    packEl.innerHTML = packHtml;
+  } else {
+    packTitleEl.style.display = 'none';
+    packEl.innerHTML = '';
+  }
 }
 
 function escapeHtml(s) {
@@ -581,6 +782,7 @@ function escapeHtml(s) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
   });
 }
+function escapeAttr(s) { return escapeHtml(s); }
 </script>
 
 </body>
