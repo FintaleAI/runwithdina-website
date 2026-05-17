@@ -1886,8 +1886,8 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 }
 
 /* ============================================================
-   BUILT FOR EVERYONE — 4-panel section
-   Casual, Competitive, Family, Corporate audience splits
+   BUILT FOR EVERYONE — 3-panel section
+   Casual, Competitive, Family audience splits
    ============================================================ */
 .built-for {
   padding: clamp(5rem, 12vh, 10rem) clamp(1.5rem, 4vw, 4rem);
@@ -1925,6 +1925,11 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
+.built-for-grid.bf-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1100px;
+  margin: 0 auto;
+}
 .bf-panel {
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
@@ -1945,7 +1950,6 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 }
 .bf-panel.competitive::before { background: var(--lightning); }
 .bf-panel.family::before { background: var(--moss); }
-.bf-panel.corporate::before { background: var(--ember); }
 .bf-icon {
   font-size: 1.6rem;
   margin-bottom: 0.7rem;
@@ -1969,7 +1973,6 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 }
 .bf-panel.competitive .bf-tag { color: var(--lightning); }
 .bf-panel.family .bf-tag { color: var(--moss); }
-.bf-panel.corporate .bf-tag { color: var(--ember); }
 .bf-list {
   list-style: none;
   padding: 0;
@@ -1991,7 +1994,6 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 }
 .bf-panel.competitive .bf-list li::before { color: var(--lightning); }
 .bf-panel.family .bf-list li::before { color: var(--moss); }
-.bf-panel.corporate .bf-list li::before { color: var(--ember); }
 .bf-cta {
   display: inline-flex;
   align-items: center;
@@ -2172,6 +2174,11 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.9rem;
+}
+.crew-grid.crew-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1100px;
+  margin: 0 auto;
 }
 .crew-tier {
   background: rgba(255,255,255,0.03);
@@ -3041,10 +3048,10 @@ input[type="date"].form-input {
   <div class="built-for-header">
     <div class="built-for-label">Who it's for</div>
     <h2 class="built-for-heading">Built for <em>every kind of runner.</em></h2>
-    <p class="built-for-sub">First race or fiftieth. Solo or family. Two friends or a whole office. Monsoon Miles is built to make every kind of runner feel at home — and the rain doesn't care who you are anyway.</p>
+    <p class="built-for-sub">First race or fiftieth. Solo or with your crew. Whoever you are, Monsoon Miles is built to make every kind of runner feel at home — and the rain doesn't care who you are anyway.</p>
   </div>
 
-  <div class="built-for-grid">
+  <div class="built-for-grid bf-grid-3">
     <!-- CASUAL -->
     <div class="bf-panel casual">
       <div class="bf-icon">🌧️</div>
@@ -3086,20 +3093,6 @@ input[type="date"].form-input {
       </ul>
       <a href="#bring-your-crew" class="bf-cta" data-hover>Family rates →</a>
     </div>
-
-    <!-- CORPORATE -->
-    <div class="bf-panel corporate">
-      <div class="bf-icon">🏢</div>
-      <div class="bf-name">Corporate Teams</div>
-      <div class="bf-tag">Wellness that actually shows up.</div>
-      <ul class="bf-list">
-        <li>10+ employees? Team package with custom t-shirt strip</li>
-        <li>Logo on the start-line backdrop + post-event team photo</li>
-        <li>Counts for CSR / employee wellness reporting</li>
-        <li>Direct contact with Dina to set it up — no forms, no friction</li>
-      </ul>
-      <a href="https://wa.me/919099906174?text=Hi%20Dina%2C%20we%27re%20interested%20in%20a%20corporate%20team%20package%20for%20Monsoon%20Miles%202026" target="_blank" rel="noopener" class="bf-cta" data-hover>Talk to Dina →</a>
-    </div>
   </div>
 </section>
 
@@ -3108,10 +3101,10 @@ input[type="date"].form-input {
   <div class="crew-header">
     <div class="crew-label">Bring your crew</div>
     <h2 class="crew-heading">Run together. <em>Save together.</em></h2>
-    <p class="crew-sub">Running with friends, family, or your office is more fun than running alone. So we're making it easier — the bigger your crew, the more everyone saves.</p>
+    <p class="crew-sub">Running with friends, family, or your run club is more fun than running alone. So we're making it easier — the bigger your crew, the more everyone saves.</p>
   </div>
 
-  <div class="crew-grid">
+  <div class="crew-grid crew-grid-3">
     <!-- COUPLES -->
     <div class="crew-tier">
       <div class="crew-tier-size">Couples Pack</div>
@@ -3154,21 +3147,6 @@ input[type="date"].form-input {
         <li>Dedicated WhatsApp group for logistics</li>
       </ul>
       <a href="https://wa.me/919099906174?text=Hi%20Dina%2C%20we%27d%20like%20to%20register%20a%20crew%20of%2010%2B%20for%20Monsoon%20Miles%202026" target="_blank" rel="noopener" class="crew-tier-cta" data-hover>WhatsApp to Register</a>
-    </div>
-
-    <!-- CORPORATE -->
-    <div class="crew-tier">
-      <div class="crew-tier-size">Corporate</div>
-      <div class="crew-tier-name">For companies<br>&amp; offices</div>
-      <div class="crew-tier-discount">20%</div>
-      <div class="crew-tier-discount-sub">Off each, 20 or more</div>
-      <ul class="crew-tier-perks">
-        <li>Company logo on start-line backdrop</li>
-        <li>Brand mention on the RWD Monsoon Miles page</li>
-        <li>Counts toward CSR / employee wellness reporting</li>
-        <li>Custom team-building add-on available</li>
-      </ul>
-      <a href="https://wa.me/919099906174?text=Hi%20Dina%2C%20we%27re%20interested%20in%20a%20corporate%20package%20for%20Monsoon%20Miles%202026" target="_blank" rel="noopener" class="crew-tier-cta" data-hover>Talk to Dina</a>
     </div>
   </div>
 
@@ -3778,8 +3756,8 @@ input[type="date"].form-input {
     <div class="faq-a"><div class="faq-a-inner">Yes — as spectators. Kids under 14 can't run the loop (insurance), but the pavilion is open to family, there's seating, breakfast is available for everyone, and the pool party at the end is one of the best parts. Bring them. They'll love seeing you finish.</div></div>
   </div>
   <div class="faq-item">
-    <button class="faq-q" data-hover onclick="toggleFaq(this)">Can I register a group, family, or my company team?<span class="faq-q-icon">+</span></button>
-    <div class="faq-a"><div class="faq-a-inner">Yes, and you get better rates. Couples (2) get 5% off each. Squads of 5 get 10% off. Crews of 10+ get 15% off plus a custom team strip. Corporate groups of 20+ get 20% off plus brand visibility at the start line. WhatsApp Dina at +91 90999 06174 with your group size — she'll set it up directly. No online form needed.</div></div>
+    <button class="faq-q" data-hover onclick="toggleFaq(this)">Can I register a group or family together?<span class="faq-q-icon">+</span></button>
+    <div class="faq-a"><div class="faq-a-inner">Yes, and you get better rates. Couples (2) get 5% off each. Squads of 5 get 10% off. Crews of 10+ get 15% off plus a custom team strip. WhatsApp Dina at +91 90999 06174 with your group size — she'll set it up directly. No online form needed.</div></div>
   </div>
   <div class="faq-item">
     <button class="faq-q" data-hover onclick="toggleFaq(this)">Is the route timed? Will I get my time?<span class="faq-q-icon">+</span></button>
