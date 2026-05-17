@@ -1886,8 +1886,8 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 }
 
 /* ============================================================
-   BUILT FOR EVERYONE — 3-panel section
-   Casual, Competitive, Family audience splits
+   BUILT FOR EVERYONE — 2-panel section
+   First-Timers and Serious Runners audience splits
    ============================================================ */
 .built-for {
   padding: clamp(5rem, 12vh, 10rem) clamp(1.5rem, 4vw, 4rem);
@@ -1922,12 +1922,9 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 }
 .built-for-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-}
-.built-for-grid.bf-grid-3 {
-  grid-template-columns: repeat(3, 1fr);
-  max-width: 1100px;
+  max-width: 900px;
   margin: 0 auto;
 }
 .bf-panel {
@@ -1949,7 +1946,6 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   opacity: 0.7;
 }
 .bf-panel.competitive::before { background: var(--lightning); }
-.bf-panel.family::before { background: var(--moss); }
 .bf-icon {
   font-size: 1.6rem;
   margin-bottom: 0.7rem;
@@ -1972,7 +1968,6 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   margin-bottom: 1rem;
 }
 .bf-panel.competitive .bf-tag { color: var(--lightning); }
-.bf-panel.family .bf-tag { color: var(--moss); }
 .bf-list {
   list-style: none;
   padding: 0;
@@ -1993,7 +1988,6 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   font-size: 0.75rem;
 }
 .bf-panel.competitive .bf-list li::before { color: var(--lightning); }
-.bf-panel.family .bf-list li::before { color: var(--moss); }
 .bf-cta {
   display: inline-flex;
   align-items: center;
@@ -2012,354 +2006,9 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   transition: background 0.3s, border-color 0.3s;
 }
 .bf-cta:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.35); }
-@media (max-width: 900px) {
-  .built-for-grid { grid-template-columns: repeat(2, 1fr); }
-}
 @media (max-width: 540px) {
   .built-for-grid { grid-template-columns: 1fr; gap: 0.75rem; }
   .bf-panel { padding: 1.5rem 1.25rem 1.4rem; }
-}
-
-/* ============================================================
-   WHY WE RUN — cause / bigger meaning
-   ============================================================ */
-.why-section {
-  padding: clamp(5rem, 12vh, 10rem) clamp(1.5rem, 4vw, 4rem);
-  max-width: 1400px;
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-}
-.why-section-bg {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 60% 50% at 80% 30%, rgba(59,130,246,0.10), transparent 70%),
-    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(34,197,94,0.06), transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-.why-section > * { position: relative; z-index: 1; }
-.why-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: center;
-}
-.why-left .why-label {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--moss);
-  margin-bottom: 1rem;
-}
-.why-heading {
-  font-family: var(--serif);
-  font-size: clamp(2.2rem, 4.5vw, 4rem);
-  font-weight: 400;
-  line-height: 1.05;
-  margin-bottom: 1.5rem;
-}
-.why-heading em { font-style: italic; color: var(--moss); }
-.why-text {
-  font-size: 1rem;
-  color: var(--silver);
-  line-height: 1.7;
-  margin-bottom: 1rem;
-  max-width: 540px;
-}
-.why-cause-card {
-  background: rgba(34,197,94,0.06);
-  border: 1px solid rgba(34,197,94,0.25);
-  border-radius: 14px;
-  padding: 1.5rem 1.6rem;
-  margin-top: 1.5rem;
-}
-.why-cause-eyebrow {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--moss);
-  margin-bottom: 0.6rem;
-}
-.why-cause-title {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.35rem;
-  color: var(--white);
-  margin-bottom: 0.4rem;
-}
-.why-cause-text {
-  font-size: 0.9rem;
-  color: var(--silver);
-  line-height: 1.6;
-}
-.why-right {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.9rem;
-}
-.why-stat {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 1.4rem 1.3rem;
-}
-.why-stat-num {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: clamp(2.2rem, 4vw, 3rem);
-  color: var(--rain-light);
-  line-height: 1;
-  margin-bottom: 0.3rem;
-  font-weight: 500;
-}
-.why-stat-num.amber { color: var(--lightning); }
-.why-stat-num.green { color: var(--moss); }
-.why-stat-num.coral { color: var(--ember); }
-.why-stat-label {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--mist);
-  margin-bottom: 0.3rem;
-}
-.why-stat-text {
-  font-size: 0.78rem;
-  color: var(--silver);
-  line-height: 1.5;
-}
-@media (max-width: 900px) {
-  .why-grid { grid-template-columns: 1fr; }
-}
-
-/* ============================================================
-   BRING YOUR CREW — group / family / team pricing tiers
-   ============================================================ */
-.crew-section {
-  padding: clamp(5rem, 12vh, 10rem) clamp(1.5rem, 4vw, 4rem);
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.crew-header {
-  margin-bottom: clamp(2.5rem, 5vh, 4rem);
-  text-align: center;
-}
-.crew-label {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--lightning);
-  margin-bottom: 1rem;
-}
-.crew-heading {
-  font-family: var(--serif);
-  font-size: clamp(2.2rem, 4.5vw, 4rem);
-  font-weight: 400;
-  line-height: 1.05;
-}
-.crew-heading em { font-style: italic; color: var(--lightning); }
-.crew-sub {
-  font-size: 0.95rem;
-  color: var(--silver);
-  max-width: 640px;
-  margin: 1rem auto 0;
-  line-height: 1.6;
-}
-.crew-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.9rem;
-}
-.crew-grid.crew-grid-3 {
-  grid-template-columns: repeat(3, 1fr);
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.crew-tier {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 1.6rem 1.4rem 1.5rem;
-  text-align: center;
-  position: relative;
-  transition: transform 0.4s var(--ease), border-color 0.4s;
-}
-.crew-tier:hover { transform: translateY(-4px); border-color: rgba(251,191,36,0.4); }
-.crew-tier.featured {
-  border-color: rgba(251,191,36,0.5);
-  background:
-    linear-gradient(180deg, rgba(251,191,36,0.06), rgba(255,255,255,0.02) 70%);
-}
-.crew-tier.featured::after {
-  content: 'MOST POPULAR';
-  position: absolute;
-  top: -10px; left: 50%;
-  transform: translateX(-50%);
-  background: var(--lightning);
-  color: var(--black);
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.18em;
-  padding: 4px 10px;
-  border-radius: 100px;
-  font-weight: 700;
-}
-.crew-tier-size {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--mist);
-  margin-bottom: 0.6rem;
-}
-.crew-tier-name {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.65rem;
-  color: var(--white);
-  margin-bottom: 0.5rem;
-  line-height: 1.05;
-}
-.crew-tier-discount {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 2.4rem;
-  color: var(--lightning);
-  line-height: 1;
-  margin-bottom: 0.25rem;
-  font-weight: 500;
-}
-.crew-tier-discount-sub {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--mist);
-  margin-bottom: 1rem;
-}
-.crew-tier-perks {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0 1.2rem;
-  text-align: left;
-}
-.crew-tier-perks li {
-  font-size: 0.78rem;
-  color: var(--silver);
-  line-height: 1.55;
-  padding: 0.3rem 0 0.3rem 1.1rem;
-  position: relative;
-}
-.crew-tier-perks li::before {
-  content: '✓';
-  position: absolute;
-  left: 0;
-  color: var(--moss);
-  font-weight: 700;
-}
-.crew-tier-cta {
-  display: inline-block;
-  padding: 0.7rem 1.3rem;
-  border-radius: 100px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: var(--white);
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.3s;
-}
-.crew-tier-cta:hover { background: rgba(255,255,255,0.12); }
-.crew-tier.featured .crew-tier-cta {
-  background: var(--lightning);
-  color: var(--black);
-  border-color: var(--lightning);
-}
-.crew-tier.featured .crew-tier-cta:hover { background: #fcd34d; }
-.crew-foot {
-  text-align: center;
-  margin-top: 2rem;
-  font-size: 0.85rem;
-  color: var(--mist);
-}
-.crew-foot a {
-  color: var(--rain-light);
-  text-decoration: underline;
-  padding: 0.25rem 0.4rem;
-  display: inline-block;
-}
-@media (max-width: 900px) {
-  .crew-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 540px) {
-  .crew-grid { grid-template-columns: 1fr; }
-}
-
-/* ============================================================
-   SIGNATURE MOMENTS — what's on the course
-   ============================================================ */
-.signature-moments {
-  margin-top: clamp(4rem, 8vh, 6rem);
-  background: rgba(59,130,246,0.04);
-  border: 1px solid rgba(59,130,246,0.15);
-  border-radius: 16px;
-  padding: clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.5rem);
-}
-.sig-eyebrow {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--rain-light);
-  margin-bottom: 0.7rem;
-}
-.sig-title {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  color: var(--white);
-  margin-bottom: 0.4rem;
-  line-height: 1.1;
-}
-.sig-sub {
-  font-size: 0.92rem;
-  color: var(--silver);
-  margin-bottom: 1.5rem;
-  max-width: 600px;
-  line-height: 1.6;
-}
-.sig-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.9rem;
-}
-.sig-card {
-  background: rgba(0,0,0,0.25);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: 1.2rem 1.1rem;
-}
-.sig-icon { font-size: 1.6rem; margin-bottom: 0.5rem; line-height: 1; }
-.sig-card-title {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.15rem;
-  color: var(--white);
-  margin-bottom: 0.3rem;
-  line-height: 1.1;
-}
-.sig-card-text {
-  font-size: 0.78rem;
-  color: var(--silver);
-  line-height: 1.55;
 }
 
 /* ============================================================
@@ -3051,7 +2700,7 @@ input[type="date"].form-input {
     <p class="built-for-sub">First race or fiftieth. Solo or with your crew. Whoever you are, Monsoon Miles is built to make every kind of runner feel at home — and the rain doesn't care who you are anyway.</p>
   </div>
 
-  <div class="built-for-grid bf-grid-3">
+  <div class="built-for-grid">
     <!-- CASUAL -->
     <div class="bf-panel casual">
       <div class="bf-icon">🌧️</div>
@@ -3079,82 +2728,7 @@ input[type="date"].form-input {
       </ul>
       <a href="#categories" class="bf-cta" data-hover>See 2 &amp; 4 Hours →</a>
     </div>
-
-    <!-- FAMILY -->
-    <div class="bf-panel family">
-      <div class="bf-icon">👨‍👩‍👧</div>
-      <div class="bf-name">Families &amp; Friends</div>
-      <div class="bf-tag">Come together. Cheer together.</div>
-      <ul class="bf-list">
-        <li>Bring kids 14+ — younger ones can join you at the pool party</li>
-        <li>Non-running family welcome — pavilion seating, breakfast for all</li>
-        <li>Free parking, secure bag drop, changing rooms on-site</li>
-        <li>Couples and family packs available — see "Bring your crew" below</li>
-      </ul>
-      <a href="#bring-your-crew" class="bf-cta" data-hover>Family rates →</a>
-    </div>
   </div>
-</section>
-
-<!-- BRING YOUR CREW — group pricing tiers -->
-<section class="crew-section" id="bring-your-crew">
-  <div class="crew-header">
-    <div class="crew-label">Bring your crew</div>
-    <h2 class="crew-heading">Run together. <em>Save together.</em></h2>
-    <p class="crew-sub">Running with friends, family, or your run club is more fun than running alone. So we're making it easier — the bigger your crew, the more everyone saves.</p>
-  </div>
-
-  <div class="crew-grid crew-grid-3">
-    <!-- COUPLES -->
-    <div class="crew-tier">
-      <div class="crew-tier-size">Couples Pack</div>
-      <div class="crew-tier-name">Run with your<br>partner</div>
-      <div class="crew-tier-discount">5%</div>
-      <div class="crew-tier-discount-sub">Off each, for 2</div>
-      <ul class="crew-tier-perks">
-        <li>2 registrations, same category or mixed</li>
-        <li>Cheer each other through the loops</li>
-        <li>Pool party at the finish — together</li>
-      </ul>
-      <a href="https://wa.me/919099906174?text=Hi%20Dina%2C%20we%27d%20like%20to%20register%20as%20a%20couple%20for%20Monsoon%20Miles%202026" target="_blank" rel="noopener" class="crew-tier-cta" data-hover>WhatsApp to Register</a>
-    </div>
-
-    <!-- SQUAD OF 5 -->
-    <div class="crew-tier featured">
-      <div class="crew-tier-size">Squad of 5</div>
-      <div class="crew-tier-name">5 friends.<br>One start line.</div>
-      <div class="crew-tier-discount">10%</div>
-      <div class="crew-tier-discount-sub">Off each, for 5</div>
-      <ul class="crew-tier-perks">
-        <li>Mix and match categories</li>
-        <li>Group photo at the finish line, posted on RWD</li>
-        <li>Your squad name on the medal ribbons</li>
-        <li>Reserved seating at the pavilion</li>
-      </ul>
-      <a href="https://wa.me/919099906174?text=Hi%20Dina%2C%20we%27d%20like%20to%20register%20a%20squad%20of%205%20for%20Monsoon%20Miles%202026" target="_blank" rel="noopener" class="crew-tier-cta" data-hover>WhatsApp to Register</a>
-    </div>
-
-    <!-- CREW OF 10 -->
-    <div class="crew-tier">
-      <div class="crew-tier-size">Crew of 10+</div>
-      <div class="crew-tier-name">Your club,<br>your community</div>
-      <div class="crew-tier-discount">15%</div>
-      <div class="crew-tier-discount-sub">Off each, 10 or more</div>
-      <ul class="crew-tier-perks">
-        <li>Custom team t-shirt strip on top of event tee</li>
-        <li>Your club / community logo on a start-line banner</li>
-        <li>Reserved warm-up zone for your crew</li>
-        <li>Dedicated WhatsApp group for logistics</li>
-      </ul>
-      <a href="https://wa.me/919099906174?text=Hi%20Dina%2C%20we%27d%20like%20to%20register%20a%20crew%20of%2010%2B%20for%20Monsoon%20Miles%202026" target="_blank" rel="noopener" class="crew-tier-cta" data-hover>WhatsApp to Register</a>
-    </div>
-  </div>
-
-  <p class="crew-foot">
-    All group rates are confirmed personally by Dina on WhatsApp — no online form to fill, no hidden charges. Message
-    <a href="https://wa.me/919099906174" target="_blank" rel="noopener">+91 90999 06174</a>
-    and tell her your group size.
-  </p>
 </section>
 
 <!-- POOL PARTY -->
@@ -3335,83 +2909,6 @@ input[type="date"].form-input {
       <div class="tl-time">10:00 AM</div>
       <div class="tl-title">Nobody wants to leave</div>
       <div class="tl-desc">Awards, photos, and breakfast under the pavilion. The food tastes better when you've earned it. Last year, nobody wanted to leave. This year, with the pool party, good luck getting anyone to go home.</div>
-    </div>
-  </div>
-
-  <!-- SIGNATURE MOMENTS — what's actually on the course -->
-  <div class="signature-moments">
-    <div class="sig-eyebrow">On the course</div>
-    <div class="sig-title">The moments that make it Monsoon Miles.</div>
-    <p class="sig-sub">Other races give you a flat road and a stopwatch. We give you the storm — and a few signature moments built into every loop so you have stories to tell on Monday.</p>
-    <div class="sig-grid">
-      <div class="sig-card">
-        <div class="sig-icon">🌧️</div>
-        <div class="sig-card-title">Rain Arch</div>
-        <div class="sig-card-text">Even if the sky doesn't open up, ours will. Sprinkler arches at every loop turn, with photographers stationed to catch you running through.</div>
-      </div>
-      <div class="sig-card">
-        <div class="sig-icon">📸</div>
-        <div class="sig-card-title">Photo Zones</div>
-        <div class="sig-card-text">Three professional photographers across the course. Free, downloadable, and tagged to your bib number — no scrolling through 5,000 random photos to find yourself.</div>
-      </div>
-      <div class="sig-card">
-        <div class="sig-icon">🥁</div>
-        <div class="sig-card-title">Cheer Squad &amp; Music</div>
-        <div class="sig-card-text">Live dhol at the start. DJ at the half-way mark. RWR &amp; ambassador crews cheering at the loop turn. You'll hear them before you see them.</div>
-      </div>
-      <div class="sig-card">
-        <div class="sig-icon">🚁</div>
-        <div class="sig-card-title">The Drone Moment</div>
-        <div class="sig-card-text">Once during the morning, every runner gathers for one drone shot — the kind of frame that makes your friends ask "wait, where was this?"</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHY WE RUN — cause + Vadodara meaning -->
-<section class="why-section" id="why">
-  <div class="why-section-bg"></div>
-  <div class="why-grid">
-    <div class="why-left">
-      <div class="why-label">Bigger than a run</div>
-      <h2 class="why-heading">Why we <em>run.</em></h2>
-      <p class="why-text">
-        Monsoon Miles isn't just a race. It's Vadodara's reply to the city that says "stay home when it rains." Every year, on one Sunday in July, we put on our shoes, show up before sunrise, and run through the storm together.
-      </p>
-      <p class="why-text">
-        Year 1 had 200 runners. Year 2 we want 400. Year 5 we want 1,000+ — and a tradition that belongs to this city.
-      </p>
-
-      <div class="why-cause-card">
-        <div class="why-cause-eyebrow">Run for a cause</div>
-        <div class="why-cause-title">Every registration gives back.</div>
-        <p class="why-cause-text">
-          A portion of every Monsoon Miles 2026 registration goes toward a Vadodara-based community cause — announced before race day. You're not just running for yourself. You're putting your kilometres behind something that matters to this city.
-        </p>
-      </div>
-    </div>
-
-    <div class="why-right">
-      <div class="why-stat">
-        <div class="why-stat-num">200</div>
-        <div class="why-stat-label">Year 1 finishers</div>
-        <div class="why-stat-text">2025 — first edition. Sold out before race day.</div>
-      </div>
-      <div class="why-stat">
-        <div class="why-stat-num amber">400</div>
-        <div class="why-stat-label">Year 2 target</div>
-        <div class="why-stat-text">2× the runners, same trail, same rain. Help us get there.</div>
-      </div>
-      <div class="why-stat">
-        <div class="why-stat-num green">7</div>
-        <div class="why-stat-label">Communities running</div>
-        <div class="why-stat-text">RWD, RWR, Cycle N' Chai, OneStep, Alite Fit, Shyam's, plus solo.</div>
-      </div>
-      <div class="why-stat">
-        <div class="why-stat-num coral">1</div>
-        <div class="why-stat-label">City. One morning.</div>
-        <div class="why-stat-text">26 July 2026, 5:30 AM. The Vadodara monsoon tradition begins.</div>
-      </div>
     </div>
   </div>
 </section>
@@ -3754,10 +3251,6 @@ input[type="date"].form-input {
   <div class="faq-item">
     <button class="faq-q" data-hover onclick="toggleFaq(this)">My kids are under 14. Can they come along?<span class="faq-q-icon">+</span></button>
     <div class="faq-a"><div class="faq-a-inner">Yes — as spectators. Kids under 14 can't run the loop (insurance), but the pavilion is open to family, there's seating, breakfast is available for everyone, and the pool party at the end is one of the best parts. Bring them. They'll love seeing you finish.</div></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-q" data-hover onclick="toggleFaq(this)">Can I register a group or family together?<span class="faq-q-icon">+</span></button>
-    <div class="faq-a"><div class="faq-a-inner">Yes, and you get better rates. Couples (2) get 5% off each. Squads of 5 get 10% off. Crews of 10+ get 15% off plus a custom team strip. WhatsApp Dina at +91 90999 06174 with your group size — she'll set it up directly. No online form needed.</div></div>
   </div>
   <div class="faq-item">
     <button class="faq-q" data-hover onclick="toggleFaq(this)">Is the route timed? Will I get my time?<span class="faq-q-icon">+</span></button>
