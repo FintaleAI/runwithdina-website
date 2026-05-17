@@ -1741,24 +1741,26 @@ function mulberry32(seed) {
 
 // Sort entries by uses desc; within each tie-group, shuffle deterministically
 // using the session seed. Re-assigns `rank` to match new order.
+// IMPORTANT: this clones each entry so it doesn't mutate the caller's
+// objects (matters because renderLineup used to also call this on the same
+// objects, overwriting renderBoard's ranks → jumbled #s in the pack).
 function shuffleTies(entries, seed) {
-  if (!entries || entries.length <= 1) return entries || [];
+  if (!entries || entries.length === 0) return [];
   const rng = mulberry32(seed || 1);
-  // Sort by uses desc first so tie groups are contiguous
-  const sorted = entries.slice().sort(function(a, b) { return (b.uses || 0) - (a.uses || 0); });
-  // Group by uses, shuffle each group (Fisher-Yates with seeded rng)
+  // Clone each entry — DO NOT mutate caller's objects
+  const sorted = entries.map(function(e) { return Object.assign({}, e); })
+                        .sort(function(a, b) { return (b.uses || 0) - (a.uses || 0); });
   let i = 0;
   while (i < sorted.length) {
     let j = i + 1;
     while (j < sorted.length && (sorted[j].uses || 0) === (sorted[i].uses || 0)) j++;
-    // Shuffle sorted[i..j-1]
+    // Fisher-Yates inside the tie-group [i..j)
     for (let k = j - 1; k > i; k--) {
       const r = i + Math.floor(rng() * (k - i + 1));
       const tmp = sorted[k]; sorted[k] = sorted[r]; sorted[r] = tmp;
     }
     i = j;
   }
-  // Re-rank
   sorted.forEach(function(e, idx) { e.rank = idx + 1; });
   return sorted;
 }
@@ -2241,31 +2243,33 @@ function renderBoard(data) {
 // renders all 7 in score-desc order, so even on day 1 the page feels
 // full and every ambassador can find themselves.
 function renderLineup(lb) {
-  const apiByName = {};
-  (lb || []).forEach(function(row) {
-    if (row && row.name) apiByName[row.name.toLowerCase()] = row;
+  // Use renderBoard's already-shuffled, already-ranked lb in the SAME order
+  // so podium / pack / roster all stay in sync. Re-shuffling here would
+  // overwrite rank fields on the same objects and cause jumbled #s.
+  // Append any roster members the API didn't return (e.g. new ambassador
+  // added locally before the sheet was updated) at the bottom.
+  const inLb = {};
+  (lb || []).forEach(function(r) { if (r && r.code) inLb[r.code.toUpperCase()] = true; });
+  const extras = AMBASSADOR_ROSTER.filter(function(a) {
+    return !inLb[a.code.toUpperCase()];
+  }).map(function(a) {
+    return {
+      name: a.name,
+      code: a.code,
+      community: a.community,
+      photo: a.photo,
+      uses: 0,
+      maxUses: MAX_USES_DEFAULT,
+      percentage: 0,
+      status: 'active',
+      capped: false,
+    };
   });
+  let nextRank = (lb || []).length + 1;
+  extras.forEach(function(e) { e.rank = nextRank++; });
 
-  const entries = shuffleTies(
-    AMBASSADOR_ROSTER.map(function(a) {
-      const apiRow = apiByName[a.name.toLowerCase()];
-      if (apiRow) return apiRow;
-      return {
-        name: a.name,
-        code: a.code,
-        community: a.community,
-        photo: a.photo,
-        uses: 0,
-        maxUses: MAX_USES_DEFAULT,
-        percentage: 0,
-        status: 'active',
-        capped: false,
-      };
-    }),
-    SESSION_SEED
-  );
-
-  const leaderUses = entries.length > 0 ? entries[0].uses : 0;
+  const entries = (lb || []).concat(extras);
+  const leaderUses = entries.length > 0 ? (entries[0].uses || 0) : 0;
 
   let html = '';
   entries.forEach(function(row, idx) {

@@ -1320,17 +1320,19 @@ ul { list-style: none; }
   display: flex;
   gap: 1rem;
   padding: 0 clamp(1.5rem, 4vw, 4rem);
+  /* Horizontal scroll on every viewport — page keeps scrolling
+     vertically as normal, gallery scrolls on its own axis */
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rain-light) transparent;
+  padding-bottom: 1rem;
 }
-@media (max-width: 768px) {
-  .gallery-strip {
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .gallery-strip::-webkit-scrollbar { display: none; }
-}
+.gallery-strip::-webkit-scrollbar { height: 6px; }
+.gallery-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 3px; }
+.gallery-strip::-webkit-scrollbar-thumb { background: rgba(96,165,250,0.4); border-radius: 3px; }
+.gallery-strip::-webkit-scrollbar-thumb:hover { background: rgba(96,165,250,0.7); }
 .gallery-img {
   flex: 0 0 min(400px, 75vw);
   aspect-ratio: 3/4;
@@ -3258,23 +3260,12 @@ gsap.utils.toArray('.tl-item').forEach((item) => {
 });
 
 // ============================================================
-// GALLERY HORIZONTAL SCROLL
+// GALLERY — native horizontal scroller now (CSS overflow-x).
+// The old GSAP pin-and-scrub hijacked vertical scroll, forcing
+// visitors to scroll through every photo to get past the section
+// or back up. Now: page scrolls vertically as normal, gallery
+// scrolls horizontally on its own axis via wheel/trackpad/drag.
 // ============================================================
-const galleryStrip = document.getElementById('galleryStrip');
-if (window.innerWidth > 768) {
-  gsap.to(galleryStrip, {
-    x: () => -(galleryStrip.scrollWidth - window.innerWidth + 100),
-    ease: 'none',
-    scrollTrigger: {
-      trigger: '.gallery',
-      start: 'top top',
-      end: () => '+=' + (galleryStrip.scrollWidth - window.innerWidth + 100),
-      scrub: 1,
-      pin: true,
-      anticipatePin: 1
-    }
-  });
-}
 
 // ============================================================
 // CATEGORY CARDS REVEAL
