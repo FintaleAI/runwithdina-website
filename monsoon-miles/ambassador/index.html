@@ -1709,6 +1709,61 @@ function lookupRoster(row) {
 }
 
 // ============================================================
+// TIE-SHUFFLE — when ambassadors are tied (most commonly: everyone
+// at 0 at the start of the campaign), the API sorts alphabetically
+// which always puts Ambrish (RWD, the host organisation) at #1.
+// That looks like favouritism. Instead, we shuffle each tie-group
+// client-side with a stable per-session seed, so visitors see a
+// fresh fair order each session — but the order doesn't shuffle
+// on every 30-second auto-refresh.
+// ============================================================
+const SESSION_SEED = (function() {
+  try {
+    let s = sessionStorage.getItem('mm_amb_seed');
+    if (!s) {
+      s = String(Math.floor(Math.random() * 1e9));
+      sessionStorage.setItem('mm_amb_seed', s);
+    }
+    return parseInt(s, 10);
+  } catch (e) {
+    return Math.floor(Math.random() * 1e9);
+  }
+})();
+
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// Sort entries by uses desc; within each tie-group, shuffle deterministically
+// using the session seed. Re-assigns `rank` to match new order.
+function shuffleTies(entries, seed) {
+  if (!entries || entries.length <= 1) return entries || [];
+  const rng = mulberry32(seed || 1);
+  // Sort by uses desc first so tie groups are contiguous
+  const sorted = entries.slice().sort(function(a, b) { return (b.uses || 0) - (a.uses || 0); });
+  // Group by uses, shuffle each group (Fisher-Yates with seeded rng)
+  let i = 0;
+  while (i < sorted.length) {
+    let j = i + 1;
+    while (j < sorted.length && (sorted[j].uses || 0) === (sorted[i].uses || 0)) j++;
+    // Shuffle sorted[i..j-1]
+    for (let k = j - 1; k > i; k--) {
+      const r = i + Math.floor(rng() * (k - i + 1));
+      const tmp = sorted[k]; sorted[k] = sorted[r]; sorted[r] = tmp;
+    }
+    i = j;
+  }
+  // Re-rank
+  sorted.forEach(function(e, idx) { e.rank = idx + 1; });
+  return sorted;
+}
+
+// ============================================================
 // SHARE KIT — pick-yourself picker + personalised share message
 // localStorage key 'mm_amb_self' stores the chosen ambassador code
 // ============================================================
@@ -2012,8 +2067,11 @@ function initialsOf(name) {
 }
 
 function renderBoard(data) {
-  const lb = data.leaderboard || [];
-  const leader = data.leader && data.leader.uses > 0 ? data.leader : null;
+  // Re-sort the API's leaderboard so ties are randomised per-session,
+  // not always alphabetical (which would pin Ambrish/RWD at #1 forever).
+  const lb = shuffleTies(data.leaderboard || [], SESSION_SEED);
+  // Leader = top of shuffled order, only if they actually have uses.
+  const leader = lb.length > 0 && lb[0].uses > 0 ? lb[0] : null;
   const stats  = data.stats || {};
 
   // Cache for share-kit stat lookup
@@ -2064,48 +2122,63 @@ function renderBoard(data) {
   renderLineup(lb);
 
   // ---- PODIUM ----
+  // If no one has any referrals yet, every podium spot is "Open" — we
+  // do NOT show the first three ambassadors at 0/25 because that
+  // visually implies a leaderboard order that doesn't exist yet.
   const podiumEl = document.getElementById('podium');
   const top3 = lb.slice(0, 3);
   const leaderUses = top3.length > 0 ? top3[0].uses : 0;
   const medals = ['🥇', '🥈', '🥉'];
-  let podiumHtml = '';
-  top3.forEach(function(row, idx) {
-    const gap = leaderUses - row.uses;
-    let gapText = idx === 0
-      ? (top3.length > 1 ? '+' + (row.uses - top3[1].uses) + ' ahead' : 'On the board')
-      : (gap === 0 ? 'Tied with #1' : '−' + gap + ' to top');
-    const chip = clubLogoChip(row, 24);
-    podiumHtml +=
-      '<div class="podium-card rank-' + (idx + 1) + '">' +
-        '<div class="podium-medal">' + medals[idx] + '</div>' +
-        '<div class="podium-photo">' + avatarBlock(row) + '</div>' +
-        '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
-        (chip ? '<div class="podium-club">' + chip + '</div>' : '<div class="podium-club podium-club-empty"></div>') +
-        '<div class="podium-community">' + escapeHtml(communityFor(row)) + '</div>' +
-        '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + (row.maxUses || MAX_USES_DEFAULT) + '</span></div>' +
-        '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
-        '<div class="podium-gap">' + escapeHtml(gapText) + '</div>' +
-      '</div>';
-  });
-  for (let i = top3.length; i < 3; i++) {
-    podiumHtml +=
-      '<div class="podium-card rank-' + (i + 1) + '">' +
+
+  function openSpotCard(i) {
+    return '<div class="podium-card rank-' + (i + 1) + '">' +
         '<div class="podium-medal">' + medals[i] + '</div>' +
         '<div class="podium-photo"><div class="avatar-fallback">?</div></div>' +
         '<div class="podium-name" style="color:var(--mist);">Open spot</div>' +
+        '<div class="podium-club podium-club-empty"></div>' +
         '<div class="podium-community">&nbsp;</div>' +
         '<div class="podium-count" style="color:var(--mist);">0</div>' +
         '<div class="podium-bar-wrap"></div>' +
         '<div class="podium-gap">Up for grabs</div>' +
       '</div>';
   }
+
+  let podiumHtml = '';
+  if (leaderUses === 0) {
+    // Race hasn't started — three open spots
+    for (let i = 0; i < 3; i++) podiumHtml += openSpotCard(i);
+  } else {
+    top3.forEach(function(row, idx) {
+      const gap = leaderUses - row.uses;
+      let gapText = idx === 0
+        ? (top3.length > 1 ? '+' + (row.uses - top3[1].uses) + ' ahead' : 'On the board')
+        : (gap === 0 ? 'Tied with #1' : '−' + gap + ' to top');
+      const chip = clubLogoChip(row, 24);
+      podiumHtml +=
+        '<div class="podium-card rank-' + (idx + 1) + '">' +
+          '<div class="podium-medal">' + medals[idx] + '</div>' +
+          '<div class="podium-photo">' + avatarBlock(row) + '</div>' +
+          '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
+          (chip ? '<div class="podium-club">' + chip + '</div>' : '<div class="podium-club podium-club-empty"></div>') +
+          '<div class="podium-community">' + escapeHtml(communityFor(row)) + '</div>' +
+          '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + (row.maxUses || MAX_USES_DEFAULT) + '</span></div>' +
+          '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
+          '<div class="podium-gap">' + escapeHtml(gapText) + '</div>' +
+        '</div>';
+    });
+    for (let i = top3.length; i < 3; i++) podiumHtml += openSpotCard(i);
+  }
   podiumEl.innerHTML = podiumHtml;
 
   // ---- REST OF THE PACK ----
+  // Only shows once someone has scored — otherwise we'd be implying
+  // ranks #4–#7 with everyone tied at 0, which would re-introduce
+  // alphabetical-bias visible-ordering. Roster strip already shows
+  // all 7 in the empty state.
   const packEl = document.getElementById('packList');
   const packTitleEl = document.getElementById('packTitle');
   const rest = lb.slice(3);
-  if (rest.length > 0) {
+  if (rest.length > 0 && leaderUses > 0) {
     packTitleEl.style.display = 'flex';
     let packHtml = '';
     rest.forEach(function(row) {
@@ -2175,24 +2248,30 @@ function renderLineup(lb) {
     if (row && row.name) apiByName[row.name.toLowerCase()] = row;
   });
 
-  const entries = AMBASSADOR_ROSTER.map(function(a) {
-    const apiRow = apiByName[a.name.toLowerCase()];
-    if (apiRow) return apiRow;
-    return {
-      name: a.name,
-      code: a.code,
-      community: a.community,
-      photo: a.photo,
-      uses: 0,
-      maxUses: MAX_USES_DEFAULT,
-      percentage: 0,
-      status: 'active',
-      capped: false,
-    };
-  });
-  entries.sort(function(a, b) { return (b.uses || 0) - (a.uses || 0); });
+  const entries = shuffleTies(
+    AMBASSADOR_ROSTER.map(function(a) {
+      const apiRow = apiByName[a.name.toLowerCase()];
+      if (apiRow) return apiRow;
+      return {
+        name: a.name,
+        code: a.code,
+        community: a.community,
+        photo: a.photo,
+        uses: 0,
+        maxUses: MAX_USES_DEFAULT,
+        percentage: 0,
+        status: 'active',
+        capped: false,
+      };
+    }),
+    SESSION_SEED
+  );
 
   const leaderUses = entries.length > 0 ? entries[0].uses : 0;
+
+  // If no one has scored yet, suppress rank numbers so the cards
+  // read as a roster rather than an arbitrary alphabetical ranking.
+  const showRanks = leaderUses > 0;
 
   let html = '';
   entries.forEach(function(row, idx) {
@@ -2202,9 +2281,10 @@ function renderLineup(lb) {
     const isCapped = !!row.capped;
     const cls = (isLead ? 'lead ' : '') + (isZero ? 'zero ' : '') + (isCapped ? 'capped ' : '');
     const chip = clubLogoChip(row, 18);
+    const rankBadge = showRanks ? '<div class="lineup-rank">#' + (idx + 1) + '</div>' : '';
     html +=
       '<div class="lineup-card ' + cls + '">' +
-        '<div class="lineup-rank">#' + (idx + 1) + '</div>' +
+        rankBadge +
         '<div class="lineup-photo">' + avatarBlock(row) + '</div>' +
         '<div class="lineup-name">' + escapeHtml(row.name) + '</div>' +
         (chip ? '<div class="lineup-club">' + chip + '</div>' : '<div class="lineup-club lineup-club-empty"></div>') +
@@ -2214,6 +2294,14 @@ function renderLineup(lb) {
       '</div>';
   });
   document.getElementById('lineup').innerHTML = html;
+
+  // Eyebrow note adapts to state
+  const lineupNote = document.getElementById('lineupNote');
+  if (lineupNote) {
+    lineupNote.textContent = showRanks
+      ? 'Sorted by referrals · 👑 leads · 🏆 hit 25'
+      : 'Race begins soon · Order shuffled fair';
+  }
 }
 
 function escapeHtml(s) {
