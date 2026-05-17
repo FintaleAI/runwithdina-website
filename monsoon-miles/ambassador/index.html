@@ -2122,16 +2122,41 @@ function renderBoard(data) {
   renderLineup(lb);
 
   // ---- PODIUM ----
-  // If no one has any referrals yet, every podium spot is "Open" — we
-  // do NOT show the first three ambassadors at 0/25 because that
-  // visually implies a leaderboard order that doesn't exist yet.
+  // Always shows top 3 — tie-shuffle (run earlier) ensures the order
+  // is randomised per session within tie-groups, so no one is pinned
+  // to the gold pedestal by alphabetical luck.
   const podiumEl = document.getElementById('podium');
   const top3 = lb.slice(0, 3);
   const leaderUses = top3.length > 0 ? top3[0].uses : 0;
   const medals = ['🥇', '🥈', '🥉'];
-
-  function openSpotCard(i) {
-    return '<div class="podium-card rank-' + (i + 1) + '">' +
+  let podiumHtml = '';
+  top3.forEach(function(row, idx) {
+    const gap = leaderUses - row.uses;
+    let gapText;
+    if (leaderUses === 0) {
+      gapText = 'In the lineup';
+    } else if (idx === 0) {
+      gapText = top3.length > 1 ? '+' + (row.uses - top3[1].uses) + ' ahead' : 'On the board';
+    } else {
+      gapText = gap === 0 ? 'Tied with #1' : '−' + gap + ' to top';
+    }
+    const chip = clubLogoChip(row, 24);
+    podiumHtml +=
+      '<div class="podium-card rank-' + (idx + 1) + '">' +
+        '<div class="podium-medal">' + medals[idx] + '</div>' +
+        '<div class="podium-photo">' + avatarBlock(row) + '</div>' +
+        '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
+        (chip ? '<div class="podium-club">' + chip + '</div>' : '<div class="podium-club podium-club-empty"></div>') +
+        '<div class="podium-community">' + escapeHtml(communityFor(row)) + '</div>' +
+        '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + (row.maxUses || MAX_USES_DEFAULT) + '</span></div>' +
+        '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
+        '<div class="podium-gap">' + escapeHtml(gapText) + '</div>' +
+      '</div>';
+  });
+  // Open-spot placeholders only when the roster actually has fewer than 3 ambassadors
+  for (let i = top3.length; i < 3; i++) {
+    podiumHtml +=
+      '<div class="podium-card rank-' + (i + 1) + '">' +
         '<div class="podium-medal">' + medals[i] + '</div>' +
         '<div class="podium-photo"><div class="avatar-fallback">?</div></div>' +
         '<div class="podium-name" style="color:var(--mist);">Open spot</div>' +
@@ -2142,43 +2167,16 @@ function renderBoard(data) {
         '<div class="podium-gap">Up for grabs</div>' +
       '</div>';
   }
-
-  let podiumHtml = '';
-  if (leaderUses === 0) {
-    // Race hasn't started — three open spots
-    for (let i = 0; i < 3; i++) podiumHtml += openSpotCard(i);
-  } else {
-    top3.forEach(function(row, idx) {
-      const gap = leaderUses - row.uses;
-      let gapText = idx === 0
-        ? (top3.length > 1 ? '+' + (row.uses - top3[1].uses) + ' ahead' : 'On the board')
-        : (gap === 0 ? 'Tied with #1' : '−' + gap + ' to top');
-      const chip = clubLogoChip(row, 24);
-      podiumHtml +=
-        '<div class="podium-card rank-' + (idx + 1) + '">' +
-          '<div class="podium-medal">' + medals[idx] + '</div>' +
-          '<div class="podium-photo">' + avatarBlock(row) + '</div>' +
-          '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
-          (chip ? '<div class="podium-club">' + chip + '</div>' : '<div class="podium-club podium-club-empty"></div>') +
-          '<div class="podium-community">' + escapeHtml(communityFor(row)) + '</div>' +
-          '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + (row.maxUses || MAX_USES_DEFAULT) + '</span></div>' +
-          '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
-          '<div class="podium-gap">' + escapeHtml(gapText) + '</div>' +
-        '</div>';
-    });
-    for (let i = top3.length; i < 3; i++) podiumHtml += openSpotCard(i);
-  }
   podiumEl.innerHTML = podiumHtml;
 
   // ---- REST OF THE PACK ----
-  // Only shows once someone has scored — otherwise we'd be implying
-  // ranks #4–#7 with everyone tied at 0, which would re-introduce
-  // alphabetical-bias visible-ordering. Roster strip already shows
-  // all 7 in the empty state.
+  // Always shows. The tie-shuffle above prevents any single
+  // ambassador (e.g. Ambrish from RWD) from being pinned to the
+  // top — order is randomised per session within each tie-group.
   const packEl = document.getElementById('packList');
   const packTitleEl = document.getElementById('packTitle');
   const rest = lb.slice(3);
-  if (rest.length > 0 && leaderUses > 0) {
+  if (rest.length > 0) {
     packTitleEl.style.display = 'flex';
     let packHtml = '';
     rest.forEach(function(row) {
@@ -2269,10 +2267,6 @@ function renderLineup(lb) {
 
   const leaderUses = entries.length > 0 ? entries[0].uses : 0;
 
-  // If no one has scored yet, suppress rank numbers so the cards
-  // read as a roster rather than an arbitrary alphabetical ranking.
-  const showRanks = leaderUses > 0;
-
   let html = '';
   entries.forEach(function(row, idx) {
     const uses = row.uses || 0;
@@ -2281,10 +2275,9 @@ function renderLineup(lb) {
     const isCapped = !!row.capped;
     const cls = (isLead ? 'lead ' : '') + (isZero ? 'zero ' : '') + (isCapped ? 'capped ' : '');
     const chip = clubLogoChip(row, 18);
-    const rankBadge = showRanks ? '<div class="lineup-rank">#' + (idx + 1) + '</div>' : '';
     html +=
       '<div class="lineup-card ' + cls + '">' +
-        rankBadge +
+        '<div class="lineup-rank">#' + (idx + 1) + '</div>' +
         '<div class="lineup-photo">' + avatarBlock(row) + '</div>' +
         '<div class="lineup-name">' + escapeHtml(row.name) + '</div>' +
         (chip ? '<div class="lineup-club">' + chip + '</div>' : '<div class="lineup-club lineup-club-empty"></div>') +
@@ -2294,14 +2287,6 @@ function renderLineup(lb) {
       '</div>';
   });
   document.getElementById('lineup').innerHTML = html;
-
-  // Eyebrow note adapts to state
-  const lineupNote = document.getElementById('lineupNote');
-  if (lineupNote) {
-    lineupNote.textContent = showRanks
-      ? 'Sorted by referrals · 👑 leads · 🏆 hit 25'
-      : 'Race begins soon · Order shuffled fair';
-  }
 }
 
 function escapeHtml(s) {
