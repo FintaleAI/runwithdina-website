@@ -392,6 +392,163 @@
     color: var(--mist);
   }
 
+  /* STARTING LINEUP — always visible, all 7 ambassadors */
+  .lineup-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1rem 1.1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .lineup-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), var(--rain-light), transparent);
+    opacity: 0.6;
+  }
+  .lineup-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .lineup-eyebrow .lineup-eyebrow-r {
+    color: var(--mist);
+    font-size: 0.58rem;
+  }
+  .lineup {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.55rem;
+  }
+  .lineup-card {
+    background: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 0.85rem 0.45rem 0.7rem;
+    text-align: center;
+    position: relative;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+  .lineup-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--silver);
+  }
+  .lineup-rank {
+    position: absolute;
+    top: 6px; left: 8px;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--mist);
+    font-weight: 700;
+  }
+  .lineup-card.lead {
+    border-color: rgba(234,179,8,0.6);
+    background: linear-gradient(180deg, rgba(234,179,8,0.12), var(--ink) 70%);
+    box-shadow: 0 0 0 1px rgba(234,179,8,0.2), 0 4px 16px rgba(234,179,8,0.12);
+  }
+  .lineup-card.lead .lineup-rank { color: var(--gold-light); }
+  .lineup-card.lead::after {
+    content: '👑';
+    position: absolute;
+    top: -10px; right: -6px;
+    font-size: 1rem;
+    transform: rotate(15deg);
+  }
+  .lineup-card.capped {
+    border-color: rgba(34,197,94,0.5);
+    background: linear-gradient(180deg, rgba(34,197,94,0.10), var(--ink) 70%);
+  }
+  .lineup-card.capped::after {
+    content: '🏆';
+    position: absolute;
+    top: -10px; right: -6px;
+    font-size: 1rem;
+  }
+  .lineup-photo {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 0.45rem;
+    border: 2px solid var(--border);
+    background: var(--surface-2);
+  }
+  .lineup-card.lead .lineup-photo {
+    border-color: var(--gold);
+    box-shadow: 0 0 14px rgba(234,179,8,0.4);
+  }
+  .lineup-card.capped .lineup-photo { border-color: var(--green); }
+  .lineup-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .lineup-photo .avatar-fallback {
+    font-size: 0.85rem;
+  }
+  .lineup-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lineup-community {
+    font-family: var(--mono);
+    font-size: 0.52rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.5rem;
+    height: 1.3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .lineup-count {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--white);
+    line-height: 1;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .lineup-card.lead .lineup-count { color: var(--gold-light); }
+  .lineup-card.capped .lineup-count { color: var(--green-light); }
+  .lineup-card.zero .lineup-count { color: var(--mist); }
+  .lineup-bar-wrap {
+    height: 3px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .lineup-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--rain-light));
+    transition: width 1.2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .lineup-card.lead .lineup-bar {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    box-shadow: 0 0 8px rgba(234,179,8,0.5);
+  }
+  .lineup-card.capped .lineup-bar {
+    background: linear-gradient(90deg, var(--green), var(--green-light));
+  }
+
   /* SECTION TITLE */
   .section-title {
     font-family: var(--mono);
@@ -776,6 +933,29 @@
     .pack-photo { width: 44px; height: 44px; }
     .pack-name { font-size: 1rem; }
     .pack-count { font-size: 1.2rem; }
+
+    /* Lineup becomes a horizontal scroller on mobile so 7 cards
+       are always visible without squishing into unreadable sizes. */
+    .lineup-wrap { padding: 0.9rem 0 1rem; }
+    .lineup-eyebrow { padding: 0 1rem; }
+    .lineup {
+      display: flex;
+      grid-template-columns: none;
+      gap: 0.55rem;
+      overflow-x: auto;
+      padding: 0.3rem 1rem 0.5rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .lineup::-webkit-scrollbar { height: 4px; }
+    .lineup::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .lineup-card {
+      flex: 0 0 108px;
+      scroll-snap-align: start;
+    }
+    .lineup-photo { width: 56px; height: 56px; }
+    .lineup-name { font-size: 0.9rem; }
+    .lineup-count { font-size: 1.3rem; }
   }
 </style>
 </head>
@@ -810,6 +990,14 @@
 
   <div class="stats-strip" id="statsStrip"></div>
 
+  <div class="lineup-wrap">
+    <div class="lineup-eyebrow">
+      <span>The Roster · All 7 Ambassadors</span>
+      <span class="lineup-eyebrow-r" id="lineupNote">Sorted by referrals · 👑 leads · 🏆 hit 25</span>
+    </div>
+    <div class="lineup" id="lineup"></div>
+  </div>
+
   <div class="section-title">The Podium</div>
   <div class="podium" id="podium"></div>
 
@@ -833,6 +1021,28 @@
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXci31n_qxWREx3jt6SWUXZQO3MnjsdKbmV-72oTV1Sx8z58/exec';
 const MAX_USES_DEFAULT = 25;
+
+// Local ambassador roster — used as a visual fallback so photos and
+// community names ALWAYS show, even before anyone has any referrals
+// and even if the Sheet doesn't have photo/community columns filled in.
+// Matched against API rows by name (case-insensitive) first, then by code.
+const AMBASSADOR_ROSTER = [
+  { code: 'AMBRISH10', name: 'Ambrish', community: 'RunwithDina',                  photo: 'ambrish.jpg' },
+  { code: 'ANEEL10',   name: 'Aneel',   community: 'RWR',                          photo: 'aneel.jpg' },
+  { code: 'ANNIKET10', name: 'Anniket', community: "Cycle N' Chai",                photo: 'anniket.jpg' },
+  { code: 'MOHIT10',   name: 'Mohit',   community: 'OneStep Run Club',             photo: 'mohit.jpg' },
+  { code: 'PUJAN10',   name: 'Pujan',   community: 'Alite Fit',                    photo: 'pujan.jpg' },
+  { code: 'SHYAM10',   name: 'Shyam',   community: "Shyam's Functional Fitness",   photo: 'shyam.jpg' },
+  { code: 'PALLAVI10', name: 'Pallavi', community: 'Solo Ambassador',              photo: 'pallavi.jpg' },
+];
+const ROSTER_BY_NAME = AMBASSADOR_ROSTER.reduce(function(acc, a) { acc[a.name.toLowerCase()] = a; return acc; }, {});
+const ROSTER_BY_CODE = AMBASSADOR_ROSTER.reduce(function(acc, a) { acc[a.code.toLowerCase()] = a; return acc; }, {});
+function lookupRoster(row) {
+  if (!row) return null;
+  if (row.name && ROSTER_BY_NAME[row.name.toLowerCase()]) return ROSTER_BY_NAME[row.name.toLowerCase()];
+  if (row.code && ROSTER_BY_CODE[row.code.toLowerCase()]) return ROSTER_BY_CODE[row.code.toLowerCase()];
+  return null;
+}
 
 const pinScreen = document.getElementById('pinScreen');
 const pinInput  = document.getElementById('pinInput');
@@ -920,14 +1130,28 @@ function relativeTime(ms) {
 }
 
 function photoSrc(row) {
-  if (!row.photo) return null;
-  return '../Photos/ambassadors/' + row.photo;
+  const file = row.photo || (lookupRoster(row) && lookupRoster(row).photo);
+  if (!file) return null;
+  return '../Photos/ambassadors/' + file;
+}
+function communityFor(row) {
+  if (row.community) return row.community;
+  const r = lookupRoster(row);
+  return r ? r.community : 'Solo Ambassador';
 }
 function avatarBlock(row) {
   const src = photoSrc(row);
-  if (src) return '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(row.name) + '">';
-  const initials = (row.name || '?').split(/\s+/).map(function(s) { return s[0] || ''; }).join('').substring(0, 2).toUpperCase();
+  const initials = initialsOf(row.name);
+  if (src) {
+    // If the image file is missing, swap to initials avatar.
+    return '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(row.name) +
+           '" data-initials="' + escapeAttr(initials) +
+           '" onerror="this.outerHTML=&quot;<div class=&apos;avatar-fallback&apos;>' + initials + '</div>&quot;">';
+  }
   return '<div class="avatar-fallback">' + escapeHtml(initials) + '</div>';
+}
+function initialsOf(name) {
+  return (name || '?').split(/\s+/).map(function(s) { return s[0] || ''; }).join('').substring(0, 2).toUpperCase();
 }
 
 function renderBoard(data) {
@@ -956,7 +1180,7 @@ function renderBoard(data) {
       '<div class="hero-leader-body">' +
         '<div class="hero-leader-eyebrow">Leading the race</div>' +
         '<div class="hero-leader-name">' + escapeHtml(leader.name) + '</div>' +
-        '<div class="hero-leader-community">' + (leader.community ? escapeHtml(leader.community) : 'Solo Ambassador') + '</div>' +
+        '<div class="hero-leader-community">' + escapeHtml(communityFor(leader)) + '</div>' +
         '<div class="hero-leader-stats">' +
           '<span class="hero-leader-count">' + leader.uses + '</span>' +
           '<span class="hero-leader-count-of">/ ' + max + ' referrals</span>' +
@@ -971,8 +1195,11 @@ function renderBoard(data) {
   // ---- STATS STRIP ----
   document.getElementById('statsStrip').innerHTML =
     '<div class="stat-card"><div class="stat-card-val teal">' + (stats.totalReferrals || 0) + '</div><div class="stat-card-lbl">Total referrals</div></div>' +
-    '<div class="stat-card"><div class="stat-card-val">' + (stats.activeAmbassadors || lb.length) + '</div><div class="stat-card-lbl">Ambassadors in</div></div>' +
+    '<div class="stat-card"><div class="stat-card-val">' + (stats.activeAmbassadors || AMBASSADOR_ROSTER.length) + '</div><div class="stat-card-lbl">Ambassadors in</div></div>' +
     '<div class="stat-card"><div class="stat-card-val amber">' + (stats.daysToGo || 0) + '</div><div class="stat-card-lbl">Days to race day</div></div>';
+
+  // ---- STARTING LINEUP (all 7 always visible) ----
+  renderLineup(lb);
 
   // ---- PODIUM ----
   const podiumEl = document.getElementById('podium');
@@ -990,7 +1217,7 @@ function renderBoard(data) {
         '<div class="podium-medal">' + medals[idx] + '</div>' +
         '<div class="podium-photo">' + avatarBlock(row) + '</div>' +
         '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
-        '<div class="podium-community">' + (row.community ? escapeHtml(row.community) : 'Solo') + '</div>' +
+        '<div class="podium-community">' + escapeHtml(communityFor(row)) + '</div>' +
         '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + (row.maxUses || MAX_USES_DEFAULT) + '</span></div>' +
         '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
         '<div class="podium-gap">' + escapeHtml(gapText) + '</div>' +
@@ -1033,7 +1260,7 @@ function renderBoard(data) {
             '<div class="pack-info-line1">' +
               '<span class="pack-name">' + escapeHtml(row.name) + '</span>' + tags +
             '</div>' +
-            '<div class="pack-community">' + (row.community ? escapeHtml(row.community) : 'Solo Ambassador') + '</div>' +
+            '<div class="pack-community">' + escapeHtml(communityFor(row)) + '</div>' +
             '<div class="pack-bar-wrap"><div class="pack-bar" style="width:' + row.percentage + '%;"></div></div>' +
             '<div class="pack-gap">' + escapeHtml(gapText) + '</div>' +
           '</div>' +
@@ -1071,6 +1298,56 @@ function renderBoard(data) {
       '</div>';
   });
   document.getElementById('milestones').innerHTML = milestonesHtml;
+}
+
+// Build a lineup of ALL 7 ambassadors — merging API data (live scores)
+// with the local roster (photos + community names + a placeholder row
+// for ambassadors who haven't received any referrals yet). Always
+// renders all 7 in score-desc order, so even on day 1 the page feels
+// full and every ambassador can find themselves.
+function renderLineup(lb) {
+  const apiByName = {};
+  (lb || []).forEach(function(row) {
+    if (row && row.name) apiByName[row.name.toLowerCase()] = row;
+  });
+
+  const entries = AMBASSADOR_ROSTER.map(function(a) {
+    const apiRow = apiByName[a.name.toLowerCase()];
+    if (apiRow) return apiRow;
+    return {
+      name: a.name,
+      code: a.code,
+      community: a.community,
+      photo: a.photo,
+      uses: 0,
+      maxUses: MAX_USES_DEFAULT,
+      percentage: 0,
+      status: 'active',
+      capped: false,
+    };
+  });
+  entries.sort(function(a, b) { return (b.uses || 0) - (a.uses || 0); });
+
+  const leaderUses = entries.length > 0 ? entries[0].uses : 0;
+
+  let html = '';
+  entries.forEach(function(row, idx) {
+    const uses = row.uses || 0;
+    const isLead = uses > 0 && uses === leaderUses;
+    const isZero = uses === 0;
+    const isCapped = !!row.capped;
+    const cls = (isLead ? 'lead ' : '') + (isZero ? 'zero ' : '') + (isCapped ? 'capped ' : '');
+    html +=
+      '<div class="lineup-card ' + cls + '">' +
+        '<div class="lineup-rank">#' + (idx + 1) + '</div>' +
+        '<div class="lineup-photo">' + avatarBlock(row) + '</div>' +
+        '<div class="lineup-name">' + escapeHtml(row.name) + '</div>' +
+        '<div class="lineup-community">' + escapeHtml(communityFor(row)) + '</div>' +
+        '<div class="lineup-count">' + uses + '</div>' +
+        '<div class="lineup-bar-wrap"><div class="lineup-bar" style="width:' + (row.percentage || 0) + '%;"></div></div>' +
+      '</div>';
+  });
+  document.getElementById('lineup').innerHTML = html;
 }
 
 function escapeHtml(s) {
