@@ -54,9 +54,9 @@
   }
   img { display: block; max-width: 100%; }
 
-  /* HEADER */
+  /* HEADER — Monsoon Miles 2026 themed */
   .header {
-    padding: 2rem 1.5rem 1.5rem;
+    padding: 1.5rem 1.5rem 1.5rem;
     max-width: 1100px;
     margin: 0 auto;
   }
@@ -70,14 +70,53 @@
     transition: color 0.3s;
   }
   .header-back:hover { color: var(--silver); }
+
+  /* FICCI FLO presents pill — matches the same component on the main MM page */
+  .presents-pill {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 100px;
+    padding: 0;
+    margin: 1rem 0 1rem;
+    overflow: hidden;
+  }
+  .presents-pill-logo {
+    background: #fff;
+    padding: 5px 12px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+  }
+  .presents-pill-logo img { height: 28px; display: block; }
+  .presents-pill-text {
+    padding: 0 16px 0 10px;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver);
+    line-height: 1.2;
+  }
+  .presents-pill-text strong { color: var(--white); font-weight: 700; }
+
+  .header-event-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--rain-light);
+    margin-bottom: 0.6rem;
+  }
   .header h1 {
     font-family: var(--serif);
-    font-size: clamp(2.6rem, 7vw, 4.5rem);
+    font-size: clamp(2.4rem, 6.5vw, 4rem);
     font-style: italic;
     font-weight: 400;
     line-height: 1;
     color: var(--white);
-    margin: 1.2rem 0 0.6rem;
+    margin: 0 0 0.5rem;
     letter-spacing: -0.01em;
   }
   .header h1 em {
@@ -86,9 +125,37 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  .header-sub {
-    font-size: 0.95rem;
+  .header-tagline {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 0.85rem;
+  }
+  .header-event-meta {
+    font-size: 0.92rem;
     color: var(--silver);
+    line-height: 1.55;
+    margin-bottom: 0.85rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    align-items: center;
+  }
+  .header-event-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .header-event-meta-item .dot-sep {
+    color: var(--slate);
+    margin: 0 0.1rem;
+  }
+  .header-event-meta strong { color: var(--white); font-weight: 600; }
+  .header-sub {
+    font-size: 0.9rem;
+    color: var(--mist);
     line-height: 1.5;
     max-width: 640px;
     margin-bottom: 0.85rem;
@@ -394,6 +461,396 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--mist);
+  }
+
+  /* SHARE KIT — per-ambassador share toolkit
+     Two states:
+     1. "Who are you?" picker — 7 mini-cards with photo + name
+     2. Active Share Kit — code + editable message + copy/WhatsApp buttons */
+  .share-kit-wrap {
+    background:
+      linear-gradient(135deg, rgba(59,130,246,0.10), rgba(20,184,166,0.06) 60%, rgba(0,0,0,0) 100%),
+      var(--surface);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 16px;
+    padding: 1.3rem 1.4rem 1.4rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .share-kit-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--rain), var(--teal), transparent);
+  }
+  .share-kit-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--rain-light);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .share-kit-eyebrow::before {
+    content: '📣';
+    font-size: 1rem;
+  }
+  .share-kit-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.45rem;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+    line-height: 1.1;
+  }
+  .share-kit-sub {
+    font-size: 0.88rem;
+    color: var(--silver);
+    line-height: 1.55;
+    margin-bottom: 1rem;
+  }
+
+  /* Picker state — 7 mini-cards in a grid */
+  .share-picker {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.55rem;
+  }
+  .share-picker-card {
+    background: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem 0.4rem;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    color: inherit;
+  }
+  .share-picker-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--rain-light);
+    background: rgba(59,130,246,0.08);
+  }
+  .share-picker-photo {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 0.45rem;
+    border: 2px solid var(--border);
+    background: var(--surface-2);
+  }
+  .share-picker-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .share-picker-name {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.92rem;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  /* Active Kit state */
+  .share-kit-active {
+    display: none;
+  }
+  .share-kit-active.on { display: block; }
+  .share-kit-wrap.has-picker .share-kit-picker-state { display: block; }
+  .share-kit-wrap.has-active .share-kit-picker-state { display: none; }
+
+  .share-kit-hello {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .share-kit-hello-photo {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--teal);
+    box-shadow: 0 0 12px rgba(20,184,166,0.25);
+    flex-shrink: 0;
+  }
+  .share-kit-hello-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+  }
+  .share-kit-hello-body { flex: 1; min-width: 0; }
+  .share-kit-hello-greet {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--white);
+    line-height: 1.05;
+    margin-bottom: 0.15rem;
+  }
+  .share-kit-hello-stat {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--silver);
+    letter-spacing: 0.1em;
+  }
+  .share-kit-hello-stat strong { color: var(--teal-light); font-weight: 600; }
+  .share-kit-change {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slate);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.45rem 0.7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .share-kit-change:hover { color: var(--silver); border-color: var(--silver); }
+
+  .share-kit-code-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .share-kit-code-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+  .share-kit-code {
+    font-family: var(--mono);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--white);
+    background: rgba(0,0,0,0.35);
+    border: 1px dashed rgba(20,184,166,0.5);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    letter-spacing: 0.15em;
+  }
+  .share-kit-copy-code {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--silver);
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .share-kit-copy-code:hover { color: var(--white); border-color: var(--teal); }
+  .share-kit-copy-code.copied { color: var(--green-light); border-color: var(--green); }
+
+  .share-kit-message-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.45rem;
+    display: block;
+  }
+  .share-kit-message {
+    width: 100%;
+    min-height: 180px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    padding: 0.85rem 1rem;
+    resize: vertical;
+    transition: border-color 0.2s;
+  }
+  .share-kit-message:focus {
+    outline: none;
+    border-color: var(--rain-light);
+  }
+  .share-kit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.8rem;
+  }
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.1rem;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 0.15s, background 0.2s, border-color 0.2s;
+  }
+  .share-btn:hover { transform: translateY(-1px); }
+  .share-btn-copy {
+    background: var(--white);
+    color: var(--black);
+  }
+  .share-btn-copy.copied {
+    background: var(--green);
+    color: #fff;
+  }
+  .share-btn-whatsapp {
+    background: #25D366;
+    color: #fff;
+  }
+  .share-btn-whatsapp:hover { background: #1EBE57; }
+  .share-btn-reset {
+    background: transparent;
+    color: var(--slate);
+    border-color: var(--border);
+  }
+  .share-btn-reset:hover { color: var(--silver); border-color: var(--silver); }
+
+  /* EVENT DETAILS — Monsoon Miles 2026 info block at bottom */
+  .event-details {
+    background:
+      linear-gradient(180deg, rgba(59,130,246,0.06), rgba(0,0,0,0) 70%),
+      var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 1.4rem 1.8rem;
+    margin-top: 1.75rem;
+  }
+  .event-details-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--rain-light);
+    margin-bottom: 0.5rem;
+  }
+  .event-details-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.7rem;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+    line-height: 1.05;
+  }
+  .event-details-sub {
+    font-size: 0.92rem;
+    color: var(--silver);
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    max-width: 650px;
+  }
+  .event-details-cats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+  .event-cat {
+    background: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.95rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .event-cat::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+    opacity: 0.5;
+  }
+  .event-cat-time {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .event-cat-price {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    color: var(--teal-light);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .event-cat-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mist);
+  }
+  .event-details-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+  .event-fact {
+    background: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+  }
+  .event-fact-label {
+    font-family: var(--mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 0.3rem;
+  }
+  .event-fact-val {
+    font-size: 0.95rem;
+    color: var(--white);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .event-details-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--rain);
+    color: #fff;
+    padding: 0.85rem 1.4rem;
+    border-radius: 100px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .event-details-cta:hover {
+    background: var(--rain-light);
+    transform: translateY(-1px);
   }
 
   /* STARTING LINEUP — always visible, all 7 ambassadors */
@@ -1002,6 +1459,43 @@
     .lineup-photo { width: 56px; height: 56px; }
     .lineup-name { font-size: 0.9rem; }
     .lineup-count { font-size: 1.3rem; }
+
+    /* Share kit: picker becomes horizontal scroller on mobile */
+    .share-picker {
+      display: flex;
+      grid-template-columns: none;
+      gap: 0.55rem;
+      overflow-x: auto;
+      padding: 0.3rem 0 0.5rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -0.3rem;
+    }
+    .share-picker-card {
+      flex: 0 0 92px;
+      scroll-snap-align: start;
+    }
+    .share-kit-hello {
+      flex-wrap: wrap;
+    }
+    .share-kit-hello-greet { font-size: 1.3rem; }
+    .share-kit-actions .share-btn {
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+
+    /* Event details: categories stack tighter on mobile */
+    .event-details-cats {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .event-cat { padding: 0.75rem 0.5rem; }
+    .event-cat-time { font-size: 1.25rem; }
+    .event-cat-price { font-size: 0.78rem; }
+
+    .header h1 { font-size: 2.2rem; }
+    .header-event-meta { font-size: 0.82rem; gap: 0.3rem 0.6rem; }
+    .header-event-meta .dot-sep { display: none; }
   }
 </style>
 </head>
@@ -1009,8 +1503,28 @@
 
 <div class="header">
   <a href="../" class="header-back">&larr; Back to Monsoon Miles</a>
-  <h1>The <em>Race</em>.</h1>
-  <p class="header-sub">Most referrals on race day wins. 25 max per ambassador. Refer with your code. See where you stand.</p>
+
+  <div class="presents-pill">
+    <div class="presents-pill-logo">
+      <img src="../Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara">
+    </div>
+    <div class="presents-pill-text"><strong>FICCI FLO Vadodara</strong> presents</div>
+  </div>
+
+  <div class="header-event-label">RWD Monsoon Miles 2026</div>
+  <h1>The Ambassador <em>Race</em>.</h1>
+  <div class="header-tagline">Run Through The Storm · Year 2</div>
+
+  <div class="header-event-meta">
+    <span class="header-event-meta-item">📅 <strong>26 July 2026</strong></span>
+    <span class="dot-sep">·</span>
+    <span class="header-event-meta-item">📍 <strong>Suncity Club &amp; Resort</strong>, Vadodara</span>
+    <span class="dot-sep">·</span>
+    <span class="header-event-meta-item">🏃 1 hr / 2 hrs / 4 hrs</span>
+  </div>
+
+  <p class="header-sub">Most referrals on race day wins. 25 max per ambassador. Use your code at checkout to give 10% off — and climb the board.</p>
+
   <div class="header-live">
     <span class="dot"></span>
     Live · <span class="countdown" id="hdrCountdown">— days to go</span> · Updated <span id="hdrUpdated">just now</span>
@@ -1032,6 +1546,46 @@
 <!-- BOARD -->
 <div class="container" id="boardContent" style="display:none;">
 
+  <!-- SHARE KIT — pick yourself once, then get your personalised code + message -->
+  <div class="share-kit-wrap" id="shareKitWrap">
+
+    <!-- State A: picker -->
+    <div class="share-kit-picker-state" id="shareKitPickerState">
+      <div class="share-kit-eyebrow">Your Share Kit</div>
+      <div class="share-kit-title">First time? Pick yourself.</div>
+      <p class="share-kit-sub">Tap your card once and we'll give you a ready-to-send WhatsApp message with your referral code. Saved on this device.</p>
+      <div class="share-picker" id="sharePicker"></div>
+    </div>
+
+    <!-- State B: active kit -->
+    <div class="share-kit-active" id="shareKitActive">
+      <div class="share-kit-hello">
+        <div class="share-kit-hello-photo" id="shareKitPhoto"></div>
+        <div class="share-kit-hello-body">
+          <div class="share-kit-hello-greet" id="shareKitGreet">Hey there 👋</div>
+          <div class="share-kit-hello-stat" id="shareKitStat"></div>
+        </div>
+        <button type="button" class="share-kit-change" id="shareKitChange">Not me ↺</button>
+      </div>
+
+      <div class="share-kit-code-row">
+        <span class="share-kit-code-label">Your code</span>
+        <span class="share-kit-code" id="shareKitCode">—</span>
+        <button type="button" class="share-kit-copy-code" id="shareKitCopyCode">Copy code</button>
+      </div>
+
+      <label class="share-kit-message-label" for="shareKitMessage">Your WhatsApp message (edit if you like)</label>
+      <textarea class="share-kit-message" id="shareKitMessage" rows="9"></textarea>
+
+      <div class="share-kit-actions">
+        <button type="button" class="share-btn share-btn-copy" id="shareKitCopy">📋 Copy message</button>
+        <a href="#" class="share-btn share-btn-whatsapp" id="shareKitWhatsApp" target="_blank">🟢 Open in WhatsApp</a>
+        <button type="button" class="share-btn share-btn-reset" id="shareKitResetMessage">↻ Reset to default</button>
+      </div>
+    </div>
+
+  </div>
+
   <div class="hero-leader" id="heroLeader"></div>
 
   <div class="stats-strip" id="statsStrip"></div>
@@ -1052,6 +1606,54 @@
 
   <div class="section-title">Milestones</div>
   <div class="milestones" id="milestones"></div>
+
+  <!-- About Monsoon Miles 2026 — event details for ambassadors' reference -->
+  <div class="event-details">
+    <div class="event-details-eyebrow">About the event</div>
+    <h2 class="event-details-title">Monsoon Miles 2026.</h2>
+    <p class="event-details-sub">Run Through The Storm — Vadodara's only monsoon endurance run. Pick your time, run as far as you can, refuel at the pool party. Use this info when you message your contacts.</p>
+
+    <div class="event-details-cats">
+      <div class="event-cat">
+        <div class="event-cat-time">1 hr</div>
+        <div class="event-cat-price">₹799</div>
+        <div class="event-cat-label">Starter</div>
+      </div>
+      <div class="event-cat">
+        <div class="event-cat-time">2 hrs</div>
+        <div class="event-cat-price">₹899</div>
+        <div class="event-cat-label">Pacer</div>
+      </div>
+      <div class="event-cat">
+        <div class="event-cat-time">4 hrs</div>
+        <div class="event-cat-price">₹999</div>
+        <div class="event-cat-label">Endurance</div>
+      </div>
+    </div>
+
+    <div class="event-details-facts">
+      <div class="event-fact">
+        <div class="event-fact-label">Date</div>
+        <div class="event-fact-val">Sunday, 26 July 2026</div>
+      </div>
+      <div class="event-fact">
+        <div class="event-fact-label">Venue</div>
+        <div class="event-fact-val">Suncity Club &amp; Resort, Vadodara</div>
+      </div>
+      <div class="event-fact">
+        <div class="event-fact-label">Flag off</div>
+        <div class="event-fact-val">5:30 AM · Pool party after</div>
+      </div>
+      <div class="event-fact">
+        <div class="event-fact-label">Title sponsor</div>
+        <div class="event-fact-val">FICCI FLO Vadodara</div>
+      </div>
+    </div>
+
+    <a href="https://runwithdina.com/monsoon-miles/" target="_blank" class="event-details-cta">
+      Full event page →
+    </a>
+  </div>
 
   <p class="footer-note">
     Auto-refreshes every 30 seconds. Need anything? WhatsApp Dina: <a href="https://wa.me/919099906174" target="_blank">+91 90999 06174</a>
@@ -1092,6 +1694,178 @@ function lookupRoster(row) {
   if (row.name && ROSTER_BY_NAME[row.name.toLowerCase()]) return ROSTER_BY_NAME[row.name.toLowerCase()];
   if (row.code && ROSTER_BY_CODE[row.code.toLowerCase()]) return ROSTER_BY_CODE[row.code.toLowerCase()];
   return null;
+}
+
+// ============================================================
+// SHARE KIT — pick-yourself picker + personalised share message
+// localStorage key 'mm_amb_self' stores the chosen ambassador code
+// ============================================================
+const REGISTER_URL = 'https://runwithdina.com/monsoon-miles/register/';
+
+function defaultShareMessage(amb) {
+  return [
+    'Hey! Running Monsoon Miles 2026 with me?',
+    '',
+    'Sunday 26 July · Suncity Club, Vadodara · Run Through The Storm 🌧️',
+    'Pick your time:',
+    '• 1 hour — ₹799',
+    '• 2 hours — ₹899',
+    '• 4 hours — ₹999',
+    '',
+    'Use my code *' + amb.code + '* at checkout — you get 10% off, and I get one step closer to winning the ambassador board 🏆',
+    '',
+    'Register here: ' + REGISTER_URL,
+    '',
+    '— ' + amb.name + (amb.community && amb.community !== 'Solo Ambassador' ? ' · ' + amb.community : '')
+  ].join('\n');
+}
+
+function getSavedSelf() {
+  try { return localStorage.getItem('mm_amb_self') || ''; } catch (e) { return ''; }
+}
+function setSavedSelf(code) {
+  try { localStorage.setItem('mm_amb_self', code); } catch (e) {}
+}
+function getSavedMessage(code) {
+  try { return localStorage.getItem('mm_amb_msg_' + code) || ''; } catch (e) { return ''; }
+}
+function setSavedMessage(code, msg) {
+  try { localStorage.setItem('mm_amb_msg_' + code, msg); } catch (e) {}
+}
+function clearSavedMessage(code) {
+  try { localStorage.removeItem('mm_amb_msg_' + code); } catch (e) {}
+}
+
+function renderSharePicker() {
+  const wrap = document.getElementById('sharePicker');
+  if (!wrap) return;
+  wrap.innerHTML = AMBASSADOR_ROSTER.map(function(a) {
+    const photo = '../Photos/ambassadors/' + a.photo;
+    return '<button type="button" class="share-picker-card" data-code="' + escapeAttr(a.code) + '">' +
+             '<div class="share-picker-photo"><img src="' + escapeAttr(photo) + '" alt="' + escapeAttr(a.name) + '"></div>' +
+             '<div class="share-picker-name">' + escapeHtml(a.name) + '</div>' +
+           '</button>';
+  }).join('');
+  wrap.querySelectorAll('.share-picker-card').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const code = btn.getAttribute('data-code');
+      setSavedSelf(code);
+      activateShareKit(code);
+    });
+  });
+}
+
+// Stats for the active ambassador (rank + uses) — pulled from the
+// most recent leaderboard render. Stored globally and re-applied
+// every time the board refreshes.
+let lastLeaderboard = [];
+
+function activateShareKit(code) {
+  const amb = ROSTER_BY_CODE[code.toLowerCase()];
+  if (!amb) return;
+
+  document.getElementById('shareKitWrap').classList.add('has-active');
+  document.getElementById('shareKitPickerState').style.display = 'none';
+  document.getElementById('shareKitActive').classList.add('on');
+
+  // Photo
+  document.getElementById('shareKitPhoto').innerHTML =
+    '<img src="../Photos/ambassadors/' + escapeAttr(amb.photo) + '" alt="' + escapeAttr(amb.name) + '">';
+
+  // Greeting + stat
+  document.getElementById('shareKitGreet').textContent = 'Hey ' + amb.name + ' 👋';
+  refreshShareKitStat(code);
+
+  // Code
+  document.getElementById('shareKitCode').textContent = amb.code;
+
+  // Message (saved or default)
+  const saved = getSavedMessage(amb.code);
+  const msg = saved || defaultShareMessage(amb);
+  document.getElementById('shareKitMessage').value = msg;
+  updateWhatsAppLink(msg);
+}
+
+function refreshShareKitStat(code) {
+  const lb = lastLeaderboard || [];
+  const row = lb.find(function(r) { return (r.code || '').toUpperCase() === code.toUpperCase(); });
+  const statEl = document.getElementById('shareKitStat');
+  if (!statEl) return;
+  if (row) {
+    const remaining = (row.maxUses || MAX_USES_DEFAULT) - row.uses;
+    statEl.innerHTML = 'Rank <strong>#' + row.rank + '</strong> · ' + row.uses + '/' + (row.maxUses || MAX_USES_DEFAULT) + ' referrals · ' + remaining + ' slot' + (remaining === 1 ? '' : 's') + ' left';
+  } else {
+    statEl.innerHTML = '0 referrals so far · ' + MAX_USES_DEFAULT + ' slots open';
+  }
+}
+
+function updateWhatsAppLink(msg) {
+  const link = document.getElementById('shareKitWhatsApp');
+  if (!link) return;
+  link.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+}
+
+function deactivateShareKit() {
+  setSavedSelf('');
+  document.getElementById('shareKitWrap').classList.remove('has-active');
+  document.getElementById('shareKitPickerState').style.display = 'block';
+  document.getElementById('shareKitActive').classList.remove('on');
+}
+
+function initShareKit() {
+  renderSharePicker();
+  const self = getSavedSelf();
+  if (self && ROSTER_BY_CODE[self.toLowerCase()]) {
+    activateShareKit(self);
+  }
+
+  // Wire actions (idempotent — only run once on init)
+  if (initShareKit._wired) return;
+  initShareKit._wired = true;
+
+  document.getElementById('shareKitChange').addEventListener('click', deactivateShareKit);
+
+  const msgEl = document.getElementById('shareKitMessage');
+  msgEl.addEventListener('input', function() {
+    const self = getSavedSelf();
+    if (self) setSavedMessage(self, msgEl.value);
+    updateWhatsAppLink(msgEl.value);
+  });
+
+  document.getElementById('shareKitCopy').addEventListener('click', function() {
+    const btn = this;
+    navigator.clipboard.writeText(msgEl.value).then(function() {
+      btn.classList.add('copied');
+      btn.innerHTML = '✓ Copied!';
+      setTimeout(function() { btn.classList.remove('copied'); btn.innerHTML = '📋 Copy message'; }, 2000);
+    }).catch(function() {
+      // Fallback for older browsers
+      msgEl.select();
+      try { document.execCommand('copy'); btn.innerHTML = '✓ Copied!'; setTimeout(function() { btn.innerHTML = '📋 Copy message'; }, 2000); }
+      catch (e) { alert('Copy failed — long-press the message to copy manually.'); }
+    });
+  });
+
+  document.getElementById('shareKitCopyCode').addEventListener('click', function() {
+    const btn = this;
+    const code = document.getElementById('shareKitCode').textContent;
+    navigator.clipboard.writeText(code).then(function() {
+      btn.classList.add('copied');
+      btn.textContent = '✓ Copied';
+      setTimeout(function() { btn.classList.remove('copied'); btn.textContent = 'Copy code'; }, 2000);
+    });
+  });
+
+  document.getElementById('shareKitResetMessage').addEventListener('click', function() {
+    const self = getSavedSelf();
+    if (!self) return;
+    const amb = ROSTER_BY_CODE[self.toLowerCase()];
+    if (!amb) return;
+    const msg = defaultShareMessage(amb);
+    msgEl.value = msg;
+    clearSavedMessage(amb.code);
+    updateWhatsAppLink(msg);
+  });
 }
 
 const pinScreen = document.getElementById('pinScreen');
@@ -1149,6 +1923,7 @@ async function loadBoard(pin) {
     lastLoadedAt = Date.now();
     renderBoard(json);
     showBoard();
+    initShareKit();
     scheduleRefresh();
     scheduleUpdatedTicker();
   } catch (err) {
@@ -1224,6 +1999,11 @@ function renderBoard(data) {
   const lb = data.leaderboard || [];
   const leader = data.leader && data.leader.uses > 0 ? data.leader : null;
   const stats  = data.stats || {};
+
+  // Cache for share-kit stat lookup
+  lastLeaderboard = lb;
+  const selfCode = getSavedSelf();
+  if (selfCode) refreshShareKitStat(selfCode);
 
   // Header countdown + updated
   document.getElementById('hdrCountdown').textContent = (stats.daysToGo || 0) + ' days to go';
