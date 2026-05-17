@@ -289,6 +289,10 @@
     text-transform: uppercase;
     color: var(--teal-light);
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-wrap: wrap;
   }
   .hero-leader-stats {
     display: flex;
@@ -501,10 +505,20 @@
     font-size: 1rem;
     color: var(--white);
     line-height: 1.1;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.25rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .lineup-club {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 18px;
+    margin-bottom: 0.25rem;
+  }
+  .lineup-club-empty {
+    min-height: 18px;
   }
   .lineup-community {
     font-family: var(--mono);
@@ -640,6 +654,14 @@
     margin-bottom: 0.2rem;
   }
   .podium-card.rank-1 .podium-name { font-size: 1.35rem; }
+  .podium-club {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.4rem 0 0.45rem;
+    min-height: 24px;
+  }
+  .podium-club-empty { min-height: 0; margin: 0; }
   .podium-community {
     font-family: var(--mono);
     font-size: 0.58rem;
@@ -762,7 +784,12 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--mist);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.15rem;
   }
+  .pack-community .club-chip { flex-shrink: 0; }
   .pack-gap {
     font-family: var(--mono);
     font-size: 0.6rem;
@@ -862,6 +889,25 @@
     line-height: 1;
   }
   .milestone.unlocked .milestone-count { color: var(--white); }
+
+  /* CLUB LOGO CHIP — small white/dark badge showing the community's logo,
+     used next to community labels on every card type */
+  .club-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    overflow: hidden;
+    flex-shrink: 0;
+    vertical-align: middle;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .club-chip img {
+    height: 100%;
+    width: auto;
+    max-width: none;
+    display: block;
+  }
 
   /* AVATAR FALLBACK */
   .avatar-fallback {
@@ -1022,18 +1068,22 @@
 const API_URL = 'https://script.google.com/macros/s/AKfycbzv8R2OKuicB0K61k6XXci31n_qxWREx3jt6SWUXZQO3MnjsdKbmV-72oTV1Sx8z58/exec';
 const MAX_USES_DEFAULT = 25;
 
-// Local ambassador roster — used as a visual fallback so photos and
-// community names ALWAYS show, even before anyone has any referrals
-// and even if the Sheet doesn't have photo/community columns filled in.
+// Local ambassador roster — used as a visual fallback so photos,
+// community names AND club logos ALWAYS show, even before anyone has
+// any referrals and even if the Sheet doesn't have these columns.
 // Matched against API rows by name (case-insensitive) first, then by code.
+//
+// `clubLogo`    — filename in /Photos/community-logos/ (omit for solo)
+// `clubLogoBg`  — chip background (some logos are white-text and need a
+//                 dark backdrop; most are colour-on-white and need white)
 const AMBASSADOR_ROSTER = [
-  { code: 'AMBRISH10', name: 'Ambrish', community: 'RunwithDina',                  photo: 'ambrish.jpg' },
-  { code: 'ANEEL10',   name: 'Aneel',   community: 'RWR',                          photo: 'aneel.jpg' },
-  { code: 'ANNIKET10', name: 'Anniket', community: "Cycle N' Chai",                photo: 'anniket.jpg' },
-  { code: 'MOHIT10',   name: 'Mohit',   community: 'OneStep Run Club',             photo: 'mohit.jpg' },
-  { code: 'PUJAN10',   name: 'Pujan',   community: 'Alite Fit',                    photo: 'pujan.jpg' },
-  { code: 'SHYAM10',   name: 'Shyam',   community: "Shyam's Functional Fitness",   photo: 'shyam.jpg' },
-  { code: 'PALLAVI10', name: 'Pallavi', community: 'Solo Ambassador',              photo: 'pallavi.jpg' },
+  { code: 'AMBRISH10', name: 'Ambrish', community: 'RunwithDina',                  photo: 'ambrish.jpg', clubLogo: 'runwithdina.png',  clubLogoBg: '#0a1530' },
+  { code: 'ANEEL10',   name: 'Aneel',   community: 'RWR',                          photo: 'aneel.jpg',   clubLogo: 'rwr.png',          clubLogoBg: '#ffffff' },
+  { code: 'ANNIKET10', name: 'Anniket', community: "Cycle N' Chai",                photo: 'anniket.jpg', clubLogo: 'cycle-n-chai.png', clubLogoBg: 'transparent' },
+  { code: 'MOHIT10',   name: 'Mohit',   community: 'OneStep Run Club',             photo: 'mohit.jpg',   clubLogo: 'onestep.png',      clubLogoBg: 'transparent' },
+  { code: 'PUJAN10',   name: 'Pujan',   community: 'Alite Fit',                    photo: 'pujan.jpg',   clubLogo: 'alite-fit.png',    clubLogoBg: '#ffffff' },
+  { code: 'SHYAM10',   name: 'Shyam',   community: "Shyam's Functional Fitness",   photo: 'shyam.jpg',   clubLogo: 'shyam-fitness.png',clubLogoBg: '#ffffff' },
+  { code: 'PALLAVI10', name: 'Pallavi', community: 'Solo Ambassador',              photo: 'pallavi.jpg', clubLogo: null,               clubLogoBg: null },
 ];
 const ROSTER_BY_NAME = AMBASSADOR_ROSTER.reduce(function(acc, a) { acc[a.name.toLowerCase()] = a; return acc; }, {});
 const ROSTER_BY_CODE = AMBASSADOR_ROSTER.reduce(function(acc, a) { acc[a.code.toLowerCase()] = a; return acc; }, {});
@@ -1139,6 +1189,22 @@ function communityFor(row) {
   const r = lookupRoster(row);
   return r ? r.community : 'Solo Ambassador';
 }
+function clubLogoFor(row) {
+  const r = lookupRoster(row);
+  if (!r || !r.clubLogo) return null;
+  return { src: '../Photos/community-logos/' + r.clubLogo, bg: r.clubLogoBg || '#ffffff' };
+}
+// Renders a small club-logo chip. `size` controls height in px.
+// If the ambassador has no logo, returns empty string.
+function clubLogoChip(row, size) {
+  const c = clubLogoFor(row);
+  if (!c) return '';
+  const h = size || 22;
+  const pad = c.bg === 'transparent' ? '0' : (h <= 22 ? '2px 6px' : '3px 8px');
+  return '<span class="club-chip" style="background:' + c.bg + ';height:' + h + 'px;padding:' + pad + ';">' +
+           '<img src="' + escapeAttr(c.src) + '" alt="' + escapeAttr(communityFor(row)) + ' logo">' +
+         '</span>';
+}
 function avatarBlock(row) {
   const src = photoSrc(row);
   const initials = initialsOf(row.name);
@@ -1180,7 +1246,7 @@ function renderBoard(data) {
       '<div class="hero-leader-body">' +
         '<div class="hero-leader-eyebrow">Leading the race</div>' +
         '<div class="hero-leader-name">' + escapeHtml(leader.name) + '</div>' +
-        '<div class="hero-leader-community">' + escapeHtml(communityFor(leader)) + '</div>' +
+        '<div class="hero-leader-community">' + clubLogoChip(leader, 26) + '<span>' + escapeHtml(communityFor(leader)) + '</span></div>' +
         '<div class="hero-leader-stats">' +
           '<span class="hero-leader-count">' + leader.uses + '</span>' +
           '<span class="hero-leader-count-of">/ ' + max + ' referrals</span>' +
@@ -1212,11 +1278,13 @@ function renderBoard(data) {
     let gapText = idx === 0
       ? (top3.length > 1 ? '+' + (row.uses - top3[1].uses) + ' ahead' : 'On the board')
       : (gap === 0 ? 'Tied with #1' : '−' + gap + ' to top');
+    const chip = clubLogoChip(row, 24);
     podiumHtml +=
       '<div class="podium-card rank-' + (idx + 1) + '">' +
         '<div class="podium-medal">' + medals[idx] + '</div>' +
         '<div class="podium-photo">' + avatarBlock(row) + '</div>' +
         '<div class="podium-name">' + escapeHtml(row.name) + '</div>' +
+        (chip ? '<div class="podium-club">' + chip + '</div>' : '<div class="podium-club podium-club-empty"></div>') +
         '<div class="podium-community">' + escapeHtml(communityFor(row)) + '</div>' +
         '<div class="podium-count">' + row.uses + '<span class="podium-count-max"> / ' + (row.maxUses || MAX_USES_DEFAULT) + '</span></div>' +
         '<div class="podium-bar-wrap"><div class="podium-bar" style="width:' + row.percentage + '%;"></div></div>' +
@@ -1260,7 +1328,7 @@ function renderBoard(data) {
             '<div class="pack-info-line1">' +
               '<span class="pack-name">' + escapeHtml(row.name) + '</span>' + tags +
             '</div>' +
-            '<div class="pack-community">' + escapeHtml(communityFor(row)) + '</div>' +
+            '<div class="pack-community">' + clubLogoChip(row, 20) + '<span>' + escapeHtml(communityFor(row)) + '</span></div>' +
             '<div class="pack-bar-wrap"><div class="pack-bar" style="width:' + row.percentage + '%;"></div></div>' +
             '<div class="pack-gap">' + escapeHtml(gapText) + '</div>' +
           '</div>' +
@@ -1337,11 +1405,13 @@ function renderLineup(lb) {
     const isZero = uses === 0;
     const isCapped = !!row.capped;
     const cls = (isLead ? 'lead ' : '') + (isZero ? 'zero ' : '') + (isCapped ? 'capped ' : '');
+    const chip = clubLogoChip(row, 18);
     html +=
       '<div class="lineup-card ' + cls + '">' +
         '<div class="lineup-rank">#' + (idx + 1) + '</div>' +
         '<div class="lineup-photo">' + avatarBlock(row) + '</div>' +
         '<div class="lineup-name">' + escapeHtml(row.name) + '</div>' +
+        (chip ? '<div class="lineup-club">' + chip + '</div>' : '<div class="lineup-club lineup-club-empty"></div>') +
         '<div class="lineup-community">' + escapeHtml(communityFor(row)) + '</div>' +
         '<div class="lineup-count">' + uses + '</div>' +
         '<div class="lineup-bar-wrap"><div class="lineup-bar" style="width:' + (row.percentage || 0) + '%;"></div></div>' +
