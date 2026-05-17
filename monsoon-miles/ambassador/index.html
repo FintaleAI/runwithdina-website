@@ -1558,13 +1558,34 @@
 <!-- BOARD -->
 <div class="container" id="boardContent" style="display:none;">
 
+  <div class="hero-leader" id="heroLeader"></div>
+
+  <div class="stats-strip" id="statsStrip"></div>
+
+  <div class="lineup-wrap">
+    <div class="lineup-eyebrow">
+      <span>The Roster · All 7 Ambassadors</span>
+      <span class="lineup-eyebrow-r" id="lineupNote">Sorted by referrals · 👑 leads · 🏆 hit 25</span>
+    </div>
+    <div class="lineup" id="lineup"></div>
+  </div>
+
+  <div class="section-title">The Podium</div>
+  <div class="podium" id="podium"></div>
+
+  <div class="section-title" id="packTitle" style="display:none;">The rest of the pack</div>
+  <div class="pack-list" id="packList"></div>
+
+  <div class="section-title">Milestones</div>
+  <div class="milestones" id="milestones"></div>
+
   <!-- SHARE KIT — pick yourself once, then get your personalised code + message -->
   <div class="share-kit-wrap" id="shareKitWrap">
 
     <!-- State A: picker -->
     <div class="share-kit-picker-state" id="shareKitPickerState">
       <div class="share-kit-eyebrow">Your Share Kit</div>
-      <div class="share-kit-title">First time? Pick yourself.</div>
+      <div class="share-kit-title">Ready to refer? Pick yourself.</div>
       <p class="share-kit-sub">Tap your card once and we'll give you a ready-to-send WhatsApp message with your referral code. Saved on this device.</p>
       <div class="share-picker" id="sharePicker"></div>
     </div>
@@ -1597,27 +1618,6 @@
     </div>
 
   </div>
-
-  <div class="hero-leader" id="heroLeader"></div>
-
-  <div class="stats-strip" id="statsStrip"></div>
-
-  <div class="lineup-wrap">
-    <div class="lineup-eyebrow">
-      <span>The Roster · All 7 Ambassadors</span>
-      <span class="lineup-eyebrow-r" id="lineupNote">Sorted by referrals · 👑 leads · 🏆 hit 25</span>
-    </div>
-    <div class="lineup" id="lineup"></div>
-  </div>
-
-  <div class="section-title">The Podium</div>
-  <div class="podium" id="podium"></div>
-
-  <div class="section-title" id="packTitle" style="display:none;">The rest of the pack</div>
-  <div class="pack-list" id="packList"></div>
-
-  <div class="section-title">Milestones</div>
-  <div class="milestones" id="milestones"></div>
 
   <!-- About Monsoon Miles 2026 — event details for ambassadors' reference -->
   <div class="event-details">
@@ -1754,7 +1754,7 @@ function renderSharePicker() {
   wrap.innerHTML = AMBASSADOR_ROSTER.map(function(a) {
     const photo = '../Photos/ambassadors/' + a.photo;
     return '<button type="button" class="share-picker-card" data-code="' + escapeAttr(a.code) + '">' +
-             '<div class="share-picker-photo"><img src="' + escapeAttr(photo) + '" alt="' + escapeAttr(a.name) + '"></div>' +
+             '<div class="share-picker-photo"><img src="' + escapeAttr(photo) + '" alt="' + escapeAttr(a.name) + '" loading="lazy" decoding="async"></div>' +
              '<div class="share-picker-name">' + escapeHtml(a.name) + '</div>' +
            '</button>';
   }).join('');
@@ -1782,7 +1782,7 @@ function activateShareKit(code) {
 
   // Photo
   document.getElementById('shareKitPhoto').innerHTML =
-    '<img src="../Photos/ambassadors/' + escapeAttr(amb.photo) + '" alt="' + escapeAttr(amb.name) + '">';
+    '<img src="../Photos/ambassadors/' + escapeAttr(amb.photo) + '" alt="' + escapeAttr(amb.name) + '" loading="lazy" decoding="async">';
 
   // Greeting + stat
   document.getElementById('shareKitGreet').textContent = 'Hey ' + amb.name + ' 👋';
@@ -1982,24 +1982,28 @@ function clubLogoFor(row) {
   return { src: '../Photos/community-logos/' + r.clubLogo, bg: r.clubLogoBg || '#ffffff' };
 }
 // Renders a small club-logo chip. `size` controls height in px.
-// If the ambassador has no logo, returns empty string.
-function clubLogoChip(row, size) {
+// If the ambassador has no logo, returns empty string. `eager` skips
+// lazy-loading (use only for above-the-fold hero leader chip).
+function clubLogoChip(row, size, eager) {
   const c = clubLogoFor(row);
   if (!c) return '';
   const h = size || 22;
   const pad = c.bg === 'transparent' ? '0' : (h <= 22 ? '2px 6px' : '3px 8px');
+  const loading = eager ? '' : ' loading="lazy" decoding="async"';
   return '<span class="club-chip" style="background:' + c.bg + ';height:' + h + 'px;padding:' + pad + ';">' +
-           '<img src="' + escapeAttr(c.src) + '" alt="' + escapeAttr(communityFor(row)) + ' logo">' +
+           '<img src="' + escapeAttr(c.src) + '" alt="' + escapeAttr(communityFor(row)) + ' logo"' + loading + '>' +
          '</span>';
 }
-function avatarBlock(row) {
+// Render an avatar. `eager` = true skips lazy-loading (use for above-the-fold:
+// hero leader). Everything else loads lazily so they don't block initial paint.
+function avatarBlock(row, eager) {
   const src = photoSrc(row);
   const initials = initialsOf(row.name);
   if (src) {
-    // If the image file is missing, swap to initials avatar.
+    const loading = eager ? '' : ' loading="lazy" decoding="async"';
     return '<img src="' + escapeAttr(src) + '" alt="' + escapeAttr(row.name) +
-           '" data-initials="' + escapeAttr(initials) +
-           '" onerror="this.outerHTML=&quot;<div class=&apos;avatar-fallback&apos;>' + initials + '</div>&quot;">';
+           '" data-initials="' + escapeAttr(initials) + '"' + loading +
+           ' onerror="this.outerHTML=&quot;<div class=&apos;avatar-fallback&apos;>' + initials + '</div>&quot;">';
   }
   return '<div class="avatar-fallback">' + escapeHtml(initials) + '</div>';
 }
@@ -2034,11 +2038,11 @@ function renderBoard(data) {
     const toCap = max - leader.uses;
     const capText = toCap > 0 ? ' · ' + toCap + ' to hit ' + max : ' · Hit the cap';
     heroEl.innerHTML =
-      '<div class="hero-leader-photo">' + avatarBlock(leader) + '</div>' +
+      '<div class="hero-leader-photo">' + avatarBlock(leader, true) + '</div>' +
       '<div class="hero-leader-body">' +
         '<div class="hero-leader-eyebrow">Leading the race</div>' +
         '<div class="hero-leader-name">' + escapeHtml(leader.name) + '</div>' +
-        '<div class="hero-leader-community">' + clubLogoChip(leader, 26) + '<span>' + escapeHtml(communityFor(leader)) + '</span></div>' +
+        '<div class="hero-leader-community">' + clubLogoChip(leader, 26, true) + '<span>' + escapeHtml(communityFor(leader)) + '</span></div>' +
         '<div class="hero-leader-stats">' +
           '<span class="hero-leader-count">' + leader.uses + '</span>' +
           '<span class="hero-leader-count-of">/ ' + max + ' referrals</span>' +
