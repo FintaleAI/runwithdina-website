@@ -523,10 +523,10 @@
     margin-bottom: 1rem;
   }
 
-  /* Picker state — 8 mini-cards in a grid */
+  /* Picker state — 9 mini-cards in a grid */
   .share-picker {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(9, 1fr);
     gap: 0.5rem;
   }
   .share-picker-card {
@@ -898,7 +898,7 @@
   }
   .lineup {
     display: grid;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(9, 1fr);
     gap: 0.5rem;
   }
   .lineup-card {
@@ -1702,6 +1702,7 @@ const AMBASSADOR_ROSTER = [
   { code: 'PUJAN10',   name: 'Pujan',   community: 'Alite Fit',                    photo: 'pujan.jpg',   clubLogo: 'alite-fit.png',    clubLogoBg: '#000000' },
   { code: 'SHYAM10',   name: 'Shyam',   community: "Shyam's Functional Fitness",   photo: 'shyam.jpg',   clubLogo: 'shyam-fitness.png',clubLogoBg: '#ffffff' },
   { code: 'TINSHU10',  name: 'Tinshu',  community: 'Harox Fitness Box',            photo: 'tinshu.jpg',  clubLogo: 'harox.png',        clubLogoBg: '#000000' },
+  { code: 'RJ10',      name: 'Raghvendra', community: 'Gujarat Triathletes',       photo: 'raghvendra.jpg', clubLogo: 'gujarat-triathletes.png', clubLogoBg: '#ffffff' },
   { code: 'PALLAVI10', name: 'Pallavi', community: 'Solo Ambassador',              photo: 'pallavi.jpg', clubLogo: null,               clubLogoBg: null },
 ];
 const ROSTER_BY_NAME = AMBASSADOR_ROSTER.reduce(function(acc, a) { acc[a.name.toLowerCase()] = a; return acc; }, {});
