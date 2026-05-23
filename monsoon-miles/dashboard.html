@@ -378,9 +378,10 @@ function renderAmbassadors() {
 
   const totalReferrals = codes.reduce((s, c) => s + byCode[c].uses, 0);
   const totalDiscount  = codes.reduce((s, c) => s + byCode[c].totalDiscount, 0);
-  // Default cap; if the user later adds more codes, /actually/ the cap is per-ambassador
-  // and lives in the Ambassadors sheet — we don't have that here, so just show count.
-  const MAX_USES = 20;
+  // Default cap; the leaderboard messaging says "25 max per ambassador" so
+  // mirror that here. If a per-ambassador cap ever lives in the Ambassadors
+  // sheet, we'd swap this to read from row.maxUses like the public board.
+  const MAX_USES = 25;
 
   let rowsHTML = '';
   codes.forEach(code => {
