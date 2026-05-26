@@ -523,10 +523,10 @@
     margin-bottom: 1rem;
   }
 
-  /* Picker state — 9 mini-cards in a grid */
+  /* Picker state — 10 mini-cards in a grid */
   .share-picker {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     gap: 0.5rem;
   }
   .share-picker-card {
@@ -898,7 +898,7 @@
   }
   .lineup {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     gap: 0.5rem;
   }
   .lineup-card {
@@ -1568,7 +1568,7 @@
 
   <div class="lineup-wrap">
     <div class="lineup-eyebrow">
-      <span>The Roster · All 8 Ambassadors</span>
+      <span>The Roster · All 10 Ambassadors</span>
       <span class="lineup-eyebrow-r" id="lineupNote">Sorted by referrals · 👑 leads · 🏆 hit 25</span>
     </div>
     <div class="lineup" id="lineup"></div>
@@ -1703,6 +1703,7 @@ const AMBASSADOR_ROSTER = [
   { code: 'SHYAM10',   name: 'Shyam',   community: "Shyam's Functional Fitness",   photo: 'shyam.jpg',   clubLogo: 'shyam-fitness.png',clubLogoBg: '#ffffff' },
   { code: 'TINSHU10',  name: 'Tinshu',  community: 'Harox Fitness Box',            photo: 'tinshu.jpg',  clubLogo: 'harox.png',        clubLogoBg: '#000000' },
   { code: 'RJ10',      name: 'Raghvendrasinh', community: 'Gujarat Triathletes',   photo: 'raghvendra.jpg', clubLogo: 'gujarat-triathletes.png', clubLogoBg: '#ffffff' },
+  { code: 'KATHAN10',  name: 'Kathan',  community: 'Pickle Society',               photo: 'kathan.jpg',  clubLogo: 'pickle-society.png', clubLogoBg: '#ffffff' },
   { code: 'PALLAVI10', name: 'Pallavi', community: 'Solo Ambassador',              photo: 'pallavi.jpg', clubLogo: null,               clubLogoBg: null },
 ];
 const ROSTER_BY_NAME = AMBASSADOR_ROSTER.reduce(function(acc, a) { acc[a.name.toLowerCase()] = a; return acc; }, {});
