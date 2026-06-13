@@ -1730,6 +1730,24 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   max-height: 75%;
 }
 
+/* GIFTING PARTNERS — smaller, centred cards so 2 logos stay proportionate
+   to the supporting-partner row above */
+.gifting-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  max-width: 600px;
+  margin: 0 auto clamp(2rem, 4vh, 3rem);
+}
+.gifting-card {
+  height: 118px;
+  padding: 14px 22px;
+}
+.gifting-card img {
+  max-width: 90%;
+  max-height: 66%;
+}
+
 /* SUPPORTING + TECH ROW */
 .supporting-row {
   display: grid;
@@ -2961,9 +2979,9 @@ input[type="date"].form-input {
 
   <!-- GIFTING PARTNERS (race-day hampers + kit-bag goodies) -->
   <div class="sponsor-tier-label" style="margin-top: clamp(2rem, 4vh, 3rem);">Gifting Partners</div>
-  <div class="co-sponsors-row">
-    <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/vasu.png" alt="VASU Healthcare" loading="lazy"></div>
-    <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/vishnu-optical.jpg" alt="Vishnu Optical" loading="lazy"></div>
+  <div class="gifting-row">
+    <div class="sponsor-card gifting-card"><img src="Photos/sponsors/vasu.png" alt="VASU Healthcare" loading="lazy"></div>
+    <div class="sponsor-card gifting-card"><img src="Photos/sponsors/vishnu-optical-tight.png" alt="Vishnu Opticals" loading="lazy"></div>
   </div>
 
   <!-- PHYSIOTHERAPY PARTNER (on-ground service partner) -->
