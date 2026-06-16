@@ -114,6 +114,45 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
   margin-top: 1rem;
 }
 
+/* Registrations closed / sold-out state */
+.reg-closed {
+  text-align: center;
+  padding: 1.5rem 0.5rem 0.5rem;
+}
+.reg-closed-badge {
+  display: inline-block;
+  background: rgba(52,211,153,0.14);
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.4);
+  border-radius: 50px;
+  padding: 0.4rem 1.1rem;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 1.1rem;
+}
+.reg-closed-title {
+  font-family: var(--serif, 'Instrument Serif', Georgia, serif);
+  font-size: 2.1rem; line-height: 1.1; font-weight: 400;
+  color: var(--white, #f5f5f0);
+  margin: 0 0 0.9rem;
+}
+.reg-closed-text {
+  font-size: 1rem; line-height: 1.55; color: var(--silver, #a3a3a3);
+  margin: 0 auto 0.7rem; max-width: 30rem;
+}
+.reg-closed-text strong { color: var(--white, #f5f5f0); }
+.reg-closed-sub {
+  font-size: 0.85rem; line-height: 1.5; color: var(--slate, #525252);
+  margin: 0 auto 1.4rem; max-width: 28rem;
+}
+.reg-closed-sub strong { color: var(--silver, #a3a3a3); }
+.reg-closed-cta {
+  display: inline-block;
+  background: #25D366; color: #fff; text-decoration: none;
+  border-radius: 0.5rem; padding: 0.85rem 1.6rem;
+  font-size: 0.95rem; font-weight: 700; font-family: var(--sans);
+}
+
 /* Checkboxes */
 .reg-checkbox-label {
   display: flex; align-items: flex-start; gap: 0.6rem;
@@ -475,6 +514,16 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
       <div class="reg-presents-logo"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara"></div>
       <span class="reg-presents-text"><strong>FICCI FLO Vadodara</strong> presents</span>
     </div>
+
+    <!-- REGISTRATIONS CLOSED — shown when REGISTRATION_OPEN = false (set in script below) -->
+    <div class="reg-closed" id="regClosed" style="display:none;">
+      <div class="reg-closed-badge">&#127881; We're Full</div>
+      <h1 class="reg-closed-title">Registrations Closed</h1>
+      <p class="reg-closed-text">All <strong>400 spots</strong> for RWD Monsoon Miles 2026 are taken. Thank you for the incredible response! &#127783;&#65039;&#127939;</p>
+      <p class="reg-closed-sub">Follow <strong>@runwithdina</strong> for race-day updates &mdash; and keep an eye out for next year's edition.</p>
+      <a href="https://chat.whatsapp.com/Dy2BSuinRV91YuNyg7s1Vr" target="_blank" class="reg-closed-cta">Join the Runners WhatsApp Group</a>
+    </div>
+
     <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
     <p class="reg-price" id="regPrice">&#8377;799</p>
 
@@ -609,6 +658,14 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
 <script>
 // Valid categories and their prices (base, pre-discount)
 const VALID_CATEGORIES = { '1 Hour': 799, '2 Hours': 899, '4 Hours': 999 };
+
+// ============================================================
+// REGISTRATION SWITCH — set to false to close registrations.
+// When false: the form is hidden, a "Registrations Closed" notice
+// is shown, and payment is blocked. Flip back to true to reopen.
+// Closed on reaching the 400-runner cap.
+// ============================================================
+const REGISTRATION_OPEN = false;
 
 // Read category from URL params, validate against whitelist
 const params = new URLSearchParams(window.location.search);
@@ -819,6 +876,10 @@ function postRegistrationWithRetry(regData, attemptsLeft) {
 
 function initiatePayment(e) {
   e.preventDefault();
+  if (!REGISTRATION_OPEN) {
+    alert('Registrations for Monsoon Miles 2026 are now closed — we’ve reached our 400-runner cap. Thank you!');
+    return;
+  }
   if (paymentInProgress) return;
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
@@ -1045,6 +1106,24 @@ function launchConfetti() {
     else ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
   draw();
+}
+
+// ============================================================
+// REGISTRATIONS CLOSED — when REGISTRATION_OPEN is false, hide all the
+// interactive registration UI and show the "Sold Out" notice. Runs last
+// so it overrides any earlier show/hide (e.g. promo auto-open from ?ref).
+// ============================================================
+if (!REGISTRATION_OPEN) {
+  ['regForm', 'regPromo', 'regPromoOpen', 'regPrice'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.querySelectorAll('.reg-title, .reg-secure, .reg-sponsors').forEach(function (el) {
+    el.style.display = 'none';
+  });
+  var closedEl = document.getElementById('regClosed');
+  if (closedEl) closedEl.style.display = 'block';
+  document.title = 'Registrations Closed — RWD Monsoon Miles 2026';
 }
 </script>
 </body>
