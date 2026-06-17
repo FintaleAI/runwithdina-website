@@ -1730,8 +1730,16 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   max-height: 75%;
 }
 
-/* GIFTING PARTNERS — smaller, centred cards so 2 logos stay proportionate
-   to the supporting-partner row above */
+/* WELLNESS + GIFTING PARTNERS — smaller, centred cards so 2 logos stay
+   proportionate to the supporting-partner row above. The label row is a
+   matching 2-col grid so each label sits over its card. */
+.gifting-label-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  max-width: 600px;
+  margin: clamp(2rem, 4vh, 3rem) auto 0;
+}
 .gifting-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2977,8 +2985,11 @@ input[type="date"].form-input {
     </div>
   </div>
 
-  <!-- GIFTING PARTNERS (race-day hampers + kit-bag goodies) -->
-  <div class="sponsor-tier-label" style="margin-top: clamp(2rem, 4vh, 3rem);">Gifting Partners</div>
+  <!-- WELLNESS PARTNER (Vasu) + GIFTING PARTNER (Vishnu) -->
+  <div class="gifting-label-row">
+    <div class="sponsor-tier-label">Wellness Partner</div>
+    <div class="sponsor-tier-label">Gifting Partner</div>
+  </div>
   <div class="gifting-row">
     <div class="sponsor-card gifting-card"><img src="Photos/sponsors/vasu.png" alt="VASU Healthcare" loading="lazy"></div>
     <div class="sponsor-card gifting-card"><img src="Photos/sponsors/vishnu-optical-tight.png" alt="Vishnu Opticals" loading="lazy"></div>
