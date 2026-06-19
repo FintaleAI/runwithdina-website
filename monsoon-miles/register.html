@@ -518,11 +518,11 @@ select.reg-input option { color: #fff; background: var(--charcoal); }
 
     <!-- REGISTRATIONS CLOSED — shown when REGISTRATION_OPEN = false (set in script below) -->
     <div class="reg-closed" id="regClosed" style="display:none;">
-      <div class="reg-closed-badge">&#127881; We're Full</div>
-      <h1 class="reg-closed-title">Registrations Closed</h1>
-      <p class="reg-closed-text">All <strong>400 spots</strong> for RWD Monsoon Miles 2026 are taken. Thank you for the incredible response! &#127783;&#65039;&#127939;</p>
-      <p class="reg-closed-sub">Follow us for race-day updates &mdash; and keep an eye out for next year's edition.</p>
-      <a href="https://www.instagram.com/runwithdina/" target="_blank" class="reg-closed-cta">Follow @runwithdina on Instagram</a>
+      <div class="reg-closed-badge" id="regClosedBadge">&#127881; We're Full</div>
+      <h1 class="reg-closed-title" id="regClosedTitle">Registrations Closed</h1>
+      <p class="reg-closed-text" id="regClosedText">All <strong>400 spots</strong> for RWD Monsoon Miles 2026 are taken. Thank you for the incredible response! &#127783;&#65039;&#127939;</p>
+      <p class="reg-closed-sub" id="regClosedSub">Follow us for race-day updates &mdash; and keep an eye out for next year's edition.</p>
+      <a href="https://www.instagram.com/runwithdina/" target="_blank" class="reg-closed-cta" id="regClosedCta">Follow @runwithdina on Instagram</a>
     </div>
 
     <h1 class="reg-title">Register for <span id="regCategory">1 Hour</span></h1>
@@ -680,6 +680,11 @@ let selectedAmount = baseAmount;
 
 // Ambassador state \u2014 populated when a valid code is applied.
 let appliedAmbassador = null; // { code, name, discountPercent, discountAmount }
+
+// Invite state \u2014 when registration is publicly closed, a valid ?invite=CODE
+// link re-opens the form for that invitee only (validated server-side).
+const inviteCode = (params.get('invite') || '').toString().trim().toUpperCase();
+let inviteValid = false; // flipped true once the invite code is verified
 
 // Set header
 document.getElementById('regCategory').textContent = selectedCategory;
@@ -877,7 +882,7 @@ function postRegistrationWithRetry(regData, attemptsLeft) {
 
 function initiatePayment(e) {
   e.preventDefault();
-  if (!REGISTRATION_OPEN) {
+  if (!REGISTRATION_OPEN && !inviteValid) {
     alert('Registrations for Monsoon Miles 2026 are now closed — we’ve reached our 400-runner cap. Thank you!');
     return;
   }
@@ -999,7 +1004,8 @@ function initiatePayment(e) {
       runriot: runriotOptIn ? 'Yes' : 'No',
       source: 'website',
       ambassador_code: ambassadorCode,
-      ambassador_name: ambassadorName
+      ambassador_name: ambassadorName,
+      invite_code: inviteCode
     },
     theme: { color: '#3b82f6' },
     handler: function(response) {
@@ -1013,7 +1019,8 @@ function initiatePayment(e) {
         source: 'razorpay-website',
         runriot: runriotOptIn ? 'Yes' : 'No',
         ambassador_code: ambassadorCode,
-        discount: ambassadorDiscount
+        discount: ambassadorDiscount,
+        invite_code: inviteCode
       };
 
       // Belt-and-suspenders: try browser POST with retry.
@@ -1110,11 +1117,14 @@ function launchConfetti() {
 }
 
 // ============================================================
-// REGISTRATIONS CLOSED — when REGISTRATION_OPEN is false, hide all the
-// interactive registration UI and show the "Sold Out" notice. Runs last
-// so it overrides any earlier show/hide (e.g. promo auto-open from ?ref).
+// ACCESS GATE — runs last so it overrides any earlier show/hide.
+//   • Public registration OPEN  → leave the page as built.
+//   • Public CLOSED, no invite   → "Sold Out" notice.
+//   • Public CLOSED, ?invite=X   → verify X server-side; if valid + unused,
+//     re-open the form for this invitee at the normal price; otherwise show
+//     "invite used" / "invalid".
 // ============================================================
-if (!REGISTRATION_OPEN) {
+function hideRegUI() {
   ['regForm', 'regPromo', 'regPromoOpen', 'regPrice'].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) el.style.display = 'none';
@@ -1122,10 +1132,69 @@ if (!REGISTRATION_OPEN) {
   document.querySelectorAll('.reg-title, .reg-secure, .reg-sponsors').forEach(function (el) {
     el.style.display = 'none';
   });
-  var closedEl = document.getElementById('regClosed');
-  if (closedEl) closedEl.style.display = 'block';
-  document.title = 'Registrations Closed — RWD Monsoon Miles 2026';
 }
+
+function showClosed(variant) {
+  hideRegUI();
+  var closed = document.getElementById('regClosed');
+  if (closed) closed.style.display = 'block';
+  var badge = document.getElementById('regClosedBadge');
+  var title = document.getElementById('regClosedTitle');
+  var text  = document.getElementById('regClosedText');
+  var sub   = document.getElementById('regClosedSub');
+  var cta   = document.getElementById('regClosedCta');
+  if (variant === 'checking') {
+    badge.innerHTML = '⏳ One sec';
+    title.textContent = 'Verifying your invite…';
+    text.innerHTML = 'Just a moment while we check your invite link.';
+    sub.style.display = 'none'; cta.style.display = 'none';
+  } else if (variant === 'used') {
+    badge.innerHTML = '🔒 Invite used';
+    title.textContent = 'This invite has been used';
+    text.innerHTML = 'This private invite link has already been redeemed. If you believe this is an error, message us on WhatsApp <strong>+91 90999 06174</strong>.';
+    sub.style.display = 'none'; cta.style.display = 'none';
+  } else if (variant === 'invalid') {
+    badge.innerHTML = '⚠️ Invalid link';
+    title.textContent = 'Invite not recognised';
+    text.innerHTML = 'This invite link isn’t valid. Please double-check the link, or message us on WhatsApp <strong>+91 90999 06174</strong>.';
+    sub.style.display = 'none'; cta.style.display = 'none';
+  }
+  // 'soldout' uses the default content already in the HTML.
+}
+
+function openInviteRegistration() {
+  inviteValid = true;
+  var closed = document.getElementById('regClosed');
+  if (closed) closed.style.display = 'none';
+  ['regForm', 'regPrice'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = '';
+  });
+  document.querySelectorAll('.reg-title, .reg-secure, .reg-sponsors').forEach(function (el) {
+    el.style.display = '';
+  });
+  // Promo field stays hidden — invitees pay the normal listed price.
+}
+
+(function accessGate() {
+  if (REGISTRATION_OPEN) return;            // public registration is open
+  document.title = 'Registrations Closed — RWD Monsoon Miles 2026';
+  if (!inviteCode) { showClosed('soldout'); return; }
+  showClosed('checking');
+  fetch(SHEET_URL + '?action=validateInvite&code=' + encodeURIComponent(inviteCode))
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (res && res.valid) {
+        document.title = 'You’re invited — RWD Monsoon Miles 2026';
+        openInviteRegistration();
+      } else if (res && res.used) {
+        showClosed('used');
+      } else {
+        showClosed('invalid');
+      }
+    })
+    .catch(function () { showClosed('soldout'); });
+})();
 </script>
 </body>
 </html>
