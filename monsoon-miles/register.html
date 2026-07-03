@@ -731,6 +731,7 @@ let appliedAmbassador = null; // { code, name, discountPercent, discountAmount }
 // link re-opens the form for that invitee only (validated server-side).
 const inviteCode = (params.get('invite') || '').toString().trim().toUpperCase();
 let inviteValid = false; // flipped true once the invite code is verified
+let invitePriceOverride = 0; // >0 → this invite is a flat price for ANY category
 
 // Set header (only when a category is already known from the URL)
 if (selectedCategory) {
@@ -742,7 +743,8 @@ if (selectedCategory) {
 function selectCategory(cat) {
   if (!VALID_CATEGORIES[cat]) return;
   selectedCategory = cat;
-  baseAmount = VALID_CATEGORIES[cat];
+  // Flat-price invite \u2192 same price for any category; otherwise the category price.
+  baseAmount = invitePriceOverride > 0 ? invitePriceOverride : VALID_CATEGORIES[cat];
   selectedAmount = baseAmount; // invite/full price \u2014 no discount applied here
   document.getElementById('regCategory').textContent = cat;
   var priceEl = document.getElementById('regPrice');
@@ -767,9 +769,19 @@ function showCategoryPicker() {
     picker.style.display = 'grid';
     picker.querySelectorAll('.reg-cat-opt').forEach(function (b) {
       b.addEventListener('click', function () { selectCategory(b.getAttribute('data-cat')); });
+      // Flat-price invite → show that same price on every category tile.
+      if (invitePriceOverride > 0) {
+        var p = b.querySelector('.reg-cat-price');
+        if (p) p.textContent = '₹' + invitePriceOverride;
+      }
     });
   }
-  if (hint) hint.style.display = 'block';
+  if (hint) {
+    hint.style.display = 'block';
+    hint.textContent = invitePriceOverride > 0
+      ? 'Pick any category — flat ₹' + invitePriceOverride + '.'
+      : 'Pick your category to continue.';
+  }
 }
 
 const RAZORPAY_KEY = 'rzp_live_Scw49LtUExJvGX';
@@ -1121,25 +1133,56 @@ function initiatePayment(e) {
   const btn = document.querySelector('.reg-pay-btn');
   paymentInProgress = true;
   btn.disabled = true;
-  btn.textContent = 'Opening Razorpay...';
 
-  try {
-    if (typeof Razorpay === 'undefined') {
-      throw new Error('Razorpay script did not load');
-    }
-    const rzp = new Razorpay(options);
-    rzp.on('payment.failed', function() {
+  function launchRazorpay() {
+    btn.textContent = 'Opening Razorpay...';
+    try {
+      if (typeof Razorpay === 'undefined') {
+        throw new Error('Razorpay script did not load');
+      }
+      const rzp = new Razorpay(options);
+      rzp.on('payment.failed', function() {
+        paymentInProgress = false;
+        btn.disabled = false;
+        btn.textContent = 'Pay & Register';
+        alert('Payment failed. Please try again or contact us on WhatsApp at +91 90999 06174.');
+      });
+      rzp.open();
+    } catch (err) {
       paymentInProgress = false;
       btn.disabled = false;
       btn.textContent = 'Pay & Register';
-      alert('Payment failed. Please try again or contact us on WhatsApp at +91 90999 06174.');
-    });
-    rzp.open();
-  } catch (err) {
-    paymentInProgress = false;
-    btn.disabled = false;
-    btn.textContent = 'Pay & Register';
-    alert('Payment system could not load. Please refresh the page and try again. If the problem persists, contact us on WhatsApp at +91 90999 06174.');
+      alert('Payment system could not load. Please refresh the page and try again. If the problem persists, contact us on WhatsApp at +91 90999 06174.');
+    }
+  }
+
+  // Invite flow — re-check availability at the last moment so a first-come
+  // batch can't be over-filled by people who opened the form early.
+  if (inviteValid && inviteCode) {
+    btn.textContent = 'Checking availability…';
+    fetch(SHEET_URL + '?action=validateInvite&code=' + encodeURIComponent(inviteCode))
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.valid) {
+          launchRazorpay();
+        } else {
+          paymentInProgress = false;
+          btn.disabled = false;
+          btn.textContent = 'Pay & Register';
+          if (res && res.used) {
+            alert('Sorry — these spots just filled up while you were registering. Registration is now closed.');
+            showClosed('used');
+          } else if (res && res.notYet) {
+            alert('Registration hasn’t opened yet — it opens at ' + res.opensAt + '. Please come back then.');
+            showClosed('notyet', res.opensAt);
+          } else {
+            alert('This invite link is no longer valid. Please contact us on WhatsApp at +91 90999 06174.');
+          }
+        }
+      })
+      .catch(function () { launchRazorpay(); }); // transient network issue — don't block a real registrant
+  } else {
+    launchRazorpay();
   }
 }
 
@@ -1220,7 +1263,7 @@ function hideRegUI() {
   });
 }
 
-function showClosed(variant) {
+function showClosed(variant, extra) {
   hideRegUI();
   var closed = document.getElementById('regClosed');
   if (closed) closed.style.display = 'block';
@@ -1243,6 +1286,11 @@ function showClosed(variant) {
     badge.innerHTML = '⚠️ Invalid link';
     title.textContent = 'Invite not recognised';
     text.innerHTML = 'This invite link isn’t valid. Please double-check the link, or message us on WhatsApp <strong>+91 90999 06174</strong>.';
+    sub.style.display = 'none'; cta.style.display = 'none';
+  } else if (variant === 'notyet') {
+    badge.innerHTML = '⏰ Opening soon';
+    title.textContent = 'Registration opens at ' + (extra || '3:00 PM');
+    text.innerHTML = 'These spots open on a <strong>first-come, first-served</strong> basis at <strong>' + (extra || '3:00 PM') + '</strong>. Come back then and refresh this page to grab yours.';
     sub.style.display = 'none'; cta.style.display = 'none';
   }
   // 'soldout' uses the default content already in the HTML.
@@ -1276,8 +1324,12 @@ function openInviteRegistration() {
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (res && res.valid) {
+        invitePriceOverride = parseInt(res.price, 10) || 0; // flat price (0 = normal)
         document.title = 'You’re invited — RWD Monsoon Miles 2026';
         openInviteRegistration();
+      } else if (res && res.notYet) {
+        document.title = 'Opens soon — RWD Monsoon Miles 2026';
+        showClosed('notyet', res.opensAt);
       } else if (res && res.used) {
         showClosed('used');
       } else {
