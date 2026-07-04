@@ -1320,36 +1320,52 @@ function openInviteRegistration() {
   if (!categoryFromUrl) showCategoryPicker();
 }
 
+// Flat price for the phase-2 window — every seat (public 20 + personal invites)
+// is ₹999 for any category.
+const PHASE2_FLAT_PRICE = 999;
+
+// Force a flat price for ANY category (phase-2 window).
+function applyFlatPrice(p) {
+  invitePriceOverride = p;
+  if (categoryFromUrl && p > 0) {
+    baseAmount = p;
+    selectedAmount = p;
+    var el = document.getElementById('regPrice');
+    if (el) el.textContent = '₹' + p;
+  }
+}
+
 (function accessGate() {
-  if (REGISTRATION_OPEN) {                   // public registration is open
+  if (REGISTRATION_OPEN) {                   // full public registration is open
     if (!categoryFromUrl) showCategoryPicker();
     return;
   }
-  document.title = 'Registrations Closed — RWD Monsoon Miles 2026';
-  // Validate the effective code: a personal ?invite=CODE if present, otherwise
-  // the public phase-2 batch code so ANY visitor can grab a capped seat.
-  showClosed('checking');
+  // Phase-2 window: registration is "closed" to the crowd, but a capped batch of
+  // seats is open — to anyone (public code) or a personal invitee. Show the form
+  // IMMEDIATELY at the flat price (no slow "checking" gate that was hanging /
+  // flashing "Sold Out" on flaky loads), then verify seats in the background.
+  // A network hiccup just leaves the form open — the real cap guard is the
+  // availability re-check at payment time.
+  document.title = 'Register — RWD Monsoon Miles 2026';
+  applyFlatPrice(PHASE2_FLAT_PRICE);
+  openInviteRegistration();
   fetch(SHEET_URL + '?action=validateInvite&code=' + encodeURIComponent(effectiveCode))
     .then(function (r) { return r.json(); })
     .then(function (res) {
-      if (res && res.valid) {
-        // Personal invite links honour their flat price; public phase-2
-        // visitors pay the normal per-category price shown on the homepage.
-        invitePriceOverride = inviteCode ? (parseInt(res.price, 10) || 0) : 0;
-        document.title = inviteCode ? 'You’re invited — RWD Monsoon Miles 2026'
-                                    : 'Register — RWD Monsoon Miles 2026';
-        openInviteRegistration();
-      } else if (res && res.notYet) {
+      if (!res) return;
+      if (res.valid) {
+        if (res.price) applyFlatPrice(parseInt(res.price, 10) || PHASE2_FLAT_PRICE);
+      } else if (res.notYet) {
         document.title = 'Opens soon — RWD Monsoon Miles 2026';
         showClosed('notyet', res.opensAt);
-      } else if (res && res.used) {
-        // Personal link already redeemed → "used"; public batch full → "Sold Out".
-        showClosed(inviteCode ? 'used' : 'soldout');
-      } else {
-        showClosed(inviteCode ? 'invalid' : 'soldout');
+      } else if (res.used) {
+        showClosed(inviteCode ? 'used' : 'soldout');   // batch full
+      } else if (inviteCode) {
+        showClosed('invalid');                          // a bad personal code
       }
+      // public visitor + any other result → leave the form open (pay-time guard)
     })
-    .catch(function () { showClosed('soldout'); });
+    .catch(function () { /* keep the form open — pay-time re-check guards the cap */ });
 })();
 </script>
 </body>
