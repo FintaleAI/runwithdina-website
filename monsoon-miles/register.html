@@ -1333,7 +1333,9 @@ function openInviteRegistration() {
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (res && res.valid) {
-        invitePriceOverride = parseInt(res.price, 10) || 0; // flat price (0 = normal)
+        // Personal invite links honour their flat price; public phase-2
+        // visitors pay the normal per-category price shown on the homepage.
+        invitePriceOverride = inviteCode ? (parseInt(res.price, 10) || 0) : 0;
         document.title = inviteCode ? 'You’re invited — RWD Monsoon Miles 2026'
                                     : 'Register — RWD Monsoon Miles 2026';
         openInviteRegistration();
