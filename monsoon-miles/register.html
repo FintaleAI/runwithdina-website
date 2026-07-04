@@ -733,6 +733,13 @@ const inviteCode = (params.get('invite') || '').toString().trim().toUpperCase();
 let inviteValid = false; // flipped true once the invite code is verified
 let invitePriceOverride = 0; // >0 → this invite is a flat price for ANY category
 
+// PUBLIC PHASE-2 BATCH — while public registration is "closed", the site
+// automatically falls back to this shared code so ANYONE on the website can
+// grab one of the capped phase-2 seats (no link needed). Its Max Uses (in the
+// Invite Codes sheet) is the hard cap; once full, everyone sees "Sold Out".
+const PUBLIC_PHASE2_CODE = 'MMFCFS';
+const effectiveCode = inviteCode || PUBLIC_PHASE2_CODE;
+
 // Set header (only when a category is already known from the URL)
 if (selectedCategory) {
   document.getElementById('regCategory').textContent = selectedCategory;
@@ -1103,7 +1110,7 @@ function initiatePayment(e) {
       source: 'website',
       ambassador_code: ambassadorCode,
       ambassador_name: ambassadorName,
-      invite_code: inviteCode
+      invite_code: (REGISTRATION_OPEN ? '' : effectiveCode)
     },
     theme: { color: '#3b82f6' },
     handler: function(response) {
@@ -1118,7 +1125,7 @@ function initiatePayment(e) {
         runriot: runriotOptIn ? 'Yes' : 'No',
         ambassador_code: ambassadorCode,
         discount: ambassadorDiscount,
-        invite_code: inviteCode
+        invite_code: (REGISTRATION_OPEN ? '' : effectiveCode)
       };
 
       // Belt-and-suspenders: try browser POST with retry.
@@ -1158,9 +1165,9 @@ function initiatePayment(e) {
 
   // Invite flow — re-check availability at the last moment so a first-come
   // batch can't be over-filled by people who opened the form early.
-  if (inviteValid && inviteCode) {
+  if (inviteValid && effectiveCode) {
     btn.textContent = 'Checking availability…';
-    fetch(SHEET_URL + '?action=validateInvite&code=' + encodeURIComponent(inviteCode))
+    fetch(SHEET_URL + '?action=validateInvite&code=' + encodeURIComponent(effectiveCode))
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (res && res.valid) {
@@ -1170,13 +1177,14 @@ function initiatePayment(e) {
           btn.disabled = false;
           btn.textContent = 'Pay & Register';
           if (res && res.used) {
-            alert('Sorry — these spots just filled up while you were registering. Registration is now closed.');
-            showClosed('used');
+            alert('Sorry — the last spot just filled up while you were registering. Registration is now closed.');
+            showClosed(inviteCode ? 'used' : 'soldout');
           } else if (res && res.notYet) {
             alert('Registration hasn’t opened yet — it opens at ' + res.opensAt + '. Please come back then.');
             showClosed('notyet', res.opensAt);
           } else {
-            alert('This invite link is no longer valid. Please contact us on WhatsApp at +91 90999 06174.');
+            alert('Registration is no longer available. Please contact us on WhatsApp at +91 90999 06174.');
+            showClosed(inviteCode ? 'invalid' : 'soldout');
           }
         }
       })
@@ -1318,22 +1326,25 @@ function openInviteRegistration() {
     return;
   }
   document.title = 'Registrations Closed — RWD Monsoon Miles 2026';
-  if (!inviteCode) { showClosed('soldout'); return; }
+  // Validate the effective code: a personal ?invite=CODE if present, otherwise
+  // the public phase-2 batch code so ANY visitor can grab a capped seat.
   showClosed('checking');
-  fetch(SHEET_URL + '?action=validateInvite&code=' + encodeURIComponent(inviteCode))
+  fetch(SHEET_URL + '?action=validateInvite&code=' + encodeURIComponent(effectiveCode))
     .then(function (r) { return r.json(); })
     .then(function (res) {
       if (res && res.valid) {
         invitePriceOverride = parseInt(res.price, 10) || 0; // flat price (0 = normal)
-        document.title = 'You’re invited — RWD Monsoon Miles 2026';
+        document.title = inviteCode ? 'You’re invited — RWD Monsoon Miles 2026'
+                                    : 'Register — RWD Monsoon Miles 2026';
         openInviteRegistration();
       } else if (res && res.notYet) {
         document.title = 'Opens soon — RWD Monsoon Miles 2026';
         showClosed('notyet', res.opensAt);
       } else if (res && res.used) {
-        showClosed('used');
+        // Personal link already redeemed → "used"; public batch full → "Sold Out".
+        showClosed(inviteCode ? 'used' : 'soldout');
       } else {
-        showClosed('invalid');
+        showClosed(inviteCode ? 'invalid' : 'soldout');
       }
     })
     .catch(function () { showClosed('soldout'); });
