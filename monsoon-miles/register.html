@@ -1324,6 +1324,11 @@ function openInviteRegistration() {
 // is ₹999 for any category.
 const PHASE2_FLAT_PRICE = 999;
 
+// Public 20-seat phase: set false once the batch is full so public visitors get
+// an instant, deterministic "Sold Out" (no form, no network call). Personal
+// ?invite= links keep working regardless.
+const PHASE2_PUBLIC_OPEN = false;
+
 // Force a flat price for ANY category (phase-2 window).
 function applyFlatPrice(p) {
   invitePriceOverride = p;
@@ -1346,6 +1351,15 @@ function applyFlatPrice(p) {
   // flashing "Sold Out" on flaky loads), then verify seats in the background.
   // A network hiccup just leaves the form open — the real cap guard is the
   // availability re-check at payment time.
+  // Public visitor + no personal invite + public phase closed → hard Sold Out,
+  // immediately, with no form and no network call. This is the reliable stop
+  // once the 20 seats are full (the background check / pay-time guard still
+  // back it up, but this makes closure deterministic and instant).
+  if (!inviteCode && !PHASE2_PUBLIC_OPEN) {
+    document.title = 'Registrations Closed — RWD Monsoon Miles 2026';
+    showClosed('soldout');
+    return;
+  }
   document.title = 'Register — RWD Monsoon Miles 2026';
   applyFlatPrice(PHASE2_FLAT_PRICE);
   openInviteRegistration();
