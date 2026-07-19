@@ -1706,7 +1706,7 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
 /* CO-SPONSORS — Aura, Aadicura */
 .co-sponsors-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
   margin-bottom: clamp(2rem, 4vh, 3rem);
 }
@@ -1755,6 +1755,18 @@ select.waitlist-input option { background: #1a1a1a; color: var(--white); }
   max-width: 90%;
   max-height: 66%;
 }
+
+/* HEALTH & CARE PARTNERS — Hydration / Immunity / Women's Wellness (3-col) */
+.care-label-row, .care-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.care-label-row { margin-top: clamp(2rem, 4vh, 3rem); }
+.care-row { margin-bottom: clamp(2rem, 4vh, 3rem); }
 
 /* SUPPORTING + TECH ROW */
 .supporting-row {
@@ -2966,6 +2978,7 @@ input[type="date"].form-input {
   <div class="sponsor-tier-label">Co-Sponsors</div>
   <div class="co-sponsors-row">
     <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/aura.png" alt="Aura School" loading="lazy"></div>
+    <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/shaze.png" alt="Shaze" loading="lazy"></div>
     <div class="sponsor-card co-sponsor-card"><img src="Photos/sponsors/aadicura.png" alt="Aadicura Hospital" loading="lazy"></div>
   </div>
 
@@ -2993,6 +3006,18 @@ input[type="date"].form-input {
   <div class="gifting-row">
     <div class="sponsor-card gifting-card"><img src="Photos/sponsors/vasu.png" alt="VASU Healthcare" loading="lazy"></div>
     <div class="sponsor-card gifting-card"><img src="Photos/sponsors/vishnu-optical-tight.png" alt="Vishnu Opticals" loading="lazy"></div>
+  </div>
+
+  <!-- HYDRATION / IMMUNITY / WOMEN'S WELLNESS PARTNERS -->
+  <div class="care-label-row">
+    <div class="sponsor-tier-label">Hydration Partner</div>
+    <div class="sponsor-tier-label">Immunity Partner</div>
+    <div class="sponsor-tier-label">Women's Wellness</div>
+  </div>
+  <div class="care-row">
+    <div class="sponsor-card gifting-card"><img src="Photos/sponsors/magnora.png" alt="Magnora" loading="lazy"></div>
+    <div class="sponsor-card gifting-card"><img src="Photos/sponsors/swasthya-setu.png" alt="Swasthya Setu" loading="lazy"></div>
+    <div class="sponsor-card gifting-card"><img src="Photos/sponsors/poppigo.png" alt="Poppigo" loading="lazy"></div>
   </div>
 
   <!-- PHYSIOTHERAPY PARTNER (on-ground service partner) -->
