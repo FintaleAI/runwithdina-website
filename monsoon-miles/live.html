@@ -344,13 +344,54 @@
       // pre-race the results page is empty ("No reports published") — show the
       // official start list instead; on race day show official results.
       var rrPage = raceLive() ? 'results' : 'participants';
+      function inst(page){ slot.innerHTML=''; var w=new RRPublish(slot, RACE_ID, page);
+        w.ShowTimerLogo=true; w.ShowInfoText=false; watchOfficialNames(slot); }
       function makeRR(){ if(typeof RRPublish==='undefined'){ setTimeout(makeRR,200); return; }
-        slot.innerHTML=''; var w=new RRPublish(slot, RACE_ID, rrPage); w.ShowTimerLogo=true; w.ShowInfoText=false; }
+        inst(rrPage);
+        // race-day insurance: if nothing is published on the results page yet,
+        // fall back to the participants page (vendor publishes the live table there).
+        if(rrPage==='results'){ setTimeout(function(){ if(!slot.querySelector('.MainTable')) inst('participants'); }, 7000); } }
       makeRR();
     }
   }
   var tbs=document.querySelectorAll('.tab');
   for(var ti=0;ti<tbs.length;ti++){ tbs[ti].addEventListener('click', function(){ showTab(this.getAttribute('data-tab')); }); }
+
+  // Official tab: RaceResult masks names pre-race — restore full names from the
+  // roster feed, keyed by BIB (their widget renders into our DOM, so we can fix it).
+  var RR_LABELS=/^(Rank|GenderRank|Bib|Name|TotalLaps|Nat\.?|YoB|Gender|AG|Club|Contest|Search)[:]?$/i;
+  var nameFixT=null, nameMO=null;
+  function fixOfficialNames(slot){
+    if(!_roster){ getRoster().then(function(){ fixOfficialNames(slot); }); return; }
+    var rows=slot.querySelectorAll('tr');
+    for(var r=0;r<rows.length;r++){
+      var walker=document.createTreeWalker(rows[r], NodeFilter.SHOW_TEXT, null);
+      var nodes=[], n;
+      while((n=walker.nextNode())) nodes.push(n);
+      var bib=null, nameNode=null, best=-1;
+      for(var i=0;i<nodes.length;i++){
+        var tv=nodes[i].nodeValue.trim();
+        if(!tv) continue;
+        if(!bib && /^[124][0-9]{3}$/.test(tv) && _roster[tv]) bib=tv;
+        if(RR_LABELS.test(tv)) continue;
+        if(nodes[i].parentNode && nodes[i].parentNode.closest && nodes[i].parentNode.closest('th')) continue;
+        var letters=(tv.match(/[A-Za-z]/g)||[]).length;
+        if(letters>=3 && letters>best && !/^[0-9]/.test(tv)){ best=letters; nameNode=nodes[i]; }
+      }
+      if(!bib || !nameNode) continue;
+      var full=_roster[bib].name;
+      if(full && nameNode.nodeValue.trim()!==full) nameNode.nodeValue=full;
+    }
+  }
+  function watchOfficialNames(slot){
+    fixOfficialNames(slot);
+    if(nameMO) nameMO.disconnect();
+    nameMO=new MutationObserver(function(){
+      if(nameFixT) return;
+      nameFixT=setTimeout(function(){ nameFixT=null; fixOfficialNames(slot); }, 120);
+    });
+    nameMO.observe(slot, {childList:true, subtree:true, characterData:true});
+  }
 
   // ============ MY RUN ============
   var entry=$('entry'), result=$('result'), loadingMsg=$('loadingMsg'), stateMsg=$('stateMsg');
