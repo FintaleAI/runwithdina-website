@@ -307,6 +307,8 @@
   var $=function(id){ return document.getElementById(id); };
   function cleanName(s){ return String(s||'').replace(/^[\s,]+/,'').replace(/\s+/g,' ').trim(); }
   function titleCase(s){ return s.toLowerCase().replace(/(^|\s|-)\S/g, function(c){ return c.toUpperCase(); }); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function catForBib(bib){ var c=String(bib).charAt(0); return c==='1'?'1 Hour':c==='2'?'2 Hours':c==='4'?'4 Hours':''; }
   function nowStr(){ var d=new Date(); function p(n){return (n<10?'0':'')+n;} return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }
   function fmt(ms){ ms=Math.max(0,Math.floor(ms/1000));
@@ -557,10 +559,10 @@
       var pos = selGen==='All' ? r.rank : r.grank;
       if(pos===9999) pos=i+1;
       var cls = pos===1?'rk g1':pos===2?'rk g2':pos===3?'rk g3':'rk';
-      h+='<div class="row'+(r.me?' me':'')+'"><div class="'+cls+'">'+pos+'</div>'
-        +'<div class="who"><div class="nm">'+r.name+'</div>'
-        +'<div class="sub">BIB '+r.bib+(selGen==='All'&&r.gender?' &middot; '+r.gender:'')+'</div></div>'
-        +'<div class="laps"><div class="n">'+r.laps+'</div><div class="l">Laps</div></div></div>';
+      h+='<div class="row'+(r.me?' me':'')+'"><div class="'+cls+'">'+(+pos)+'</div>'
+        +'<div class="who"><div class="nm">'+esc(r.name)+'</div>'
+        +'<div class="sub">BIB '+esc(r.bib)+(selGen==='All'&&r.gender?' &middot; '+esc(r.gender):'')+'</div></div>'
+        +'<div class="laps"><div class="n">'+(+r.laps||0)+'</div><div class="l">Laps</div></div></div>';
     });
     if(!shown.length){ h='<div class="row"><div class="who"><div class="sub" style="padding:.6rem 0">No runners match.</div></div></div>'; }
     $('board').innerHTML=h;
