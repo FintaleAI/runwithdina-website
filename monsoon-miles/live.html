@@ -161,6 +161,10 @@
 
   .foot{text-align:center;margin-top:1.8rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:#4a4a4a}
   .foot b{color:var(--rain-light)}
+  .offwrap{text-align:center;margin-top:1.5rem}
+  .offlink{background:none;border:none;cursor:pointer;color:var(--slate);font-family:var(--mono);
+    font-size:.68rem;letter-spacing:.08em;text-decoration:underline;text-underline-offset:3px;padding:.5rem;min-height:44px}
+  .offlink:hover{color:var(--mist)}
   .demo-badge{position:fixed;top:10px;right:10px;z-index:9;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;
     background:var(--lightning);color:#111;padding:.25rem .55rem;border-radius:100px;font-weight:500}
   @media(max-width:380px){ h1{font-size:2.2rem} .hero .big{font-size:4.3rem} .who .nm{font-size:1rem} }
@@ -178,7 +182,6 @@
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="me">My Run</button>
     <button class="tab" data-tab="board">Leaderboard</button>
-    <button class="tab" data-tab="official">Official</button>
   </div>
 
   <!-- ============ MY RUN ============ -->
@@ -275,6 +278,7 @@
     <p class="rrnote">Official timing by RaceResult &middot; use the search box for any bib or name &middot; PDF export available above the table.</p>
   </div>
 
+  <div class="offwrap" id="offWrap"><button class="offlink" id="offLink">Official timing record (RaceResult) &rarr;</button></div>
   <div class="foot">RWD Monsoon Miles 2026 &middot; <b>#MonsoonMiles2026</b> &middot; @runwithdina</div>
 </div>
 
@@ -337,6 +341,7 @@
     var btns=document.querySelectorAll('.tab');
     for(var i=0;i<btns.length;i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-tab')===tab);
     $('pageWrap').classList.toggle('wide', tab==='official');
+    $('offWrap').style.display = (tab==='official') ? 'none' : 'block';
     if(tab==='board') boardGo();
     if(tab==='official' && !officialMade){
       officialMade=true;
@@ -356,6 +361,7 @@
   }
   var tbs=document.querySelectorAll('.tab');
   for(var ti=0;ti<tbs.length;ti++){ tbs[ti].addEventListener('click', function(){ showTab(this.getAttribute('data-tab')); }); }
+  $('offLink').addEventListener('click', function(){ showTab('official'); });
 
   // Official tab: RaceResult masks names pre-race — restore full names from the
   // roster feed, keyed by BIB (their widget renders into our DOM, so we can fix it).
