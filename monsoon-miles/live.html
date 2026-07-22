@@ -161,12 +161,48 @@
   .foot b{color:var(--rain-light)}
   .demo-badge{position:fixed;top:10px;right:10px;z-index:9;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;
     background:var(--lightning);color:#111;padding:.25rem .55rem;border-radius:100px;font-weight:500}
-  @media(max-width:380px){ h1{font-size:2.2rem} .hero .big{font-size:4.3rem} .who .nm{font-size:1rem} }
+
+  /* chase / overtake */
+  .chase{margin-top:1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:.8rem;
+    padding:.85rem 1rem;display:flex;align-items:center;gap:.7rem;font-size:.92rem;line-height:1.35}
+  .chase .ic{font-size:1.25rem;flex:0 0 auto}
+  .chase .tx{color:var(--mist)} .chase .tx b{color:#fff;font-weight:600}
+  .chase .tx .hl{color:var(--rain-light);font-weight:700}
+  .chase.lead{background:linear-gradient(160deg,rgba(251,191,36,.15),rgba(251,191,36,.03));border-color:rgba(251,191,36,.4)}
+  .chase.lead .tx .hl{color:var(--lightning)}
+
+  /* collective "together we ran" band */
+  .together{display:none;flex-wrap:wrap;align-items:center;justify-content:center;gap:.45rem;margin-top:1.5rem;
+    background:linear-gradient(180deg,rgba(59,130,246,.10),rgba(59,130,246,.03));border:1px solid rgba(96,165,250,.22);
+    border-radius:.9rem;padding:.8rem .9rem;text-align:center}
+  .together .lead-in{width:100%;font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--rain-light);margin-bottom:.15rem}
+  .together .tg{font-family:var(--mono);font-size:.78rem;color:var(--mist)}
+  .together .tg b{font-family:var(--sans);font-weight:700;font-size:1.05rem;color:#fff;font-variant-numeric:tabular-nums}
+  .together .tg .u{color:var(--silver)}
+  .together .sep{color:rgba(255,255,255,.25)}
+
+  /* celebration overlay */
+  .celebrate{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;pointer-events:none;padding:1rem}
+  .celebrate.show{display:flex}
+  #confetti{position:absolute;inset:0;width:100%;height:100%}
+  .cel-card{position:relative;text-align:center;transform:scale(.6);opacity:0;
+    background:rgba(10,14,25,.85);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+    border:1px solid rgba(96,165,250,.4);border-radius:1.4rem;padding:1.7rem 2rem;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+  .celebrate.show .cel-card{animation:celpop .5s var(--ease) forwards}
+  @keyframes celpop{0%{transform:scale(.6);opacity:0}45%{transform:scale(1.06);opacity:1}100%{transform:scale(1);opacity:1}}
+  .cel-emoji{font-size:3rem;line-height:1}
+  .cel-title{font-family:var(--sans);font-weight:700;font-size:1.9rem;color:#fff;margin-top:.25rem;letter-spacing:-.01em}
+  .cel-msg{font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--rain-light);margin-top:.3rem}
+  @media(max-width:380px){ h1{font-size:2.2rem} .hero .big{font-size:4.3rem} .who .nm{font-size:1rem}
+    .cel-title{font-size:1.6rem} .cel-emoji{font-size:2.5rem} }
 </style>
 </head>
 <body>
 <div class="rain-lines"></div>
 <div class="demo-badge" id="demoBadge" style="display:none">DEMO DATA</div>
+<div class="celebrate" id="celebrate"><canvas id="confetti"></canvas>
+  <div class="cel-card"><div class="cel-emoji" id="celEmoji">&#127881;</div><div class="cel-title" id="celTitle"></div><div class="cel-msg" id="celMsg"></div></div>
+</div>
 
 <div class="wrap" id="pageWrap">
   <a href="./" class="back">&larr; Monsoon Miles</a>
@@ -219,8 +255,11 @@
           <div class="stat"><div class="v" id="rRank">&mdash;</div><div class="l" id="rRankL">Rank</div></div>
         </div>
 
+        <div class="chase" id="chase" style="display:none"><span class="ic" id="chaseIc">&#9889;</span><span class="tx" id="chaseTx"></span></div>
+
         <div class="updated"><span class="live">&#9679; LIVE</span><span id="rUpdated">updated &mdash;</span> &middot; auto-refreshing</div>
         <div class="actions">
+          <button class="btn-ghost wide" id="shareBtn">&#128248; Share my run</button>
           <button class="btn-ghost" id="refreshBtn">Refresh now</button>
           <button class="btn-ghost" id="anotherBtn">Change BIB</button>
           <button class="btn-ghost wide" id="wakeBtn">&#9728; Keep screen awake</button>
@@ -263,6 +302,7 @@
     <div class="updated" id="updBar" style="display:none"><span class="live">&#9679; LIVE</span><span id="upd">updated &mdash;</span> &middot; auto-refreshing</div>
   </div>
 
+  <div class="together" id="together"></div>
   <div class="disclaimer">Live results are <b style="color:var(--mist);font-weight:600">provisional</b> and may change. Final results may vary &mdash; the organiser&rsquo;s decision is final.</div>
   <div class="powered">Powered by <a href="https://fintale.io" target="_blank" rel="noopener">fintale.io</a></div>
   <div class="foot">RWD Monsoon Miles 2026 &middot; <b>#MonsoonMiles2026</b> &middot; @runwithdina</div>
@@ -303,6 +343,56 @@
 
   if(SOURCE==='demo') $('demoBadge').style.display='block';
 
+  function firstName(n){ return String(n||'').trim().split(/\s+/)[0] || 'them'; }
+  function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+  var ENCOURAGE=['Keep flying!','You’re crushing it!','On fire!','Strong and steady!','Look at you go!','Unstoppable!','Beautiful pace!','That’s the spirit!'];
+
+  // ---- celebration overlay (loop done / moved up) ----
+  var celT=null;
+  function celebrate(emoji, title, msg){
+    if(document.hidden) return;
+    $('celEmoji').textContent=emoji; $('celTitle').textContent=title; $('celMsg').textContent=msg;
+    var ov=$('celebrate'); ov.classList.remove('show'); void ov.offsetWidth; ov.classList.add('show');
+    confettiBurst();
+    if(navigator.vibrate){ try{ navigator.vibrate([0,80,50,80,50,120]); }catch(e){} }
+    if(celT) clearTimeout(celT);
+    celT=setTimeout(function(){ ov.classList.remove('show'); }, 3200);
+  }
+  function confettiBurst(){
+    var cv=$('confetti'); if(!cv) return; var ctx=cv.getContext('2d');
+    var W=cv.width=cv.offsetWidth||window.innerWidth, H=cv.height=cv.offsetHeight||window.innerHeight;
+    var colors=['#3b82f6','#60a5fa','#22c55e','#fbbf24','#ffffff','#93c5fd'], parts=[];
+    for(var i=0;i<140;i++){ parts.push({ x:W/2+(Math.random()-.5)*160, y:H*0.32,
+      vx:(Math.random()-.5)*11, vy:Math.random()*-13-4, g:0.32+Math.random()*0.2,
+      s:5+Math.random()*7, c:colors[i%colors.length], rot:Math.random()*6.28, vr:(Math.random()-.5)*0.5 }); }
+    var start=null, dur=2800;
+    function frame(ts){ if(start==null) start=ts; var e=ts-start; ctx.clearRect(0,0,W,H);
+      for(var i=0;i<parts.length;i++){ var p=parts[i]; p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.globalAlpha=Math.max(0,1-e/dur);
+        ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.62); ctx.restore(); }
+      if(e<dur) requestAnimationFrame(frame); else ctx.clearRect(0,0,W,H);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  // ---- collective "together we ran" band ----
+  function updateTogether(){
+    var runners = _roster ? Object.keys(_roster).length : (_live?_live.length:0);
+    if(!runners) return;
+    var band=$('together'), h='';
+    if(!raceLive() || !_live){
+      h='<div class="lead-in">On the start line</div><span class="tg"><b>'+runners+'</b> <span class="u">runners ready to run</span></span>';
+    } else {
+      var loops=0; for(var i=0;i<_live.length;i++){ var t=_live[i].TotalLaps; if(t!==''&&t!=null) loops+=(+t||0); }
+      h='<div class="lead-in">Together on the course</div>'
+       +'<span class="tg"><b>'+_live.length+'</b> <span class="u">runners</span></span>'
+       +'<span class="sep">·</span>'
+       +'<span class="tg"><b>'+loops.toLocaleString('en-IN')+'</b> <span class="u">loops</span></span>';
+      if(LOOP_KM) h+='<span class="sep">·</span><span class="tg"><b>'+Math.round(loops*LOOP_KM).toLocaleString('en-IN')+'</b> <span class="u">km together</span></span>';
+    }
+    band.innerHTML=h; band.style.display='flex';
+  }
+
   // ============ shared data ============
   var _roster=null, _live=null;
   function getRoster(){
@@ -336,7 +426,7 @@
   // ============ MY RUN ============
   var entry=$('entry'), result=$('result'), loadingMsg=$('loadingMsg'), stateMsg=$('stateMsg');
   var bibIn=$('bib'), goBtn=$('goBtn');
-  var pollT=null, currentBib=null, lastLoops=null;
+  var pollT=null, currentBib=null, lastLoops=null, lastRank=null, curData=null;
 
   function hideAllMe(){ $('lead').style.display='none'; entry.style.display='none'; result.style.display='none'; stateMsg.style.display='none'; loadingMsg.style.display='none'; }
   function showEntry(){ stopPoll(); stopTimer(); hideAllMe(); $('lead').style.display='block'; entry.style.display='block'; bibIn.focus(); }
@@ -344,21 +434,61 @@
   function showState(ic,title,sub){ stopPoll(); stopTimer(); hideAllMe(); $('sIc').textContent=ic; $('sTitle').textContent=title; $('sSub').innerHTML=sub; stateMsg.style.display='block'; }
 
   function renderCard(d){
+    curData=d;
     hideAllMe(); result.style.display='block';
     $('rName').textContent = d.name || 'Runner';
     $('rBib').textContent  = 'BIB ' + currentBib;
     $('rChip').textContent = (d.gender? d.gender+' · ':'') + (d.category||'');
     startTimer(d.category);
+    var newLoop = (lastLoops!=null && d.loops!=null && d.loops>lastLoops);
+    var movedUp = (lastRank!=null && d.rank!=null && d.rank<lastRank);
     var loopsEl=$('rLoops');
     if(d.loops!=null){
       loopsEl.textContent = d.loops;
-      if(lastLoops!=null && d.loops>lastLoops){ loopsEl.classList.remove('bump'); void loopsEl.offsetWidth; loopsEl.classList.add('bump'); }
+      if(newLoop){ loopsEl.classList.remove('bump'); void loopsEl.offsetWidth; loopsEl.classList.add('bump'); }
       lastLoops = d.loops;
     } else { loopsEl.textContent='—'; }
     $('rKm').innerHTML = (d.km!=null ? Number(d.km).toFixed(1)+'<small> km</small>' : '—');
     if(d.rank!=null){ $('rRank').textContent='#'+d.rank; $('rRankL').textContent='Rank · '+(d.gender||d.category||''); }
     else { $('rRank').textContent='—'; $('rRankL').textContent='Rank'; }
     $('rUpdated').textContent = d.pending ? "you're in — live stats on race day, 26 Jul" : ('updated '+nowStr());
+    renderChase(d); updateTogether();
+    // celebrate real progress (never on first load — lastLoops/lastRank start null)
+    if(!d.pending && raceLive()){
+      if(newLoop){ celebrate('🎉','Loop '+d.loops+' done!', movedUp ? ('You moved up to #'+d.rank+'! '+pick(ENCOURAGE)) : pick(ENCOURAGE)); }
+      else if(movedUp){ celebrate('🚀','You moved up to #'+d.rank+'!', 'Keep the pressure on!'); }
+    }
+    if(d.rank!=null) lastRank=d.rank;
+  }
+
+  // ---- live chase: gap to the runner just ahead in your category+gender ----
+  function renderChase(d){
+    var el=$('chase');
+    if(!raceLive() || d.pending || d.rank==null || !_live || !_roster || d.loops==null){ el.style.display='none'; return; }
+    var cat=d.category, gen=d.gender, peers=[];
+    for(var i=0;i<_live.length;i++){ var r=_live[i], bib=String(r.Bib), base=_roster[bib]||{};
+      if(catForBib(bib)!==cat) continue;
+      if(gen && base.gender!==gen) continue;
+      peers.push({ bib:bib, name:base.name||'',
+        gr:parseInt(String(r.GenderRank||'').replace(/[^0-9]/g,''),10)||9999,
+        laps:(r.TotalLaps!==''&&r.TotalLaps!=null)?+r.TotalLaps:0 });
+    }
+    peers.sort(function(a,b){ return a.gr-b.gr; });
+    var myIdx=-1; for(var j=0;j<peers.length;j++){ if(peers[j].bib===String(currentBib)){ myIdx=j; break; } }
+    el.classList.remove('lead');
+    if(myIdx===0){
+      el.classList.add('lead'); $('chaseIc').textContent='🏆';
+      $('chaseTx').innerHTML='You’re <span class="hl">leading '+esc(gen||cat)+'</span>! Everyone’s chasing you — stay strong.';
+      el.style.display='flex'; return;
+    }
+    if(myIdx>0){
+      var ahead=peers[myIdx-1], gap=ahead.laps-d.loops, nm=esc(firstName(ahead.name)), aheadPos=d.rank-1;
+      $('chaseIc').textContent='⚡';
+      if(gap>=1){ $('chaseTx').innerHTML='You’re <b>#'+d.rank+'</b> — <span class="hl">'+gap+' loop'+(gap>1?'s':'')+'</span> behind '+nm+' (#'+aheadPos+'). Reel them in!'; }
+      else { $('chaseTx').innerHTML='You’re <b>#'+d.rank+'</b> — <span class="hl">neck and neck</span> with '+nm+' (#'+aheadPos+'). One surge could flip it!'; }
+      el.style.display='flex'; return;
+    }
+    el.style.display='none';
   }
 
   function fetchMe(bib){
@@ -409,7 +539,7 @@
   function submit(){
     var bib=(bibIn.value||'').replace(/[^0-9]/g,'').trim();
     if(!bib){ bibIn.focus(); return; }
-    currentBib=bib; lastLoops=null;
+    currentBib=bib; lastLoops=null; lastRank=null; curData=null;
     try{ localStorage.setItem('mm_bib', bib); }catch(e){}
     loadMe(bib, false);
   }
@@ -422,6 +552,68 @@
     if(currentBib){ selCat=catForBib(currentBib)||selCat; var g=(_roster&&_roster[currentBib])?_roster[currentBib].gender:''; if(g) selGen=g; }
     showTab('board');
   });
+
+  // ---- shareable finisher / status card ----
+  function wrapCanvas(ctx,text,cx,cy,maxW,lh){
+    var words=String(text).split(' '), line='', lines=[];
+    for(var n=0;n<words.length;n++){ var t=line+words[n]+' '; if(ctx.measureText(t).width>maxW && n>0){ lines.push(line.trim()); line=words[n]+' '; } else line=t; }
+    lines.push(line.trim());
+    for(var i=0;i<lines.length;i++){ ctx.fillText(lines[i],cx,cy+i*lh); }
+    return cy+(lines.length-1)*lh;
+  }
+  function shareRun(){
+    var d=curData; if(!d) return;
+    var btn=$('shareBtn'), old=btn.innerHTML; btn.disabled=true; btn.innerHTML='Preparing…';
+    var need=['italic 400 92px "Instrument Serif"','700 340px "Space Grotesk"','700 40px "JetBrains Mono"','500 30px "JetBrains Mono"'];
+    var loads=need.map(function(f){ return (document.fonts&&document.fonts.load)?document.fonts.load(f).catch(function(){}):Promise.resolve(); });
+    Promise.all(loads).then(function(){
+      var W=1080,H=1920,cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
+      var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#050a1a'); g.addColorStop(.5,'#0a1530'); g.addColorStop(1,'#070c1e');
+      x.fillStyle=g; x.fillRect(0,0,W,H);
+      var rg=x.createRadialGradient(W*0.82,H*0.08,0,W*0.82,H*0.08,760); rg.addColorStop(0,'rgba(59,130,246,0.28)'); rg.addColorStop(1,'rgba(59,130,246,0)'); x.fillStyle=rg; x.fillRect(0,0,W,H);
+      x.strokeStyle='rgba(255,255,255,0.035)'; x.lineWidth=2;
+      for(var i=-H;i<W;i+=48){ x.beginPath(); x.moveTo(i,0); x.lineTo(i+H*0.25,H); x.stroke(); }
+      x.textAlign='center';
+      x.fillStyle='#60a5fa'; x.font='700 34px "JetBrains Mono", monospace'; x.fillText('MONSOON MILES 2026', W/2, 152);
+      x.fillStyle='rgba(255,255,255,0.5)'; x.font='500 26px "JetBrains Mono", monospace'; x.fillText('L I V E   R A C E   T R A C K I N G', W/2, 202);
+      x.fillStyle='#ffffff'; x.font='italic 400 92px "Instrument Serif", Georgia, serif';
+      var ny=wrapCanvas(x,(d.name||'Runner'),W/2,400,940,94);
+      x.fillStyle='#93c5fd'; x.font='600 30px "JetBrains Mono", monospace';
+      x.fillText(((d.gender?d.gender+'   ·   ':'')+(d.category||'')).toUpperCase(), W/2, ny+72);
+      var race=(d.loops!=null && !d.pending);
+      if(race){
+        x.textBaseline='middle'; x.fillStyle='#ffffff'; x.font='700 360px "Space Grotesk", Arial, sans-serif';
+        x.fillText(String(d.loops), W/2, 1000); x.textBaseline='alphabetic';
+        x.fillStyle='#93c5fd'; x.font='700 42px "JetBrains Mono", monospace'; x.fillText('LOOPS COMPLETED', W/2, 1240);
+        if(d.rank!=null){ x.fillStyle='#fbbf24'; x.font='700 48px "Space Grotesk", Arial, sans-serif'; x.fillText('#'+d.rank+'  in  '+(d.gender||d.category||''), W/2, 1330); }
+        if(d.km!=null){ x.fillStyle='rgba(255,255,255,0.78)'; x.font='500 34px "JetBrains Mono", monospace'; x.fillText(Number(d.km).toFixed(1)+' km covered', W/2, 1400); }
+      } else {
+        x.textBaseline='middle'; x.fillStyle='#60a5fa'; x.font='700 200px "Space Grotesk", Arial, sans-serif';
+        x.fillText('I’M IN', W/2, 1000); x.textBaseline='alphabetic';
+        x.fillStyle='#93c5fd'; x.font='700 40px "JetBrains Mono", monospace'; x.fillText('SEE YOU ON THE START LINE', W/2, 1210);
+        x.fillStyle='#ffffff'; x.font='italic 400 62px "Instrument Serif", Georgia, serif'; x.fillText('BIB '+(currentBib||''), W/2, 1310);
+      }
+      x.strokeStyle='rgba(255,255,255,0.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(150,1560); x.lineTo(W-150,1560); x.stroke();
+      x.fillStyle='#60a5fa'; x.font='700 40px "JetBrains Mono", monospace'; x.fillText('#MonsoonMiles2026', W/2, 1662);
+      x.fillStyle='rgba(255,255,255,0.55)'; x.font='500 30px "JetBrains Mono", monospace';
+      x.fillText('26 July 2026   ·   Suncity Club, Vadodara', W/2, 1722);
+      x.fillText('runwithdina.com/monsoon-miles   ·   Powered by fintale.io', W/2, 1770);
+      cv.toBlob(function(blob){
+        btn.disabled=false; btn.innerHTML=old;
+        if(!blob) return;
+        var fname='monsoon-miles-'+(currentBib||'run')+'.png';
+        try{ var file=new File([blob],fname,{type:'image/png'});
+          if(navigator.canShare && navigator.canShare({files:[file]})){
+            navigator.share({ files:[file], title:'Monsoon Miles 2026', text:'Running Monsoon Miles 2026! #MonsoonMiles2026' }).catch(function(){});
+            return;
+          }
+        }catch(e){}
+        var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+      }, 'image/png');
+    });
+  }
+  $('shareBtn').addEventListener('click', shareRun);
 
   // race timer
   var tT=null, tCat=null;
@@ -504,6 +696,7 @@
     if(rows.length>LIMIT) $('moreBtn').textContent='Show everyone ('+rows.length+')';
     $('updBar').style.display='flex';
     $('upd').textContent='updated '+nowStr();
+    updateTogether();
   }
   function showPrerace(){
     $('lbLoading').style.display='none'; $('board').style.display='none'; $('moreBtn').style.display='none'; $('updBar').style.display='none';
