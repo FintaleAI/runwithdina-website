@@ -178,6 +178,7 @@
         <button class="btn-ghost" id="anotherBtn">Check another BIB</button>
       </div>
       <button class="btn-ghost wake" id="wakeBtn" style="width:100%;margin-top:.6rem">&#9728; Keep screen awake</button>
+      <a class="btn-ghost" id="lbLink" href="leaderboard.html" style="display:block;text-align:center;text-decoration:none;width:100%;margin-top:.6rem">View category leaderboard &rarr;</a>
     </div>
 
     <!-- pending / invalid / error -->
@@ -244,6 +245,8 @@
     $('rBib').textContent  = 'BIB ' + currentBib;
     $('rChip').textContent = (d.gender? d.gender+' · ':'') + (d.category||'');
     startTimer(d.category);
+    $('lbLink').href = 'leaderboard.html?cat='+encodeURIComponent(d.category||'4 Hours')
+      +'&gender='+(d.gender||'All')+'&bib='+encodeURIComponent(currentBib||'');
     var loopsEl=$('rLoops');
     if(d.loops!=null){
       loopsEl.textContent = d.loops;
