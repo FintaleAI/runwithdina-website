@@ -152,7 +152,12 @@
   .empty .s{font-size:.88rem;color:var(--mist);margin-top:.5rem;line-height:1.55}
   .empty .cd{font-family:var(--mono);font-size:1.5rem;color:var(--rain-light);margin-top:.9rem;font-variant-numeric:tabular-nums}
 
-  .foot{text-align:center;margin-top:1.8rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:#4a4a4a}
+  .disclaimer{text-align:center;margin-top:1.6rem;font-family:var(--sans);font-size:.72rem;line-height:1.5;
+    color:var(--slate);max-width:420px;margin-left:auto;margin-right:auto;padding:0 .5rem}
+  .powered{text-align:center;margin-top:1.3rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--silver)}
+  .powered a{color:var(--rain-light);text-decoration:none;font-weight:500;border-bottom:1px solid rgba(96,165,250,.4);padding-bottom:1px}
+  .powered a:hover{color:#fff;border-bottom-color:#fff}
+  .foot{text-align:center;margin-top:1rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:#4a4a4a}
   .foot b{color:var(--rain-light)}
   .demo-badge{position:fixed;top:10px;right:10px;z-index:9;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;
     background:var(--lightning);color:#111;padding:.25rem .55rem;border-radius:100px;font-weight:500}
@@ -258,6 +263,8 @@
     <div class="updated" id="updBar" style="display:none"><span class="live">&#9679; LIVE</span><span id="upd">updated &mdash;</span> &middot; auto-refreshing</div>
   </div>
 
+  <div class="disclaimer">Live results are <b style="color:var(--mist);font-weight:600">provisional</b> and may change. Final results may vary &mdash; the organiser&rsquo;s decision is final.</div>
+  <div class="powered">Powered by <a href="https://fintale.io" target="_blank" rel="noopener">fintale.io</a></div>
   <div class="foot">RWD Monsoon Miles 2026 &middot; <b>#MonsoonMiles2026</b> &middot; @runwithdina</div>
 </div>
 
