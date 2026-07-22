@@ -154,7 +154,10 @@
 
   .disclaimer{text-align:center;margin-top:1.6rem;font-family:var(--sans);font-size:.72rem;line-height:1.5;
     color:var(--slate);max-width:420px;margin-left:auto;margin-right:auto;padding:0 .5rem}
-  .powered{text-align:center;margin-top:1.3rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--silver)}
+  .initiative{display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:1.5rem}
+  .initiative span{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+  .initiative img{height:34px;width:auto;display:block;opacity:.95}
+  .powered{text-align:center;margin-top:1rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--silver)}
   .powered a{color:var(--rain-light);text-decoration:none;font-weight:500;border-bottom:1px solid rgba(96,165,250,.4);padding-bottom:1px}
   .powered a:hover{color:#fff;border-bottom-color:#fff}
   .foot{text-align:center;margin-top:1rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:#4a4a4a}
@@ -321,8 +324,12 @@
 
   <div class="together" id="together"></div>
   <div class="disclaimer">Live results are <b style="color:var(--mist);font-weight:600">provisional</b> and may change. Final results may vary &mdash; the organiser&rsquo;s decision is final.</div>
+  <div class="initiative">
+    <span>An initiative by</span>
+    <img src="Photos/community-logos/runwithdina.png" alt="RunwithDina">
+  </div>
   <div class="powered">Powered by <a href="https://fintale.io" target="_blank" rel="noopener">fintale.io</a></div>
-  <div class="foot">RWD Monsoon Miles 2026 &middot; <b>#MonsoonMiles2026</b> &middot; @runwithdina</div>
+  <div class="foot">Monsoon Miles 2026 &middot; <b>#MonsoonMiles2026</b> &middot; @runwithdina</div>
 </div>
 
 <script>
@@ -586,7 +593,7 @@
     for(var i=0;i<lines.length;i++){ ctx.fillText(lines[i],cx,cy+i*lh); }
     return cy+(lines.length-1)*lh;
   }
-  function drawCard(d, logo){
+  function drawCard(d, logo, rwd){
       var W=1080,H=1920,cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
       var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#050a1a'); g.addColorStop(.5,'#0a1530'); g.addColorStop(1,'#070c1e');
       x.fillStyle=g; x.fillRect(0,0,W,H);
@@ -624,8 +631,14 @@
         x.fillStyle='#93c5fd'; x.font='700 40px "JetBrains Mono", monospace'; x.fillText('SEE YOU ON THE START LINE', W/2, 1210);
         x.fillStyle='#ffffff'; x.font='italic 400 62px "Instrument Serif", Georgia, serif'; x.fillText('BIB '+(currentBib||''), W/2, 1310);
       }
-      x.strokeStyle='rgba(255,255,255,0.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(150,1560); x.lineTo(W-150,1560); x.stroke();
-      x.fillStyle='#60a5fa'; x.font='700 40px "JetBrains Mono", monospace'; x.fillText('#MonsoonMiles2026', W/2, 1662);
+      x.strokeStyle='rgba(255,255,255,0.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(150,1520); x.lineTo(W-150,1520); x.stroke();
+      if(rwd && rwd.naturalWidth){
+        var rh=58, rw=Math.round(rh*(rwd.naturalWidth/rwd.naturalHeight));
+        x.drawImage(rwd, Math.round((W-rw)/2), 1556, rw, rh);
+      } else {
+        x.fillStyle='rgba(255,255,255,0.7)'; x.font='700 30px "JetBrains Mono", monospace'; x.fillText('RUNWITHDINA', W/2, 1598);
+      }
+      x.fillStyle='#60a5fa'; x.font='700 40px "JetBrains Mono", monospace'; x.fillText('#MonsoonMiles2026', W/2, 1672);
       x.fillStyle='rgba(255,255,255,0.55)'; x.font='500 30px "JetBrains Mono", monospace';
       x.fillText('26 July 2026   ·   Suncity Club, Vadodara', W/2, 1722);
       x.fillText('runwithdina.com/monsoon-miles   ·   Powered by fintale.io', W/2, 1770);
@@ -649,14 +662,15 @@
     var need=['italic 400 92px "Instrument Serif"','700 340px "Space Grotesk"','700 40px "JetBrains Mono"','500 30px "JetBrains Mono"'];
     var loads=need.map(function(f){ return (document.fonts&&document.fonts.load)?document.fonts.load(f).catch(function(){}):Promise.resolve(); });
     loads.push(loadImg('Photos/sponsors/ficci-flo.png'));
+    loads.push(loadImg('Photos/community-logos/runwithdina.png'));
     Promise.all(loads).then(function(res){
-      var logo=res[res.length-1];
+      var logo=res[res.length-2], rwd=res[res.length-1];
       // Export with the sponsor logo; if the canvas is tainted (e.g. the logo
       // ever loads cross-origin), fall back to a logo-free card so sharing
       // still works rather than silently jamming the button.
       function attempt(withLogo){
         try{
-          drawCard(d, withLogo?logo:null).toBlob(function(blob){
+          drawCard(d, withLogo?logo:null, withLogo?rwd:null).toBlob(function(blob){
             reset(); if(blob) deliverCard(blob);
           }, 'image/png');
           return true;
