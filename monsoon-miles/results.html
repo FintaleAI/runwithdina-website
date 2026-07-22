@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Results — RWD Monsoon Miles 2026</title>
+<meta name="description" content="Live standings, splits and finish times for RWD Monsoon Miles 2026. Search your BIB or name.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- RaceResult embed loader (defines RRPublish) -->
+<script type="text/javascript" src="https://my.raceresult.com/RRPublish/load.js?lang=en"></script>
+<style>
+  :root{
+    --black:#050505; --ink:#0a0a0a; --charcoal:#111; --slate:#666; --silver:#999; --mist:#bbb;
+    --white:#f5f5f0; --pure:#fff; --rain:#3b82f6; --rain-light:#60a5fa; --moss:#22c55e;
+    --serif:'Instrument Serif',Georgia,serif; --sans:'Space Grotesk',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--black);color:var(--white);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;padding:1.5rem;position:relative;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(1000px 520px at 80% -8%, rgba(59,130,246,.15), transparent 60%),
+               radial-gradient(760px 620px at 4% 108%, rgba(96,165,250,.09), transparent 55%);}
+  .rain-lines{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:repeating-linear-gradient(104deg, transparent 0 24px, rgba(255,255,255,.02) 24px 25px);}
+  .wrap{position:relative;z-index:1;width:100%;max-width:1040px;margin:0 auto}
+
+  .back{display:inline-block;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--silver);text-decoration:none;margin-bottom:1.6rem;transition:color .3s var(--ease)}
+  .back:hover{color:var(--rain-light)}
+
+  .eyebrow{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.7rem;font-weight:500;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--rain-light)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--moss);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:3.2rem;line-height:1;margin:.6rem 0 .5rem}
+  h1 span{color:var(--rain-light)}
+  .sub{font-size:1rem;color:var(--mist);font-weight:300;max-width:640px;line-height:1.5}
+  .sub b{color:var(--white);font-weight:500}
+
+  .tabs{display:flex;gap:.5rem;margin:1.6rem 0 0;flex-wrap:wrap}
+  .tab{font-family:var(--sans);font-weight:600;font-size:.9rem;color:var(--mist);
+    background:var(--charcoal);border:1px solid rgba(255,255,255,.1);border-radius:100px;
+    padding:.6rem 1.3rem;cursor:pointer;transition:all .2s var(--ease);display:flex;align-items:center;gap:.45rem}
+  .tab:hover{color:var(--white);border-color:rgba(255,255,255,.25)}
+  .tab.active{background:var(--rain);border-color:var(--rain);color:#fff}
+  .tab .tdot{width:7px;height:7px;border-radius:50%;background:var(--moss);animation:pulse 1.8s infinite}
+  .tab.active .tdot{background:#fff;animation:none}
+
+  /* light results card holding the RaceResult widget */
+  .rrcard{margin-top:1rem;background:var(--pure);border-radius:14px;padding:1.1rem 1.1rem 1.4rem;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);min-height:260px;color:#1c2942;overflow-x:auto}
+  .rrslot{width:100%}
+  .rrslot[hidden]{display:none}
+  .rrloading{padding:2.4rem 1rem;text-align:center;color:#64748b;font-family:var(--mono);font-size:.8rem;letter-spacing:.05em}
+  .spinner{width:26px;height:26px;border:3px solid rgba(0,0,0,.12);border-top-color:var(--rain);border-radius:50%;
+    animation:spin .8s linear infinite;margin:0 auto .8rem}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* light brand nudges for the RaceResult widget (kept minimal + safe) */
+  .rrcard a{color:var(--rain)}
+  .rrcard .RRPublish{font-family:var(--sans)}
+
+  .hint{margin-top:1rem;font-size:.85rem;color:var(--slate);text-align:center}
+  .hint b{color:var(--mist)}
+  .foot{text-align:center;margin-top:1.8rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:#4a4a4a}
+  .foot b{color:var(--rain-light)}
+  @media(max-width:520px){ h1{font-size:2.5rem} .wrap{max-width:100%} .rrcard{padding:.7rem} }
+</style>
+</head>
+<body>
+<div class="rain-lines"></div>
+
+<div class="wrap">
+  <a href="./" class="back">&larr; Monsoon Miles</a>
+
+  <div class="eyebrow"><span class="dot"></span> Live &middot; Monsoon Miles 2026</div>
+  <h1>Live <span>Results</span></h1>
+  <p class="sub">Live standings, splits and finish times, straight from the timing mats. <b>Search your BIB or name</b> in the box below to find yourself.</p>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="live"><span class="tdot"></span> Live</button>
+    <button class="tab" data-tab="results">Results</button>
+    <button class="tab" data-tab="participants">Participants</button>
+  </div>
+
+  <div class="rrcard">
+    <div id="rr-live" class="rrslot"><div class="rrloading"><div class="spinner"></div>Loading live standings…</div></div>
+    <div id="rr-results" class="rrslot" hidden></div>
+    <div id="rr-participants" class="rrslot" hidden></div>
+  </div>
+
+  <p class="hint">Before race day the <b>Live</b> and <b>Results</b> tabs may be empty — tap <b>Participants</b> for the start list. On race day, standings appear here automatically.</p>
+
+  <div class="foot">Timing by <b>RaceResult</b> &middot; #MonsoonMiles2026 &middot; @runwithdina</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var RACE_ID = 409224;
+  var made = {};              // tab -> true once instantiated
+  var slots = { live:'rr-live', results:'rr-results', participants:'rr-participants' };
+
+  function instantiate(tab){
+    var slot = document.getElementById(slots[tab]);
+    if(typeof RRPublish === 'undefined'){ setTimeout(function(){ instantiate(tab); }, 200); return; }
+    slot.innerHTML = '';                     // clear the loading placeholder
+    var w = new RRPublish(slot, RACE_ID, tab);
+    w.ShowTimerLogo = true;
+    w.ShowInfoText = false;
+    made[tab] = true;
+  }
+
+  function show(tab){
+    Object.keys(slots).forEach(function(t){
+      document.getElementById(slots[t]).hidden = (t !== tab);
+    });
+    var btns = document.querySelectorAll('.tab');
+    for(var i=0;i<btns.length;i++){ btns[i].classList.toggle('active', btns[i].getAttribute('data-tab')===tab); }
+    if(!made[tab]) instantiate(tab);
+  }
+
+  var btns = document.querySelectorAll('.tab');
+  for(var i=0;i<btns.length;i++){
+    btns[i].addEventListener('click', function(){ show(this.getAttribute('data-tab')); });
+  }
+
+  // Default to Participants (start list) — lively before race day; on race day
+  // the prominent "Live" tab carries standings. Override with ?tab=live etc.
+  var params = new URLSearchParams(window.location.search);
+  var def = params.get('tab');
+  if(!(def in slots)) def = 'participants';
+  show(def);
+})();
+</script>
+</body>
+</html>
