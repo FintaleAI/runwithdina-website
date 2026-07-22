@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monsoon Miles LIVE — Track · Leaderboard · Results</title>
+<meta name="description" content="RWD Monsoon Miles 2026 live: track your loops, the category leaderboard and official results — all in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://my.raceresult.com/RRPublish/load.js?lang=en"></script>
+<style>
+  :root{
+    --black:#050505; --ink:#0a0a0a; --charcoal:#111; --slate:#666; --silver:#999; --mist:#bbb;
+    --white:#f5f5f0; --pure:#fff; --rain:#3b82f6; --rain-light:#60a5fa; --lightning:#fbbf24; --moss:#22c55e;
+    --serif:'Instrument Serif',Georgia,serif; --sans:'Space Grotesk',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--black);color:var(--white);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{min-height:100dvh;padding:1.3rem 1rem 3rem;position:relative;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 78% -6%, rgba(59,130,246,.16), transparent 60%),
+               radial-gradient(700px 600px at 6% 108%, rgba(96,165,250,.10), transparent 55%);}
+  .rain-lines{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:repeating-linear-gradient(104deg, transparent 0 24px, rgba(255,255,255,.02) 24px 25px);}
+  .wrap{position:relative;z-index:1;width:100%;max-width:560px;margin:0 auto}
+  .wrap.wide{max-width:1040px}
+
+  .back{display:inline-block;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--silver);text-decoration:none;margin-bottom:1.1rem;transition:color .3s var(--ease)}
+  .back:hover{color:var(--rain-light)}
+  .eyebrow{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.68rem;font-weight:500;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--rain-light)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--moss);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:2.6rem;line-height:1;margin:.55rem 0 1rem}
+  h1 span{color:var(--rain-light)}
+
+  /* main tab bar */
+  .tabs{position:sticky;top:.5rem;z-index:5;display:flex;gap:.4rem;background:rgba(10,10,10,.82);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);
+    border-radius:.9rem;padding:.35rem;margin-bottom:1.1rem}
+  .tab{flex:1;font-family:var(--sans);font-weight:600;font-size:.9rem;color:var(--mist);background:transparent;
+    border:none;border-radius:.65rem;padding:.7rem .3rem;cursor:pointer;transition:all .2s var(--ease);min-height:44px}
+  .tab.active{background:var(--rain);color:#fff}
+  .view{display:none} .view.active{display:block;animation:rise .4s var(--ease)}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* ===== MY RUN ===== */
+  .card{background:var(--charcoal);border:1px solid rgba(255,255,255,.08);border-radius:1.1rem;
+    padding:2rem 1.6rem;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .lead{font-size:.95rem;color:var(--mist);line-height:1.5;font-weight:300}
+  .lead b{color:var(--white);font-weight:500}
+  .field{margin-top:1.3rem}
+  .field label{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--silver);margin-bottom:.5rem}
+  .bibin{background:var(--ink);border:1px solid rgba(255,255,255,.14);border-radius:.7rem;
+    color:var(--white);font-family:var(--mono);font-size:1.5rem;letter-spacing:.08em;text-align:center;
+    padding:.85rem .8rem;outline:none;transition:border-color .25s var(--ease),box-shadow .25s var(--ease);width:100%}
+  .bibin::placeholder{color:#555;letter-spacing:.05em}
+  .bibin:focus{border-color:var(--rain);box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+  .go{background:var(--rain);color:#fff;border:none;border-radius:.7rem;font-family:var(--sans);font-weight:600;
+    font-size:1rem;cursor:pointer;transition:background .2s var(--ease),transform .2s var(--ease);
+    width:100%;padding:.9rem;margin-top:.7rem;min-height:48px}
+  .go:hover{background:#2563eb} .go:active{transform:scale(.97)}
+  .hint{margin-top:.7rem;font-size:.78rem;color:var(--slate)} .hint b{color:var(--mist);font-weight:500}
+
+  .result{display:none}
+  .runner{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-top:.2rem}
+  .runner .nm{font-family:var(--serif);font-style:italic;font-size:1.5rem;line-height:1.1}
+  .runner .bibtag{font-family:var(--mono);font-size:.7rem;color:var(--silver);letter-spacing:.05em;margin-top:.15rem}
+  .chip{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--rain-light);
+    border:1px solid rgba(96,165,250,.4);background:rgba(59,130,246,.1);border-radius:100px;padding:.35rem .7rem;white-space:nowrap}
+
+  .rtimer{margin-top:1.2rem;background:var(--ink);border:1px solid rgba(255,255,255,.08);border-radius:.8rem;padding:.9rem .9rem .85rem}
+  .rt-row{display:flex;gap:.8rem}
+  .rt-cell{flex:1;text-align:center}
+  .rt-l{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--silver)}
+  .rt-v{font-family:var(--mono);font-weight:500;font-size:1.3rem;color:var(--white);margin-top:.25rem;font-variant-numeric:tabular-nums}
+  .rt-bar{height:5px;background:rgba(255,255,255,.08);border-radius:100px;margin-top:.8rem;overflow:hidden}
+  .rt-fill{height:100%;background:linear-gradient(90deg,var(--rain),var(--rain-light));border-radius:100px;transition:width 1s linear}
+
+  .hero{margin-top:1.2rem;background:linear-gradient(160deg,rgba(59,130,246,.14),rgba(59,130,246,.03));
+    border:1px solid rgba(96,165,250,.28);border-radius:1rem;padding:1.4rem 1.2rem;text-align:center;position:relative;overflow:hidden}
+  .hero .big{font-family:var(--sans);font-weight:700;font-size:5rem;line-height:.9;color:var(--pure);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .hero .big.bump{animation:bump .6s var(--ease)}
+  @keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.12);color:var(--rain-light)}100%{transform:scale(1)}}
+  .hero .cap{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--rain-light);margin-top:.5rem}
+  .stats2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:.7rem}
+  .stat{background:var(--ink);border:1px solid rgba(255,255,255,.08);border-radius:.8rem;padding:1rem .9rem;text-align:center}
+  .stat .v{font-family:var(--sans);font-weight:600;font-size:1.7rem;color:var(--white);font-variant-numeric:tabular-nums}
+  .stat .v small{font-size:.9rem;color:var(--mist);font-weight:400}
+  .stat .l{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--silver);margin-top:.35rem}
+
+  .updated{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:1.1rem;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--slate)}
+  .updated .live{color:var(--moss)}
+  .actions{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+  .btn-ghost{flex:1;background:transparent;border:1px solid rgba(255,255,255,.16);color:var(--mist);border-radius:.7rem;
+    font-family:var(--sans);font-weight:500;font-size:.85rem;padding:.7rem;cursor:pointer;transition:all .2s var(--ease);min-height:44px}
+  .btn-ghost:hover{border-color:var(--rain);color:var(--white)}
+  .btn-ghost.on{border-color:rgba(34,197,94,.55);color:var(--moss)}
+  .btn-ghost.wide{flex-basis:100%}
+
+  .msg{display:none;margin-top:1.2rem;text-align:center;padding:1.4rem 1rem;border-radius:.9rem;
+    border:1px solid rgba(255,255,255,.1);background:var(--ink)}
+  .msg .ic{font-size:1.6rem}
+  .msg .t{font-family:var(--serif);font-style:italic;font-size:1.25rem;margin-top:.4rem}
+  .msg .s{font-size:.85rem;color:var(--mist);margin-top:.4rem;line-height:1.5}
+  .spinner{width:26px;height:26px;border:3px solid rgba(255,255,255,.15);border-top-color:var(--rain);border-radius:50%;
+    animation:spin .8s linear infinite;margin:0 auto}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ===== LEADERBOARD ===== */
+  .cats{display:flex;gap:.45rem}
+  .cat{flex:1;font-family:var(--sans);font-weight:600;font-size:.9rem;color:var(--mist);
+    background:var(--charcoal);border:1px solid rgba(255,255,255,.1);border-radius:.75rem;
+    padding:.72rem .4rem;cursor:pointer;transition:all .2s var(--ease);text-align:center;min-height:44px}
+  .cat.active{background:var(--rain);border-color:var(--rain);color:#fff}
+  .genders{display:flex;gap:.45rem;margin-top:.5rem}
+  .gen{flex:1;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--silver);
+    background:transparent;border:1px solid rgba(255,255,255,.14);border-radius:.75rem;padding:.62rem .4rem;
+    cursor:pointer;transition:all .2s var(--ease);min-height:40px}
+  .gen.active{border-color:var(--rain-light);color:var(--rain-light);background:rgba(59,130,246,.1)}
+  .searchrow{margin-top:.5rem}
+  .search{width:100%;background:var(--ink);border:1px solid rgba(255,255,255,.12);border-radius:.75rem;
+    color:var(--white);font-family:var(--sans);font-size:16px;padding:.72rem .95rem;outline:none;transition:border-color .25s var(--ease)}
+  .search::placeholder{color:#555}
+  .search:focus{border-color:var(--rain)}
+  .board{margin-top:1rem;background:var(--charcoal);border:1px solid rgba(255,255,255,.08);border-radius:1rem;
+    overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .row{display:flex;align-items:center;gap:.8rem;padding:.72rem .95rem;border-bottom:1px solid rgba(255,255,255,.06);min-height:58px}
+  .row:last-child{border-bottom:none}
+  .row.me{background:rgba(59,130,246,.12);box-shadow:inset 3px 0 0 var(--rain)}
+  .rk{flex:0 0 40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--sans);font-weight:700;font-size:.95rem;color:var(--mist);background:var(--ink);
+    border:1px solid rgba(255,255,255,.1);font-variant-numeric:tabular-nums}
+  .rk.g1{color:#111;background:var(--lightning);border-color:var(--lightning)}
+  .rk.g2{color:#111;background:#c9d2dd;border-color:#c9d2dd}
+  .rk.g3{color:#fff;background:#c2703e;border-color:#c2703e}
+  .who{flex:1;min-width:0}
+  .who .nm{font-family:var(--serif);font-style:italic;font-size:1.12rem;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .who .sub{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--silver);margin-top:.14rem}
+  .laps{text-align:right;flex:0 0 auto}
+  .laps .n{font-family:var(--sans);font-weight:700;font-size:1.55rem;line-height:1;font-variant-numeric:tabular-nums}
+  .laps .l{font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--silver);margin-top:.15rem}
+  .row.me .laps .n{color:var(--rain-light)}
+  .more{width:100%;background:transparent;border:none;border-top:1px solid rgba(255,255,255,.08);
+    color:var(--rain-light);font-family:var(--sans);font-weight:600;font-size:.88rem;padding:.9rem;cursor:pointer;min-height:44px}
+  .empty{margin-top:1rem;background:var(--charcoal);border:1px solid rgba(255,255,255,.08);border-radius:1rem;
+    padding:2.2rem 1.4rem;text-align:center}
+  .empty .ic{font-size:1.8rem}
+  .empty .t{font-family:var(--serif);font-style:italic;font-size:1.4rem;margin-top:.5rem}
+  .empty .s{font-size:.88rem;color:var(--mist);margin-top:.5rem;line-height:1.55}
+  .empty .cd{font-family:var(--mono);font-size:1.5rem;color:var(--rain-light);margin-top:.9rem;font-variant-numeric:tabular-nums}
+
+  /* ===== OFFICIAL ===== */
+  .rrcard{background:var(--pure);border-radius:14px;padding:1rem 1rem 1.3rem;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);min-height:240px;color:#1c2942;overflow-x:auto}
+  .rrnote{margin-top:.9rem;font-size:.8rem;color:var(--slate);text-align:center}
+
+  .foot{text-align:center;margin-top:1.8rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:#4a4a4a}
+  .foot b{color:var(--rain-light)}
+  .demo-badge{position:fixed;top:10px;right:10px;z-index:9;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;
+    background:var(--lightning);color:#111;padding:.25rem .55rem;border-radius:100px;font-weight:500}
+  @media(max-width:380px){ h1{font-size:2.2rem} .hero .big{font-size:4.3rem} .who .nm{font-size:1rem} }
+</style>
+</head>
+<body>
+<div class="rain-lines"></div>
+<div class="demo-badge" id="demoBadge" style="display:none">DEMO DATA</div>
+
+<div class="wrap" id="pageWrap">
+  <a href="./" class="back">&larr; Monsoon Miles</a>
+  <div class="eyebrow"><span class="dot"></span> Live &middot; 26 July 2026</div>
+  <h1>Monsoon Miles <span>Live</span></h1>
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="me">My Run</button>
+    <button class="tab" data-tab="board">Leaderboard</button>
+    <button class="tab" data-tab="official">Official</button>
+  </div>
+
+  <!-- ============ MY RUN ============ -->
+  <div class="view active" id="view-me">
+    <div class="card">
+      <p class="lead" id="lead">Enter your BIB number to see your <b>loops completed</b>, your rank and your race clock — live as you run.</p>
+
+      <div class="field" id="entry">
+        <label for="bib">Your BIB number</label>
+        <input class="bibin" id="bib" type="text" inputmode="numeric" autocomplete="off" placeholder="e.g. 1042" maxlength="5">
+        <button class="go" id="goBtn">Show my progress</button>
+        <div class="hint">Your number is printed on your <b>BIB</b> &mdash; e.g. 1042, 2085, 4007.</div>
+      </div>
+
+      <div class="msg" id="loadingMsg"><div class="spinner"></div><div class="s">Fetching your progress&hellip;</div></div>
+
+      <div class="result" id="result">
+        <div class="runner">
+          <div>
+            <div class="nm" id="rName">&mdash;</div>
+            <div class="bibtag" id="rBib">BIB &mdash;</div>
+          </div>
+          <div class="chip" id="rChip">&mdash;</div>
+        </div>
+
+        <div class="rtimer" id="rTimer" style="display:none">
+          <div class="rt-row">
+            <div class="rt-cell"><div class="rt-l">Elapsed</div><div class="rt-v" id="rtElapsed">&mdash;</div></div>
+            <div class="rt-cell"><div class="rt-l" id="rtRemainL">Remaining</div><div class="rt-v" id="rtRemain">&mdash;</div></div>
+          </div>
+          <div class="rt-bar"><div class="rt-fill" id="rtFill" style="width:0%"></div></div>
+        </div>
+
+        <div class="hero">
+          <div class="big" id="rLoops">0</div>
+          <div class="cap">Loops completed</div>
+        </div>
+
+        <div class="stats2">
+          <div class="stat"><div class="v" id="rKm">&mdash;</div><div class="l">Distance covered</div></div>
+          <div class="stat"><div class="v" id="rRank">&mdash;</div><div class="l" id="rRankL">Rank</div></div>
+        </div>
+
+        <div class="updated"><span class="live">&#9679; LIVE</span><span id="rUpdated">updated &mdash;</span> &middot; auto-refreshing</div>
+        <div class="actions">
+          <button class="btn-ghost" id="refreshBtn">Refresh now</button>
+          <button class="btn-ghost" id="anotherBtn">Change BIB</button>
+          <button class="btn-ghost wide" id="wakeBtn">&#9728; Keep screen awake</button>
+          <button class="btn-ghost wide" id="lbJump">See my category leaderboard &rarr;</button>
+        </div>
+      </div>
+
+      <div class="msg" id="stateMsg">
+        <div class="ic" id="sIc">&#8987;</div>
+        <div class="t" id="sTitle">&mdash;</div>
+        <div class="s" id="sSub">&mdash;</div>
+        <button class="btn-ghost" id="backBtn" style="margin-top:1rem;max-width:180px;margin-left:auto;margin-right:auto">Try another BIB</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LEADERBOARD ============ -->
+  <div class="view" id="view-board">
+    <div class="cats" id="cats">
+      <button class="cat" data-cat="1 Hour">1 Hour</button>
+      <button class="cat" data-cat="2 Hours">2 Hours</button>
+      <button class="cat active" data-cat="4 Hours">4 Hours</button>
+    </div>
+    <div class="genders" id="gens">
+      <button class="gen active" data-gen="Women">Women</button>
+      <button class="gen" data-gen="Men">Men</button>
+      <button class="gen" data-gen="All">All</button>
+    </div>
+    <div class="searchrow"><input class="search" id="q" type="search" placeholder="Search name or BIB&hellip;" autocomplete="off"></div>
+
+    <div class="empty" id="lbLoading" style="display:none"><div class="spinner"></div><div class="s" style="margin-top:.8rem">Loading standings&hellip;</div></div>
+    <div class="empty" id="prerace" style="display:none">
+      <div class="ic">&#127937;</div>
+      <div class="t">Opens at flag-off</div>
+      <div class="s" id="preSub">The live leaderboard starts with the race.</div>
+      <div class="cd" id="preCd">&mdash;</div>
+    </div>
+    <div class="board" id="board" style="display:none"></div>
+    <button class="more" id="moreBtn" style="display:none">Show everyone</button>
+    <div class="updated" id="updBar" style="display:none"><span class="live">&#9679; LIVE</span><span id="upd">updated &mdash;</span> &middot; auto-refreshing</div>
+  </div>
+
+  <!-- ============ OFFICIAL ============ -->
+  <div class="view" id="view-official">
+    <div class="rrcard">
+      <div id="rrslot" class="RRPublish"><div style="padding:2rem 1rem;text-align:center;color:#64748b;font-family:var(--mono);font-size:.8rem">
+        <div class="spinner" style="border-color:rgba(0,0,0,.12);border-top-color:#3b82f6"></div><div style="margin-top:.8rem">Loading official results&hellip;</div></div></div>
+    </div>
+    <p class="rrnote">Official timing by RaceResult &middot; use the search box for any bib or name &middot; PDF export available above the table.</p>
+  </div>
+
+  <div class="foot">RWD Monsoon Miles 2026 &middot; <b>#MonsoonMiles2026</b> &middot; @runwithdina</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ============ config ============
+  var qp = new URLSearchParams(location.search);
+  var SOURCE = (qp.get('demo')==='1') ? 'demo' : 'live';
+  var POLL_MS = 15000;
+  var RACE_ID = 409224;
+  var LIVE_URL   = 'https://api.raceresult.com/409224/HL8NF6L146EES0UN4PEK3H2UL9CHPFZG';
+  var ROSTER_URL = 'https://api.raceresult.com/409224/20PV4DYOB89ZROYZRPJ2IP8VEGEX71ME';
+  var LOOP_KM = null;   // set once the loop length is confirmed
+  var RACE_DAY = new Date('2026-07-26T04:00:00+05:30');
+  function raceLive(){ return qp.get('raceday')==='1' || Date.now() >= RACE_DAY.getTime(); }
+  var FLAG = { '1 Hour':  {off:'2026-07-26T07:45:00+05:30', dur:60},
+               '2 Hours': {off:'2026-07-26T05:35:00+05:30', dur:120},
+               '4 Hours': {off:'2026-07-26T05:30:00+05:30', dur:240} };
+  var DEMO_DB = {
+    '1042': {name:'Bhumika Kewlani', category:'1 Hour',  gender:'Women', loops:6,  rank:4},
+    '2100': {name:'Pujan Kamani',    category:'2 Hours', gender:'Men',   loops:11, rank:9},
+    '4007': {name:'Aniket',          category:'4 Hours', gender:'Men',   loops:19, rank:2}
+  };
+
+  var $=function(id){ return document.getElementById(id); };
+  function cleanName(s){ return String(s||'').replace(/^[\s,]+/,'').replace(/\s+/g,' ').trim(); }
+  function titleCase(s){ return s.toLowerCase().replace(/(^|\s|-)\S/g, function(c){ return c.toUpperCase(); }); }
+  function catForBib(bib){ var c=String(bib).charAt(0); return c==='1'?'1 Hour':c==='2'?'2 Hours':c==='4'?'4 Hours':''; }
+  function nowStr(){ var d=new Date(); function p(n){return (n<10?'0':'')+n;} return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }
+  function fmt(ms){ ms=Math.max(0,Math.floor(ms/1000));
+    var h=Math.floor(ms/3600), m=Math.floor(ms%3600/60), s=ms%60;
+    function p(n){ return (n<10?'0':'')+n; }
+    return (h>0 ? h+':'+p(m) : String(m)) + ':' + p(s); }
+
+  if(SOURCE==='demo') $('demoBadge').style.display='block';
+
+  // ============ shared data ============
+  var _roster=null, _live=null;
+  function getRoster(){
+    if(_roster) return Promise.resolve(_roster);
+    return fetch(ROSTER_URL).then(function(r){return r.json();}).then(function(rows){
+      var m={};
+      rows.forEach(function(r){ m[String(r.Bib)]={ name:titleCase(cleanName(r.Name)), gender:r.Gender==='F'?'Women':(r.Gender==='M'?'Men':'') }; });
+      _roster=m; return m;
+    });
+  }
+  function getLive(force){
+    if(_live && !force) return Promise.resolve(_live);
+    return fetch(LIVE_URL).then(function(r){return r.json();}).then(function(rows){ _live=rows; return rows; });
+  }
+
+  // ============ tabs ============
+  var curTab='me', officialMade=false;
+  function showTab(tab){
+    curTab=tab;
+    ['me','board','official'].forEach(function(t){
+      $('view-'+t).classList.toggle('active', t===tab);
+    });
+    var btns=document.querySelectorAll('.tab');
+    for(var i=0;i<btns.length;i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-tab')===tab);
+    $('pageWrap').classList.toggle('wide', tab==='official');
+    if(tab==='board') boardGo();
+    if(tab==='official' && !officialMade){
+      officialMade=true;
+      var slot=$('rrslot');
+      // pre-race the results page is empty ("No reports published") — show the
+      // official start list instead; on race day show official results.
+      var rrPage = raceLive() ? 'results' : 'participants';
+      function makeRR(){ if(typeof RRPublish==='undefined'){ setTimeout(makeRR,200); return; }
+        slot.innerHTML=''; var w=new RRPublish(slot, RACE_ID, rrPage); w.ShowTimerLogo=true; w.ShowInfoText=false; }
+      makeRR();
+    }
+  }
+  var tbs=document.querySelectorAll('.tab');
+  for(var ti=0;ti<tbs.length;ti++){ tbs[ti].addEventListener('click', function(){ showTab(this.getAttribute('data-tab')); }); }
+
+  // ============ MY RUN ============
+  var entry=$('entry'), result=$('result'), loadingMsg=$('loadingMsg'), stateMsg=$('stateMsg');
+  var bibIn=$('bib'), goBtn=$('goBtn');
+  var pollT=null, currentBib=null, lastLoops=null;
+
+  function hideAllMe(){ $('lead').style.display='none'; entry.style.display='none'; result.style.display='none'; stateMsg.style.display='none'; loadingMsg.style.display='none'; }
+  function showEntry(){ stopPoll(); stopTimer(); hideAllMe(); $('lead').style.display='block'; entry.style.display='block'; bibIn.focus(); }
+  function showLoading(){ hideAllMe(); loadingMsg.style.display='block'; }
+  function showState(ic,title,sub){ stopPoll(); stopTimer(); hideAllMe(); $('sIc').textContent=ic; $('sTitle').textContent=title; $('sSub').innerHTML=sub; stateMsg.style.display='block'; }
+
+  function renderCard(d){
+    hideAllMe(); result.style.display='block';
+    $('rName').textContent = d.name || 'Runner';
+    $('rBib').textContent  = 'BIB ' + currentBib;
+    $('rChip').textContent = (d.gender? d.gender+' · ':'') + (d.category||'');
+    startTimer(d.category);
+    var loopsEl=$('rLoops');
+    if(d.loops!=null){
+      loopsEl.textContent = d.loops;
+      if(lastLoops!=null && d.loops>lastLoops){ loopsEl.classList.remove('bump'); void loopsEl.offsetWidth; loopsEl.classList.add('bump'); }
+      lastLoops = d.loops;
+    } else { loopsEl.textContent='—'; }
+    $('rKm').innerHTML = (d.km!=null ? Number(d.km).toFixed(1)+'<small> km</small>' : '—');
+    if(d.rank!=null){ $('rRank').textContent='#'+d.rank; $('rRankL').textContent='Rank · '+(d.gender||d.category||''); }
+    else { $('rRank').textContent='—'; $('rRankL').textContent='Rank'; }
+    $('rUpdated').textContent = d.pending ? "you're in — live stats on race day, 26 Jul" : ('updated '+nowStr());
+  }
+
+  function fetchMe(bib){
+    if(SOURCE==='demo'){
+      return new Promise(function(res){ setTimeout(function(){
+        var b=DEMO_DB[bib]; if(!b){ res({found:false, reason:'pending'}); return; }
+        res(Object.assign({found:true, bib:bib}, b)); }, 350); });
+    }
+    return getRoster().then(function(roster){
+      var base=roster[String(bib)];
+      if(!base) return {found:false, reason:'invalid'};
+      var d={ found:true, bib:bib, name:base.name, gender:base.gender, category:catForBib(bib) };
+      if(!raceLive()){ d.pending=true; return d; }
+      return getLive(true).then(function(rows){
+        var row=null;
+        for(var i=0;i<rows.length;i++){ if(String(rows[i].Bib)===String(bib)){ row=rows[i]; break; } }
+        if(row){
+          d.loops=(row.TotalLaps!=null&&row.TotalLaps!=='')?+row.TotalLaps:0;
+          var gr=parseInt(String(row.GenderRank||'').replace(/[^0-9]/g,''),10);
+          if(gr) d.rank=gr;
+          if(LOOP_KM&&d.loops!=null) d.km=+(d.loops*LOOP_KM).toFixed(1);
+        } else { d.loops=0; }
+        return d;
+      });
+    }).catch(function(){ return {found:false, reason:'offline'}; });
+  }
+
+  function loadMe(bib, silent){
+    if(!silent) showLoading();
+    fetchMe(bib).then(function(d){
+      if(!d || d.found===false){
+        if(d && d.reason==='invalid'){ showState('🔢','Check that number','That BIB is not on the start list — for example try <b>1042</b>.'); }
+        else if(d && d.reason==='offline'){ showState('📡','Could not reach the timing feed','Check your connection and try again.'); }
+        else { showState('⏳','Not posted yet','Results for <b>#'+bib+'</b> are not in yet. Hang tight and refresh in a moment.'); }
+        return;
+      }
+      renderCard(d);
+      if(curTab==='board' && _live) renderBoard();   // same fresh data feeds the board
+      if(!silent) startPoll();
+    });
+  }
+  function startPoll(){ stopPoll(); pollT=setInterval(function(){
+      if(currentBib) loadMe(currentBib, true);
+      else if(curTab==='board' && raceLive()){ getLive(true).then(function(){ renderBoard(); }); }
+    }, POLL_MS); }
+  function stopPoll(){ if(pollT){ clearInterval(pollT); pollT=null; } }
+
+  function submit(){
+    var bib=(bibIn.value||'').replace(/[^0-9]/g,'').trim();
+    if(!bib){ bibIn.focus(); return; }
+    currentBib=bib; lastLoops=null;
+    try{ localStorage.setItem('mm_bib', bib); }catch(e){}
+    loadMe(bib, false);
+  }
+  goBtn.addEventListener('click', submit);
+  bibIn.addEventListener('keydown', function(e){ if(e.key==='Enter') submit(); });
+  $('refreshBtn').addEventListener('click', function(){ if(currentBib) loadMe(currentBib, false); });
+  $('anotherBtn').addEventListener('click', function(){ bibIn.value=''; currentBib=null; showEntry(); });
+  $('backBtn').addEventListener('click', function(){ bibIn.value=''; currentBib=null; showEntry(); });
+  $('lbJump').addEventListener('click', function(){
+    if(currentBib){ selCat=catForBib(currentBib)||selCat; var g=(_roster&&_roster[currentBib])?_roster[currentBib].gender:''; if(g) selGen=g; }
+    showTab('board');
+  });
+
+  // race timer
+  var tT=null, tCat=null;
+  function tickTimer(){
+    var f=FLAG[tCat];
+    if(!f){ $('rTimer').style.display='none'; return; }
+    var off=new Date(f.off).getTime(), end=off+f.dur*60000, now=Date.now();
+    $('rTimer').style.display='block';
+    if(now<off){ $('rtElapsed').textContent='—'; $('rtRemainL').textContent='Flag-off in'; $('rtRemain').textContent=fmt(off-now); $('rtFill').style.width='0%'; }
+    else if(now<end){ $('rtElapsed').textContent=fmt(now-off); $('rtRemainL').textContent='Remaining'; $('rtRemain').textContent=fmt(end-now);
+      $('rtFill').style.width=(((now-off)/(end-off))*100).toFixed(1)+'%'; }
+    else { $('rtElapsed').textContent=fmt(end-off); $('rtRemainL').textContent='Remaining'; $('rtRemain').textContent='Time up'; $('rtFill').style.width='100%'; }
+  }
+  function startTimer(cat){ tCat=cat; tickTimer(); if(!tT) tT=setInterval(tickTimer,1000); }
+  function stopTimer(){ if(tT){ clearInterval(tT); tT=null; } }
+
+  // wake lock
+  var wakeLock=null, wakeWanted=false;
+  function setWakeBtn(){ var b=$('wakeBtn'); if(!b) return;
+    if(!('wakeLock' in navigator)){ b.style.display='none'; return; }
+    b.innerHTML = wakeLock ? '&#9728; Screen staying awake &#10003;' : '&#9728; Keep screen awake';
+    b.classList.toggle('on', !!wakeLock); }
+  function acquireWake(){ if(!('wakeLock' in navigator)) return;
+    navigator.wakeLock.request('screen').then(function(wl){
+      wakeLock=wl; wl.addEventListener('release', function(){ wakeLock=null; setWakeBtn(); }); setWakeBtn();
+    }).catch(function(){ wakeWanted=false; setWakeBtn(); }); }
+  $('wakeBtn').addEventListener('click', function(){ if(wakeLock){ wakeWanted=false; wakeLock.release(); } else { wakeWanted=true; acquireWake(); } });
+  setWakeBtn();
+
+  // ============ LEADERBOARD ============
+  var selCat = qp.get('cat')||'4 Hours', selGen = qp.get('gender')||'Women';
+  if(!FLAG[selCat]) selCat='4 Hours';
+  if(['Women','Men','All'].indexOf(selGen)<0) selGen='Women';
+  var expanded=false, cdT=null;
+  var myBib = (qp.get('bib')||'').replace(/[^0-9]/g,'');
+
+  function syncBoardBtns(){
+    var i, cs=document.querySelectorAll('.cat');
+    for(i=0;i<cs.length;i++) cs[i].classList.toggle('active', cs[i].getAttribute('data-cat')===selCat);
+    var gs=document.querySelectorAll('.gen');
+    for(i=0;i<gs.length;i++) gs[i].classList.toggle('active', gs[i].getAttribute('data-gen')===selGen);
+  }
+  function buildRows(){
+    if(!_roster||!_live) return [];
+    var hi = currentBib || myBib;
+    var out=[];
+    _live.forEach(function(r){
+      var bib=String(r.Bib), base=_roster[bib]||{};
+      if(catForBib(bib)!==selCat) return;
+      if(selGen!=='All' && base.gender!==selGen) return;
+      out.push({ bib:bib, name:base.name||('BIB '+bib), gender:base.gender||'',
+        laps:(r.TotalLaps!==''&&r.TotalLaps!=null)?+r.TotalLaps:0,
+        rank:parseInt(String(r.Rank||'').replace(/[^0-9]/g,''),10)||9999,
+        grank:parseInt(String(r.GenderRank||'').replace(/[^0-9]/g,''),10)||9999,
+        me: hi && bib===hi });
+    });
+    out.sort(function(a,b){ return selGen==='All' ? a.rank-b.rank : a.grank-b.grank; });
+    return out;
+  }
+  function renderBoard(){
+    var q=($('q').value||'').trim().toLowerCase();
+    var rows=buildRows();
+    if(q){ rows=rows.filter(function(r){ return r.name.toLowerCase().indexOf(q)>=0 || r.bib.indexOf(q)>=0; }); }
+    var LIMIT=25, shown=(expanded||q)?rows:rows.slice(0,LIMIT);
+    var h='';
+    shown.forEach(function(r,i){
+      var pos = selGen==='All' ? r.rank : r.grank;
+      if(pos===9999) pos=i+1;
+      var cls = pos===1?'rk g1':pos===2?'rk g2':pos===3?'rk g3':'rk';
+      h+='<div class="row'+(r.me?' me':'')+'"><div class="'+cls+'">'+pos+'</div>'
+        +'<div class="who"><div class="nm">'+r.name+'</div>'
+        +'<div class="sub">BIB '+r.bib+(selGen==='All'&&r.gender?' &middot; '+r.gender:'')+'</div></div>'
+        +'<div class="laps"><div class="n">'+r.laps+'</div><div class="l">Laps</div></div></div>';
+    });
+    if(!shown.length){ h='<div class="row"><div class="who"><div class="sub" style="padding:.6rem 0">No runners match.</div></div></div>'; }
+    $('board').innerHTML=h;
+    $('board').style.display='block';
+    $('lbLoading').style.display='none'; $('prerace').style.display='none';
+    $('moreBtn').style.display = (!expanded && !q && rows.length>LIMIT) ? 'block':'none';
+    if(rows.length>LIMIT) $('moreBtn').textContent='Show everyone ('+rows.length+')';
+    $('updBar').style.display='flex';
+    $('upd').textContent='updated '+nowStr();
+  }
+  function showPrerace(){
+    $('lbLoading').style.display='none'; $('board').style.display='none'; $('moreBtn').style.display='none'; $('updBar').style.display='none';
+    $('prerace').style.display='block';
+    $('preSub').textContent='The '+selCat+' leaderboard goes live at flag-off on Sunday, 26 July.';
+    if(cdT) clearInterval(cdT);
+    function tick(){ var off=new Date(FLAG[selCat].off).getTime(), d=off-Date.now();
+      $('preCd').textContent = d>0 ? fmt(d) : 'Any moment now'; }
+    tick(); cdT=setInterval(tick,1000);
+  }
+  function boardGo(){
+    syncBoardBtns();
+    if(!raceLive()){ showPrerace(); return; }
+    if(cdT){ clearInterval(cdT); cdT=null; }
+    if(_roster&&_live){ renderBoard(); }
+    else {
+      $('prerace').style.display='none'; $('lbLoading').style.display='block';
+      Promise.all([getRoster(), getLive(false)]).then(function(){ renderBoard(); })
+        .catch(function(){ $('lbLoading').style.display='none'; $('prerace').style.display='block';
+          $('preSub').textContent='Could not reach the timing feed. Check your connection.'; $('preCd').textContent=''; });
+    }
+    if(!pollT) startPoll();
+  }
+  var i2, cs=document.querySelectorAll('.cat');
+  for(i2=0;i2<cs.length;i2++){ cs[i2].addEventListener('click', function(){ selCat=this.getAttribute('data-cat'); expanded=false; boardGo(); }); }
+  var gs=document.querySelectorAll('.gen');
+  for(i2=0;i2<gs.length;i2++){ gs[i2].addEventListener('click', function(){ selGen=this.getAttribute('data-gen'); expanded=false; boardGo(); }); }
+  $('q').addEventListener('input', function(){ if(raceLive()&&_live) renderBoard(); });
+  $('moreBtn').addEventListener('click', function(){ expanded=true; renderBoard(); });
+
+  // ============ lifecycle ============
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ stopPoll(); }
+    else {
+      if(wakeWanted && !wakeLock) acquireWake();
+      if(currentBib){ loadMe(currentBib, true); }
+      if(curTab==='board' && raceLive()){ getLive(true).then(function(){ renderBoard(); }); }
+      startPoll();
+    }
+  });
+  window.addEventListener('beforeunload', stopPoll);
+
+  // ============ boot ============
+  try{ var saved=localStorage.getItem('mm_bib'); if(saved) bibIn.value=saved; }catch(e){}
+  var t0=qp.get('tab');
+  if(['me','board','official'].indexOf(t0)<0) t0='me';
+  showTab(t0);
+  var qbib=(qp.get('bib')||'').replace(/[^0-9]/g,'');
+  if(qbib && t0==='me'){ bibIn.value=qbib; submit(); }
+})();
+</script>
+</body>
+</html>
