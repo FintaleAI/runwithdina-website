@@ -193,8 +193,20 @@
   .cel-emoji{font-size:3rem;line-height:1}
   .cel-title{font-family:var(--sans);font-weight:700;font-size:1.9rem;color:#fff;margin-top:.25rem;letter-spacing:-.01em}
   .cel-msg{font-family:var(--serif);font-style:italic;font-size:1.3rem;color:var(--rain-light);margin-top:.3rem}
+  /* title sponsor — FICCI FLO (white logo background kept intact, per brand rule) */
+  .presents{display:inline-flex;align-items:center;gap:.75rem;padding:.45rem 1.1rem .45rem .45rem;
+    background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:100px;
+    margin-bottom:1.15rem;box-shadow:0 4px 24px rgba(0,0,0,.25)}
+  .presents .lg{background:#fff;border-radius:50px;padding:5px 12px;height:38px;display:flex;align-items:center;justify-content:center}
+  .presents .lg img{height:100%;width:auto;display:block}
+  .presents .tx{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--silver);white-space:nowrap;line-height:1.3}
+  .presents .tx b{color:var(--white);font-weight:700}
+
   @media(max-width:380px){ h1{font-size:2.2rem} .hero .big{font-size:4.3rem} .who .nm{font-size:1rem}
-    .cel-title{font-size:1.6rem} .cel-emoji{font-size:2.5rem} }
+    .cel-title{font-size:1.6rem} .cel-emoji{font-size:2.5rem}
+    .presents{gap:.55rem;padding:.4rem .9rem .4rem .4rem} .presents .lg{height:32px;padding:4px 9px}
+    .presents .tx{font-size:.58rem;letter-spacing:.14em} }
 </style>
 </head>
 <body>
@@ -208,6 +220,11 @@
   <a href="./" class="back">&larr; Monsoon Miles</a>
   <div class="eyebrow"><span class="dot"></span> Live &middot; 26 July 2026</div>
   <h1>Monsoon Miles <span>Live</span></h1>
+
+  <div class="presents">
+    <span class="lg"><img src="Photos/sponsors/ficci-flo.png" alt="FICCI FLO Vadodara"></span>
+    <span class="tx"><b>FICCI FLO Vadodara</b> presents</span>
+  </div>
 
   <div class="tabs" role="tablist">
     <button class="tab active" data-tab="me">My Run</button>
@@ -554,6 +571,14 @@
   });
 
   // ---- shareable finisher / status card ----
+  function loadImg(src){ return new Promise(function(res){ var im=new Image();
+    im.onload=function(){ res(im); }; im.onerror=function(){ res(null); }; im.src=src; }); }
+  function roundRectPath(ctx,x,y,w,h,r){
+    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+  }
   function wrapCanvas(ctx,text,cx,cy,maxW,lh){
     var words=String(text).split(' '), line='', lines=[];
     for(var n=0;n<words.length;n++){ var t=line+words[n]+' '; if(ctx.measureText(t).width>maxW && n>0){ lines.push(line.trim()); line=words[n]+' '; } else line=t; }
@@ -561,12 +586,7 @@
     for(var i=0;i<lines.length;i++){ ctx.fillText(lines[i],cx,cy+i*lh); }
     return cy+(lines.length-1)*lh;
   }
-  function shareRun(){
-    var d=curData; if(!d) return;
-    var btn=$('shareBtn'), old=btn.innerHTML; btn.disabled=true; btn.innerHTML='Preparing…';
-    var need=['italic 400 92px "Instrument Serif"','700 340px "Space Grotesk"','700 40px "JetBrains Mono"','500 30px "JetBrains Mono"'];
-    var loads=need.map(function(f){ return (document.fonts&&document.fonts.load)?document.fonts.load(f).catch(function(){}):Promise.resolve(); });
-    Promise.all(loads).then(function(){
+  function drawCard(d, logo){
       var W=1080,H=1920,cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
       var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#050a1a'); g.addColorStop(.5,'#0a1530'); g.addColorStop(1,'#070c1e');
       x.fillStyle=g; x.fillRect(0,0,W,H);
@@ -574,10 +594,21 @@
       x.strokeStyle='rgba(255,255,255,0.035)'; x.lineWidth=2;
       for(var i=-H;i<W;i+=48){ x.beginPath(); x.moveTo(i,0); x.lineTo(i+H*0.25,H); x.stroke(); }
       x.textAlign='center';
-      x.fillStyle='#60a5fa'; x.font='700 34px "JetBrains Mono", monospace'; x.fillText('MONSOON MILES 2026', W/2, 152);
-      x.fillStyle='rgba(255,255,255,0.5)'; x.font='500 26px "JetBrains Mono", monospace'; x.fillText('L I V E   R A C E   T R A C K I N G', W/2, 202);
+      // title sponsor lockup — FICCI FLO on a white chip (logo's own white bg kept intact)
+      var topY=152;
+      if(logo && logo.naturalWidth){
+        var lh=100, lw=Math.round(lh*(logo.naturalWidth/logo.naturalHeight)), pad=40;
+        var cw=lw+pad*2, ch=lh+56, cx0=Math.round((W-cw)/2), cy0=86;
+        x.fillStyle='#ffffff'; roundRectPath(x,cx0,cy0,cw,ch,26); x.fill();
+        x.drawImage(logo, cx0+pad, cy0+28, lw, lh);
+        x.fillStyle='rgba(255,255,255,0.5)'; x.font='700 24px "JetBrains Mono", monospace';
+        x.fillText('P R E S E N T S', W/2, cy0+ch+44);
+        topY = cy0+ch+112;
+      }
+      x.fillStyle='#60a5fa'; x.font='700 34px "JetBrains Mono", monospace'; x.fillText('MONSOON MILES 2026', W/2, topY);
+      x.fillStyle='rgba(255,255,255,0.5)'; x.font='500 26px "JetBrains Mono", monospace'; x.fillText('L I V E   R A C E   T R A C K I N G', W/2, topY+50);
       x.fillStyle='#ffffff'; x.font='italic 400 92px "Instrument Serif", Georgia, serif';
-      var ny=wrapCanvas(x,(d.name||'Runner'),W/2,400,940,94);
+      var ny=wrapCanvas(x,(d.name||'Runner'),W/2,topY+212,940,94);
       x.fillStyle='#93c5fd'; x.font='600 30px "JetBrains Mono", monospace';
       x.fillText(((d.gender?d.gender+'   ·   ':'')+(d.category||'')).toUpperCase(), W/2, ny+72);
       var race=(d.loops!=null && !d.pending);
@@ -598,20 +629,41 @@
       x.fillStyle='rgba(255,255,255,0.55)'; x.font='500 30px "JetBrains Mono", monospace';
       x.fillText('26 July 2026   ·   Suncity Club, Vadodara', W/2, 1722);
       x.fillText('runwithdina.com/monsoon-miles   ·   Powered by fintale.io', W/2, 1770);
-      cv.toBlob(function(blob){
-        btn.disabled=false; btn.innerHTML=old;
-        if(!blob) return;
-        var fname='monsoon-miles-'+(currentBib||'run')+'.png';
-        try{ var file=new File([blob],fname,{type:'image/png'});
-          if(navigator.canShare && navigator.canShare({files:[file]})){
-            navigator.share({ files:[file], title:'Monsoon Miles 2026', text:'Running Monsoon Miles 2026! #MonsoonMiles2026' }).catch(function(){});
-            return;
-          }
-        }catch(e){}
-        var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click();
-        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
-      }, 'image/png');
-    });
+      return cv;
+  }
+  function deliverCard(blob){
+    var fname='monsoon-miles-'+(currentBib||'run')+'.png';
+    try{ var file=new File([blob],fname,{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({ files:[file], title:'Monsoon Miles 2026', text:'Running Monsoon Miles 2026! #MonsoonMiles2026' }).catch(function(){});
+        return;
+      }
+    }catch(e){}
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+  }
+  function shareRun(){
+    var d=curData; if(!d) return;
+    var btn=$('shareBtn'), old=btn.innerHTML; btn.disabled=true; btn.innerHTML='Preparing…';
+    function reset(){ btn.disabled=false; btn.innerHTML=old; }
+    var need=['italic 400 92px "Instrument Serif"','700 340px "Space Grotesk"','700 40px "JetBrains Mono"','500 30px "JetBrains Mono"'];
+    var loads=need.map(function(f){ return (document.fonts&&document.fonts.load)?document.fonts.load(f).catch(function(){}):Promise.resolve(); });
+    loads.push(loadImg('Photos/sponsors/ficci-flo.png'));
+    Promise.all(loads).then(function(res){
+      var logo=res[res.length-1];
+      // Export with the sponsor logo; if the canvas is tainted (e.g. the logo
+      // ever loads cross-origin), fall back to a logo-free card so sharing
+      // still works rather than silently jamming the button.
+      function attempt(withLogo){
+        try{
+          drawCard(d, withLogo?logo:null).toBlob(function(blob){
+            reset(); if(blob) deliverCard(blob);
+          }, 'image/png');
+          return true;
+        }catch(e){ return false; }
+      }
+      if(!attempt(true) && !attempt(false)) reset();
+    }).catch(reset);
   }
   $('shareBtn').addEventListener('click', shareRun);
 
