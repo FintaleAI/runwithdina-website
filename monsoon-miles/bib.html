@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find My BIB — Monsoon Miles 2026</title>
+<meta name="description" content="RWD Monsoon Miles 2026 — enter your mobile number to find your BIB number, reporting time and kit collection details.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --ink:#0a0a0a; --charcoal:#111; --slate:#666; --silver:#999; --mist:#bbb;
+    --white:#f5f5f0; --pure:#fff; --rain:#3b82f6; --rain-light:#60a5fa; --lightning:#fbbf24; --moss:#22c55e;
+    --serif:'Instrument Serif',Georgia,serif; --sans:'Space Grotesk',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+    --ease:cubic-bezier(0.16,1,0.3,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--black);color:var(--white);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  body{min-height:100dvh;padding:1.3rem 1rem 3rem;position:relative;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(900px 500px at 78% -6%, rgba(59,130,246,.16), transparent 60%),
+               radial-gradient(700px 600px at 6% 108%, rgba(96,165,250,.10), transparent 55%);}
+  .rain-lines{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:repeating-linear-gradient(104deg, transparent 0 24px, rgba(255,255,255,.02) 24px 25px);}
+  .wrap{position:relative;z-index:1;width:100%;max-width:520px;margin:0 auto}
+
+  .back{display:inline-block;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--silver);text-decoration:none;margin-bottom:1.1rem;transition:color .3s var(--ease)}
+  .back:hover{color:var(--rain-light)}
+  .eyebrow{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.68rem;font-weight:500;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--rain-light)}
+  h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:2.5rem;line-height:1;margin:.55rem 0 1.1rem}
+  h1 span{color:var(--rain-light)}
+
+  .card{background:var(--charcoal);border:1px solid rgba(255,255,255,.08);border-radius:1.1rem;
+    padding:1.9rem 1.5rem;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .lead{font-size:.95rem;color:var(--mist);line-height:1.5;font-weight:300}
+  .lead b{color:var(--white);font-weight:500}
+  .field{margin-top:1.3rem}
+  .field label{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--silver);margin-bottom:.5rem}
+  .phin{background:var(--ink);border:1px solid rgba(255,255,255,.14);border-radius:.7rem;
+    color:var(--white);font-family:var(--mono);font-size:1.35rem;letter-spacing:.06em;text-align:center;
+    padding:.85rem .8rem;outline:none;transition:border-color .25s var(--ease),box-shadow .25s var(--ease);width:100%}
+  .phin::placeholder{color:#555;letter-spacing:.05em}
+  .phin:focus{border-color:var(--rain);box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+  .go{background:var(--rain);color:#fff;border:none;border-radius:.7rem;font-family:var(--sans);font-weight:600;
+    font-size:1rem;cursor:pointer;transition:background .2s var(--ease),transform .2s var(--ease);
+    width:100%;padding:.9rem;margin-top:.7rem;min-height:48px}
+  .go:hover{background:#2563eb} .go:active{transform:scale(.97)}
+  .go[disabled]{opacity:.6;cursor:default}
+  .hint{margin-top:.7rem;font-size:.8rem;color:var(--slate)} .hint b{color:var(--mist);font-weight:500}
+  .err{display:none;margin-top:.8rem;font-size:.85rem;color:#fca5a5;background:rgba(220,38,38,.1);
+    border:1px solid rgba(220,38,38,.3);border-radius:.6rem;padding:.6rem .8rem}
+
+  .results{display:none;margin-top:0}
+  .rescount{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-bottom:.7rem}
+  .runner{background:var(--charcoal);border:1px solid rgba(255,255,255,.08);border-radius:1.1rem;
+    padding:1.6rem 1.4rem;box-shadow:0 30px 80px rgba(0,0,0,.5);margin-bottom:1rem}
+  .rtop{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem}
+  .rtop .nm{font-family:var(--serif);font-style:italic;font-size:1.6rem;line-height:1.1}
+  .rtop .chip{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--rain-light);
+    border:1px solid rgba(96,165,250,.4);background:rgba(59,130,246,.1);border-radius:100px;padding:.35rem .7rem;white-space:nowrap}
+  .bibhero{margin-top:1.1rem;background:linear-gradient(160deg,rgba(59,130,246,.14),rgba(59,130,246,.03));
+    border:1px solid rgba(96,165,250,.28);border-radius:1rem;padding:1.2rem;text-align:center}
+  .bibhero .lab{font-family:var(--mono);font-size:.64rem;letter-spacing:.28em;text-transform:uppercase;color:var(--rain-light)}
+  .bibhero .big{font-family:var(--sans);font-weight:700;font-size:3.8rem;line-height:1;color:var(--pure);letter-spacing:.02em;margin-top:.2rem;font-variant-numeric:tabular-nums}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.8rem}
+  .cell{background:var(--ink);border:1px solid rgba(255,255,255,.08);border-radius:.7rem;padding:.85rem;text-align:center}
+  .cell .v{font-family:var(--sans);font-weight:600;font-size:1.3rem;color:var(--white)}
+  .cell .v.amber{color:var(--lightning)}
+  .cell .l{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--silver);margin-top:.3rem}
+  .repbar{margin-top:.7rem;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:.7rem;
+    padding:.75rem .9rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+  .repbar .l{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--lightning)}
+  .repbar .v{font-family:var(--sans);font-weight:700;font-size:1.15rem;color:#fde68a}
+
+  .kit{margin-top:1rem;background:var(--charcoal);border:1px solid rgba(255,255,255,.08);border-radius:1.1rem;padding:1.4rem}
+  .kit h3{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--rain-light);margin-bottom:.9rem}
+  .krow{display:flex;gap:.7rem;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.92rem}
+  .krow:last-child{border-bottom:none}
+  .krow .kk{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--silver);flex:0 0 92px;padding-top:.15rem}
+  .krow .kv{color:var(--white);line-height:1.4}
+  .krow .kv b{color:var(--white)}
+  .warn{margin-top:.9rem;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);border-radius:.6rem;
+    padding:.7rem .85rem;font-size:.86rem;color:#fde68a;line-height:1.45;font-weight:500}
+  .actions{display:flex;gap:.6rem;margin-top:1rem;flex-wrap:wrap}
+  .btn-ghost{flex:1;background:transparent;border:1px solid rgba(255,255,255,.16);color:var(--mist);border-radius:.7rem;
+    font-family:var(--sans);font-weight:500;font-size:.85rem;padding:.7rem;cursor:pointer;text-decoration:none;text-align:center;
+    display:flex;align-items:center;justify-content:center;transition:all .2s var(--ease);min-height:44px}
+  .btn-ghost:hover{border-color:var(--rain);color:var(--white)}
+  .btn-ghost.wide{flex-basis:100%}
+
+  .notfound{display:none;margin-top:1rem;background:var(--charcoal);border:1px solid rgba(255,255,255,.1);border-radius:1.1rem;
+    padding:1.6rem 1.4rem;text-align:center}
+  .notfound .ic{font-size:1.8rem}
+  .notfound .t{font-family:var(--serif);font-style:italic;font-size:1.35rem;margin-top:.5rem}
+  .notfound .s{font-size:.9rem;color:var(--mist);margin-top:.5rem;line-height:1.55}
+  .notfound .s b{color:var(--white)}
+
+  .foot{text-align:center;margin-top:1.6rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;color:#4a4a4a}
+  .foot b{color:var(--rain-light)}
+  @media(max-width:380px){ h1{font-size:2.1rem} .bibhero .big{font-size:3.2rem} }
+</style>
+</head>
+<body>
+<div class="rain-lines"></div>
+
+<div class="wrap">
+  <a href="./" class="back">&larr; Monsoon Miles</a>
+  <div class="eyebrow">Race day &middot; 26 July 2026</div>
+  <h1>Find your <span>BIB</span></h1>
+
+  <div class="card" id="lookupCard">
+    <p class="lead">Enter the <b>mobile number you registered with</b> to see your BIB number, reporting time and where to collect your kit.</p>
+    <div class="field">
+      <label for="phone">Registered mobile number</label>
+      <input class="phin" id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="10-digit number" maxlength="14">
+      <button class="go" id="goBtn">Find my BIB</button>
+      <div class="hint">We match the number you used at registration. <b>Your number is not stored on this page.</b></div>
+      <div class="err" id="err"></div>
+    </div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="notfound" id="notfound">
+    <div class="ic">&#128269;</div>
+    <div class="t">We couldn&rsquo;t find that number</div>
+    <div class="s">Try the <b>exact number you registered with</b>. Still stuck? WhatsApp us and we&rsquo;ll send your BIB.</div>
+    <div class="actions" style="margin-top:1rem">
+      <a class="btn-ghost wide" href="https://wa.me/919099906174?text=Hi%2C%20I%20need%20my%20BIB%20number%20for%20Monsoon%20Miles%202026" target="_blank" rel="noopener">&#128172; WhatsApp us for your BIB</a>
+      <button class="btn-ghost wide" id="tryAgain">Try another number</button>
+    </div>
+  </div>
+
+  <div class="foot">RWD Monsoon Miles 2026 &middot; <b>#MonsoonMiles2026</b> &middot; @runwithdina</div>
+</div>
+
+<script src="bib-data.js"></script>
+<script>
+(function(){
+  "use strict";
+  var SALT = "MM2026:";   // must match the data generator
+  var $ = function(id){ return document.getElementById(id); };
+  var phEl = $('phone'), goBtn = $('goBtn'), errEl = $('err');
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+
+  function sha256hex(str){
+    var enc = new TextEncoder().encode(str);
+    return crypto.subtle.digest('SHA-256', enc).then(function(buf){
+      var b = new Uint8Array(buf), h = '';
+      for(var i=0;i<b.length;i++){ h += b[i].toString(16).padStart(2,'0'); }
+      return h;
+    });
+  }
+
+  function kitBlock(){
+    return '<div class="kit">'
+      + '<h3>Collect your race kit</h3>'
+      + '<div class="krow"><span class="kk">When</span><span class="kv"><b>Fri 24 &amp; Sat 25 July</b> &middot; 11:00 AM &ndash; 5:30 PM</span></div>'
+      + '<div class="krow"><span class="kk">Where</span><span class="kv"><b>Vishnu Opticals</b>, Natubhai Circle, Vadodara</span></div>'
+      + '<div class="krow"><span class="kk">Bring</span><span class="kv">A <b>photo ID</b> &middot; this page or your registration confirmation</span></div>'
+      + '<div class="krow"><span class="kk">In the kit</span><span class="kv">BIB number + timing tag + event T-shirt</span></div>'
+      + '<div class="warn">&#9888;&#65039; No kit is handed out on race day &mdash; please collect on Fri or Sat.</div>'
+      + '<div class="actions">'
+      + '<a class="btn-ghost" href="https://maps.google.com/?q=Vishnu+Opticals+Natubhai+Circle+Vadodara" target="_blank" rel="noopener">&#128205; Map</a>'
+      + '<a class="btn-ghost" href="live.html" >&#9201;&#65039; Track live on race day</a>'
+      + '</div></div>';
+  }
+
+  function runnerCard(r){
+    var size = (r.size && r.size !== 'TBC')
+      ? '<div class="cell"><div class="v">'+esc(r.size)+'</div><div class="l">T-shirt size</div></div>'
+      : '<div class="cell"><div class="v" style="color:var(--silver)">&mdash;</div><div class="l">T-shirt &middot; ask at desk</div></div>';
+    return '<div class="runner">'
+      + '<div class="rtop"><div class="nm">'+esc(r.name)+'</div><div class="chip">'+esc(r.cat)+'</div></div>'
+      + '<div class="bibhero"><div class="lab">Your BIB number</div><div class="big">'+esc(r.bib)+'</div></div>'
+      + '<div class="repbar"><span class="l">Reporting time</span><span class="v">'+esc(r.rep)+'</span></div>'
+      + '<div class="grid">'
+      + '<div class="cell"><div class="v amber">'+esc(r.flag)+'</div><div class="l">Flag-off</div></div>'
+      + size
+      + '</div></div>';
+  }
+
+  function showResults(list){
+    var html = '';
+    if(list.length > 1){ html += '<div class="rescount">'+list.length+' runners on this number</div>'; }
+    list.forEach(function(r){ html += runnerCard(r); });
+    html += kitBlock();
+    html += '<div class="actions" style="margin-top:1rem"><button class="btn-ghost wide" id="another">Look up another number</button></div>';
+    $('results').innerHTML = html;
+    $('lookupCard').style.display = 'none';
+    $('notfound').style.display = 'none';
+    $('results').style.display = 'block';
+    $('another').addEventListener('click', reset);
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+  function showNotFound(){
+    $('lookupCard').style.display = 'none';
+    $('results').style.display = 'none';
+    $('notfound').style.display = 'block';
+  }
+  function reset(){
+    $('results').style.display = 'none';
+    $('notfound').style.display = 'none';
+    $('lookupCard').style.display = 'block';
+    phEl.value = ''; errEl.style.display = 'none'; phEl.focus();
+  }
+
+  function submit(){
+    errEl.style.display = 'none';
+    var digits = (phEl.value || '').replace(/\D/g, '');
+    var last10 = digits.slice(-10);
+    if(last10.length < 10){
+      errEl.textContent = 'Please enter your full 10-digit mobile number.';
+      errEl.style.display = 'block'; phEl.focus(); return;
+    }
+    if(!window.crypto || !crypto.subtle){
+      errEl.textContent = 'Your browser is out of date. Please WhatsApp us for your BIB.';
+      errEl.style.display = 'block'; return;
+    }
+    goBtn.disabled = true; goBtn.textContent = 'Searching…';
+    sha256hex(SALT + last10).then(function(key){
+      var hit = (window.MM_BIB && window.MM_BIB[key]) || null;
+      goBtn.disabled = false; goBtn.textContent = 'Find my BIB';
+      if(hit && hit.length){ showResults(hit); }
+      else { showNotFound(); }
+    }).catch(function(){
+      goBtn.disabled = false; goBtn.textContent = 'Find my BIB';
+      errEl.textContent = 'Something went wrong. Please try again or WhatsApp us.';
+      errEl.style.display = 'block';
+    });
+  }
+
+  goBtn.addEventListener('click', submit);
+  phEl.addEventListener('keydown', function(e){ if(e.key === 'Enter') submit(); });
+  $('tryAgain').addEventListener('click', reset);
+
+  // deep link: bib.html?phone=XXXXXXXXXX
+  try{
+    var qp = new URLSearchParams(location.search);
+    var qph = (qp.get('phone') || '').replace(/\D/g, '');
+    if(qph.length >= 10){ phEl.value = qph; submit(); }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
