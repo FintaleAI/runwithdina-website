@@ -70,7 +70,8 @@
   .chip{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--rain-light);
     border:1px solid rgba(96,165,250,.4);background:rgba(59,130,246,.1);border-radius:100px;padding:.35rem .7rem;white-space:nowrap}
 
-  .rtimer{margin-top:1.2rem;background:var(--ink);border:1px solid rgba(255,255,255,.08);border-radius:.8rem;padding:.9rem .9rem .85rem}
+  .rtimer{margin-top:1.2rem;background:var(--ink);border:1px solid rgba(255,255,255,.08);border-radius:.8rem;padding:.95rem;text-align:center}
+  .rt-cd{font-family:var(--mono);font-weight:500;font-size:2.1rem;color:var(--white);margin-top:.35rem;font-variant-numeric:tabular-nums;letter-spacing:.02em;line-height:1}
   .rt-row{display:flex;gap:.8rem}
   .rt-cell{flex:1;text-align:center}
   .rt-l{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--silver)}
@@ -254,11 +255,8 @@
         </div>
 
         <div class="rtimer" id="rTimer" style="display:none">
-          <div class="rt-row">
-            <div class="rt-cell"><div class="rt-l">Elapsed</div><div class="rt-v" id="rtElapsed">&mdash;</div></div>
-            <div class="rt-cell"><div class="rt-l" id="rtRemainL">Remaining</div><div class="rt-v" id="rtRemain">&mdash;</div></div>
-          </div>
-          <div class="rt-bar"><div class="rt-fill" id="rtFill" style="width:0%"></div></div>
+          <div class="rt-l">Flag-off in</div>
+          <div class="rt-cd" id="rtRemain">&mdash;</div>
         </div>
 
         <div class="hero">
@@ -595,16 +593,16 @@
   // race timer
   var tT=null, tCat=null;
   function tickTimer(){
-    var f=FLAG[tCat];
-    if(!f){ $('rTimer').style.display='none'; return; }
-    var off=new Date(f.off).getTime(), end=off+f.dur*60000, now=Date.now();
-    $('rTimer').style.display='block';
-    if(now<off){ $('rtElapsed').textContent='—'; $('rtRemainL').textContent='Flag-off in'; $('rtRemain').textContent=fmt(off-now); $('rtFill').style.width='0%'; }
-    else if(now<end){ $('rtElapsed').textContent=fmt(now-off); $('rtRemainL').textContent='Remaining'; $('rtRemain').textContent=fmt(end-now);
-      $('rtFill').style.width=(((now-off)/(end-off))*100).toFixed(1)+'%'; }
-    else { $('rtElapsed').textContent=fmt(end-off); $('rtRemainL').textContent='Remaining'; $('rtRemain').textContent='Time up'; $('rtFill').style.width='100%'; }
+    // Countdown to flag-off only. Once the race starts we hide the clock entirely
+    // (loops become the whole story) — so a delayed flag-off can never make the
+    // page show a wrong elapsed/remaining or a premature "Time up".
+    var el=$('rTimer'), f=FLAG[tCat];
+    if(!f){ el.style.display='none'; return; }
+    var off=new Date(f.off).getTime(), now=Date.now();
+    if(now < off){ el.style.display='block'; $('rtRemain').textContent=fmt(off-now); }
+    else { el.style.display='none'; if(tT){ clearInterval(tT); tT=null; } }
   }
-  function startTimer(cat){ tCat=cat; tickTimer(); if(!tT) tT=setInterval(tickTimer,1000); }
+  function startTimer(cat){ tCat=cat; if(!tT) tT=setInterval(tickTimer,1000); tickTimer(); }
   function stopTimer(){ if(tT){ clearInterval(tT); tT=null; } }
 
   // wake lock
