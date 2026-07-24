@@ -320,6 +320,12 @@
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function catForBib(bib){ var c=String(bib).charAt(0); return c==='1'?'1 Hour':c==='2'?'2 Hours':c==='4'?'4 Hours':''; }
+  // Read lap count defensively — the timing feed labels this column "Total Laps"
+  // (with a space); tolerate "TotalLaps"/"Laps" too so a vendor rename can't zero everyone out.
+  function lapsOf(row){ if(!row) return 0;
+    var v = row['Total Laps']; if(v==null) v=row.TotalLaps; if(v==null) v=row.Laps;
+    return (v!=null && v!=='') ? (+v||0) : 0; }
+  function bibOf(row){ return row ? String(row.Bib!=null?row.Bib:row.BIB) : ''; }
   function nowStr(){ var d=new Date(); function p(n){return (n<10?'0':'')+n;} return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds()); }
   function fmt(ms){ ms=Math.max(0,Math.floor(ms/1000));
     var h=Math.floor(ms/3600), m=Math.floor(ms%3600/60), s=ms%60;
@@ -368,7 +374,7 @@
     if(!raceLive() || !_live){
       h='<div class="lead-in">On the start line</div><span class="tg"><b>'+runners+'</b> <span class="u">runners ready to run</span></span>';
     } else {
-      var loops=0; for(var i=0;i<_live.length;i++){ var t=_live[i].TotalLaps; if(t!==''&&t!=null) loops+=(+t||0); }
+      var loops=0; for(var i=0;i<_live.length;i++){ loops+=lapsOf(_live[i]); }
       h='<div class="lead-in">Together on the course</div>'
        +'<span class="tg"><b>'+_live.length+'</b> <span class="u">runners</span></span>'
        +'<span class="sep">·</span>'
@@ -438,9 +444,9 @@
       if(!raceLive()){ d.pending=true; return d; }
       return getLive(true).then(function(rows){
         var row=null;
-        for(var i=0;i<rows.length;i++){ if(String(rows[i].Bib)===String(bib)){ row=rows[i]; break; } }
+        for(var i=0;i<rows.length;i++){ if(bibOf(rows[i])===String(bib)){ row=rows[i]; break; } }
         if(row){
-          d.loops=(row.TotalLaps!=null&&row.TotalLaps!=='')?+row.TotalLaps:0;
+          d.loops=lapsOf(row);
           if(LOOP_KM&&d.loops!=null) d.km=+(d.loops*LOOP_KM).toFixed(1);
         } else { d.loops=0; }
         return d;
