@@ -299,7 +299,7 @@
   // ============ config ============
   var qp = new URLSearchParams(location.search);
   var SOURCE = (qp.get('demo')==='1') ? 'demo' : 'live';
-  var POLL_MS = 15000;
+  var POLL_MS = 25000;   // loops change every few minutes; gentle polling keeps load off the timing API
   var LIVE_URL   = 'https://api.raceresult.com/409224/HL8NF6L146EES0UN4PEK3H2UL9CHPFZG';
   var ROSTER_URL = 'https://api.raceresult.com/409224/20PV4DYOB89ZROYZRPJ2IP8VEGEX71ME';
   var LOOP_KM = null;   // set once the loop length is confirmed
