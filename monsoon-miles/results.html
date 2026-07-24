@@ -7,10 +7,10 @@
 <script>
   // Results now live on the leaderboard tab of the hub — forward, keeping any params.
   var q = location.search.replace(/^\?/, '');
-  location.replace('live.html?tab=board' + (q ? '&' + q : ''));
+  location.replace('live.html' + (q ? '?' + q : ''));
 </script>
-<meta http-equiv="refresh" content="0;url=live.html?tab=board">
+<meta http-equiv="refresh" content="0;url=live.html">
 <style>body{background:#050505;color:#999;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh}a{color:#60a5fa}</style>
 </head>
-<body>Opening&hellip;&nbsp;<a href="live.html?tab=board">tap here</a></body>
+<body>Opening&hellip;&nbsp;<a href="live.html">tap here</a></body>
 </html>

@@ -229,15 +229,10 @@
     <span class="tx"><b>FICCI FLO Vadodara</b> presents</span>
   </div>
 
-  <div class="tabs" role="tablist">
-    <button class="tab active" data-tab="me">My Run</button>
-    <button class="tab" data-tab="board">Leaderboard</button>
-  </div>
-
   <!-- ============ MY RUN ============ -->
   <div class="view active" id="view-me">
     <div class="card">
-      <p class="lead" id="lead">Enter your BIB number to see your <b>loops completed</b>, your rank and your race clock — live as you run.</p>
+      <p class="lead" id="lead">Enter your BIB number to see your <b>loops completed</b> and your race clock — live as you run.</p>
 
       <div class="field" id="entry">
         <label for="bib">Your BIB number</label>
@@ -270,20 +265,12 @@
           <div class="cap">Loops completed</div>
         </div>
 
-        <div class="stats2">
-          <div class="stat"><div class="v" id="rKm">&mdash;</div><div class="l">Distance covered</div></div>
-          <div class="stat"><div class="v" id="rRank">&mdash;</div><div class="l" id="rRankL">Rank</div></div>
-        </div>
-
-        <div class="chase" id="chase" style="display:none"><span class="ic" id="chaseIc">&#9889;</span><span class="tx" id="chaseTx"></span></div>
-
         <div class="updated"><span class="live">&#9679; LIVE</span><span id="rUpdated">updated &mdash;</span> &middot; auto-refreshing</div>
         <div class="actions">
           <button class="btn-ghost wide" id="shareBtn">&#128248; Share my run</button>
           <button class="btn-ghost" id="refreshBtn">Refresh now</button>
           <button class="btn-ghost" id="anotherBtn">Change BIB</button>
           <button class="btn-ghost wide" id="wakeBtn">&#9728; Keep screen awake</button>
-          <button class="btn-ghost wide" id="lbJump">See my category leaderboard &rarr;</button>
         </div>
       </div>
 
@@ -296,34 +283,8 @@
     </div>
   </div>
 
-  <!-- ============ LEADERBOARD ============ -->
-  <div class="view" id="view-board">
-    <div class="cats" id="cats">
-      <button class="cat" data-cat="1 Hour">1 Hour</button>
-      <button class="cat" data-cat="2 Hours">2 Hours</button>
-      <button class="cat active" data-cat="4 Hours">4 Hours</button>
-    </div>
-    <div class="genders" id="gens">
-      <button class="gen active" data-gen="Women">Women</button>
-      <button class="gen" data-gen="Men">Men</button>
-      <button class="gen" data-gen="All">All</button>
-    </div>
-    <div class="searchrow"><input class="search" id="q" type="search" placeholder="Search name or BIB&hellip;" autocomplete="off"></div>
-
-    <div class="empty" id="lbLoading" style="display:none"><div class="spinner"></div><div class="s" style="margin-top:.8rem">Loading standings&hellip;</div></div>
-    <div class="empty" id="prerace" style="display:none">
-      <div class="ic">&#127937;</div>
-      <div class="t">Opens at flag-off</div>
-      <div class="s" id="preSub">The live leaderboard starts with the race.</div>
-      <div class="cd" id="preCd">&mdash;</div>
-    </div>
-    <div class="board" id="board" style="display:none"></div>
-    <button class="more" id="moreBtn" style="display:none">Show everyone</button>
-    <div class="updated" id="updBar" style="display:none"><span class="live">&#9679; LIVE</span><span id="upd">updated &mdash;</span> &middot; auto-refreshing</div>
-  </div>
-
   <div class="together" id="together"></div>
-  <div class="disclaimer">Live results are <b style="color:var(--mist);font-weight:600">provisional</b> and may change. Final results may vary &mdash; the organiser&rsquo;s decision is final.</div>
+  <div class="disclaimer">Loops shown here are for <b style="color:var(--mist);font-weight:600">your reference only</b>. <b style="color:var(--mist);font-weight:600">Official results are announced after evaluation</b> &mdash; the organiser&rsquo;s decision is final.</div>
   <div class="initiative">
     <span>An initiative by</span>
     <img src="Photos/community-logos/runwithdina.png" alt="RunwithDina">
@@ -432,21 +393,6 @@
     return fetch(LIVE_URL).then(function(r){return r.json();}).then(function(rows){ _live=rows; return rows; });
   }
 
-  // ============ tabs ============
-  var curTab='me';
-  function showTab(tab){
-    if(tab!=='me' && tab!=='board') tab='me';
-    curTab=tab;
-    ['me','board'].forEach(function(t){
-      $('view-'+t).classList.toggle('active', t===tab);
-    });
-    var btns=document.querySelectorAll('.tab');
-    for(var i=0;i<btns.length;i++) btns[i].classList.toggle('active', btns[i].getAttribute('data-tab')===tab);
-    if(tab==='board') boardGo();
-  }
-  var tbs=document.querySelectorAll('.tab');
-  for(var ti=0;ti<tbs.length;ti++){ tbs[ti].addEventListener('click', function(){ showTab(this.getAttribute('data-tab')); }); }
-
   // ============ MY RUN ============
   var entry=$('entry'), result=$('result'), loadingMsg=$('loadingMsg'), stateMsg=$('stateMsg');
   var bibIn=$('bib'), goBtn=$('goBtn');
@@ -465,54 +411,18 @@
     $('rChip').textContent = (d.gender? d.gender+' · ':'') + (d.category||'');
     startTimer(d.category);
     var newLoop = (lastLoops!=null && d.loops!=null && d.loops>lastLoops);
-    var movedUp = (lastRank!=null && d.rank!=null && d.rank<lastRank);
     var loopsEl=$('rLoops');
     if(d.loops!=null){
       loopsEl.textContent = d.loops;
       if(newLoop){ loopsEl.classList.remove('bump'); void loopsEl.offsetWidth; loopsEl.classList.add('bump'); }
       lastLoops = d.loops;
     } else { loopsEl.textContent='—'; }
-    $('rKm').innerHTML = (d.km!=null ? Number(d.km).toFixed(1)+'<small> km</small>' : '—');
-    if(d.rank!=null){ $('rRank').textContent='#'+d.rank; $('rRankL').textContent='Rank · '+(d.gender||d.category||''); }
-    else { $('rRank').textContent='—'; $('rRankL').textContent='Rank'; }
-    $('rUpdated').textContent = d.pending ? "you're in — live stats on race day, 26 Jul" : ('updated '+nowStr());
-    renderChase(d); updateTogether();
-    // celebrate real progress (never on first load — lastLoops/lastRank start null)
-    if(!d.pending && raceLive()){
-      if(newLoop){ celebrate('🎉','Loop '+d.loops+' done!', movedUp ? ('You moved up to #'+d.rank+'! '+pick(ENCOURAGE)) : pick(ENCOURAGE)); }
-      else if(movedUp){ celebrate('🚀','You moved up to #'+d.rank+'!', 'Keep the pressure on!'); }
+    $('rUpdated').textContent = d.pending ? "you're in — live loops on race day, 26 Jul" : ('updated '+nowStr());
+    updateTogether();
+    // celebrate each completed loop (never on first load — lastLoops starts null)
+    if(!d.pending && raceLive() && newLoop){
+      celebrate('🎉','Loop '+d.loops+' done!', pick(ENCOURAGE));
     }
-    if(d.rank!=null) lastRank=d.rank;
-  }
-
-  // ---- live chase: gap to the runner just ahead in your category+gender ----
-  function renderChase(d){
-    var el=$('chase');
-    if(!raceLive() || d.pending || d.rank==null || !_live || !_roster || d.loops==null){ el.style.display='none'; return; }
-    var cat=d.category, gen=d.gender, peers=[];
-    for(var i=0;i<_live.length;i++){ var r=_live[i], bib=String(r.Bib), base=_roster[bib]||{};
-      if(catForBib(bib)!==cat) continue;
-      if(gen && base.gender!==gen) continue;
-      peers.push({ bib:bib, name:base.name||'',
-        gr:parseInt(String(r.GenderRank||'').replace(/[^0-9]/g,''),10)||9999,
-        laps:(r.TotalLaps!==''&&r.TotalLaps!=null)?+r.TotalLaps:0 });
-    }
-    peers.sort(function(a,b){ return a.gr-b.gr; });
-    var myIdx=-1; for(var j=0;j<peers.length;j++){ if(peers[j].bib===String(currentBib)){ myIdx=j; break; } }
-    el.classList.remove('lead');
-    if(myIdx===0){
-      el.classList.add('lead'); $('chaseIc').textContent='🏆';
-      $('chaseTx').innerHTML='You’re <span class="hl">leading '+esc(gen||cat)+'</span>! Everyone’s chasing you — stay strong.';
-      el.style.display='flex'; return;
-    }
-    if(myIdx>0){
-      var ahead=peers[myIdx-1], gap=ahead.laps-d.loops, nm=esc(firstName(ahead.name)), aheadPos=d.rank-1;
-      $('chaseIc').textContent='⚡';
-      if(gap>=1){ $('chaseTx').innerHTML='You’re <b>#'+d.rank+'</b> — <span class="hl">'+gap+' loop'+(gap>1?'s':'')+'</span> behind '+nm+' (#'+aheadPos+'). Reel them in!'; }
-      else { $('chaseTx').innerHTML='You’re <b>#'+d.rank+'</b> — <span class="hl">neck and neck</span> with '+nm+' (#'+aheadPos+'). One surge could flip it!'; }
-      el.style.display='flex'; return;
-    }
-    el.style.display='none';
   }
 
   function fetchMe(bib){
@@ -531,8 +441,6 @@
         for(var i=0;i<rows.length;i++){ if(String(rows[i].Bib)===String(bib)){ row=rows[i]; break; } }
         if(row){
           d.loops=(row.TotalLaps!=null&&row.TotalLaps!=='')?+row.TotalLaps:0;
-          var gr=parseInt(String(row.GenderRank||'').replace(/[^0-9]/g,''),10);
-          if(gr) d.rank=gr;
           if(LOOP_KM&&d.loops!=null) d.km=+(d.loops*LOOP_KM).toFixed(1);
         } else { d.loops=0; }
         return d;
@@ -550,13 +458,11 @@
         return;
       }
       renderCard(d);
-      if(curTab==='board' && _live) renderBoard();   // same fresh data feeds the board
       if(!silent) startPoll();
     });
   }
   function startPoll(){ stopPoll(); pollT=setInterval(function(){
       if(currentBib) loadMe(currentBib, true);
-      else if(curTab==='board' && raceLive()){ getLive(true).then(function(){ renderBoard(); }); }
     }, POLL_MS); }
   function stopPoll(){ if(pollT){ clearInterval(pollT); pollT=null; } }
 
@@ -572,10 +478,6 @@
   $('refreshBtn').addEventListener('click', function(){ if(currentBib) loadMe(currentBib, false); });
   $('anotherBtn').addEventListener('click', function(){ bibIn.value=''; currentBib=null; showEntry(); });
   $('backBtn').addEventListener('click', function(){ bibIn.value=''; currentBib=null; showEntry(); });
-  $('lbJump').addEventListener('click', function(){
-    if(currentBib){ selCat=catForBib(currentBib)||selCat; var g=(_roster&&_roster[currentBib])?_roster[currentBib].gender:''; if(g) selGen=g; }
-    showTab('board');
-  });
 
   // ---- shareable finisher / status card ----
   function loadImg(src){ return new Promise(function(res){ var im=new Image();
@@ -622,9 +524,8 @@
       if(race){
         x.textBaseline='middle'; x.fillStyle='#ffffff'; x.font='700 360px "Space Grotesk", Arial, sans-serif';
         x.fillText(String(d.loops), W/2, 1000); x.textBaseline='alphabetic';
-        x.fillStyle='#93c5fd'; x.font='700 42px "JetBrains Mono", monospace'; x.fillText('LOOPS COMPLETED', W/2, 1240);
-        if(d.rank!=null){ x.fillStyle='#fbbf24'; x.font='700 48px "Space Grotesk", Arial, sans-serif'; x.fillText('#'+d.rank+'  in  '+(d.gender||d.category||''), W/2, 1330); }
-        if(d.km!=null){ x.fillStyle='rgba(255,255,255,0.78)'; x.font='500 34px "JetBrains Mono", monospace'; x.fillText(Number(d.km).toFixed(1)+' km covered', W/2, 1400); }
+        x.fillStyle='#93c5fd'; x.font='700 42px "JetBrains Mono", monospace'; x.fillText('LOOPS COMPLETED', W/2, 1250);
+        if(d.km!=null){ x.fillStyle='rgba(255,255,255,0.78)'; x.font='500 34px "JetBrains Mono", monospace'; x.fillText(Number(d.km).toFixed(1)+' km covered', W/2, 1340); }
       } else {
         x.textBaseline='middle'; x.fillStyle='#60a5fa'; x.font='700 200px "Space Grotesk", Arial, sans-serif';
         x.fillText('I’M IN', W/2, 1000); x.textBaseline='alphabetic';
@@ -709,97 +610,12 @@
   $('wakeBtn').addEventListener('click', function(){ if(wakeLock){ wakeWanted=false; wakeLock.release(); } else { wakeWanted=true; acquireWake(); } });
   setWakeBtn();
 
-  // ============ LEADERBOARD ============
-  var selCat = qp.get('cat')||'4 Hours', selGen = qp.get('gender')||'Women';
-  if(!FLAG[selCat]) selCat='4 Hours';
-  if(['Women','Men','All'].indexOf(selGen)<0) selGen='Women';
-  var expanded=false, cdT=null;
-  var myBib = (qp.get('bib')||'').replace(/[^0-9]/g,'');
-
-  function syncBoardBtns(){
-    var i, cs=document.querySelectorAll('.cat');
-    for(i=0;i<cs.length;i++) cs[i].classList.toggle('active', cs[i].getAttribute('data-cat')===selCat);
-    var gs=document.querySelectorAll('.gen');
-    for(i=0;i<gs.length;i++) gs[i].classList.toggle('active', gs[i].getAttribute('data-gen')===selGen);
-  }
-  function buildRows(){
-    if(!_roster||!_live) return [];
-    var hi = currentBib || myBib;
-    var out=[];
-    _live.forEach(function(r){
-      var bib=String(r.Bib), base=_roster[bib]||{};
-      if(catForBib(bib)!==selCat) return;
-      if(selGen!=='All' && base.gender!==selGen) return;
-      out.push({ bib:bib, name:base.name||('BIB '+bib), gender:base.gender||'',
-        laps:(r.TotalLaps!==''&&r.TotalLaps!=null)?+r.TotalLaps:0,
-        rank:parseInt(String(r.Rank||'').replace(/[^0-9]/g,''),10)||9999,
-        grank:parseInt(String(r.GenderRank||'').replace(/[^0-9]/g,''),10)||9999,
-        me: hi && bib===hi });
-    });
-    out.sort(function(a,b){ return selGen==='All' ? a.rank-b.rank : a.grank-b.grank; });
-    return out;
-  }
-  function renderBoard(){
-    var q=($('q').value||'').trim().toLowerCase();
-    var rows=buildRows();
-    if(q){ rows=rows.filter(function(r){ return r.name.toLowerCase().indexOf(q)>=0 || r.bib.indexOf(q)>=0; }); }
-    var LIMIT=25, shown=(expanded||q)?rows:rows.slice(0,LIMIT);
-    var h='';
-    shown.forEach(function(r,i){
-      var pos = selGen==='All' ? r.rank : r.grank;
-      if(pos===9999) pos=i+1;
-      var cls = pos===1?'rk g1':pos===2?'rk g2':pos===3?'rk g3':'rk';
-      h+='<div class="row'+(r.me?' me':'')+'"><div class="'+cls+'">'+(+pos)+'</div>'
-        +'<div class="who"><div class="nm">'+esc(r.name)+'</div>'
-        +'<div class="sub">BIB '+esc(r.bib)+(selGen==='All'&&r.gender?' &middot; '+esc(r.gender):'')+'</div></div>'
-        +'<div class="laps"><div class="n">'+(+r.laps||0)+'</div><div class="l">Laps</div></div></div>';
-    });
-    if(!shown.length){ h='<div class="row"><div class="who"><div class="sub" style="padding:.6rem 0">No runners match.</div></div></div>'; }
-    $('board').innerHTML=h;
-    $('board').style.display='block';
-    $('lbLoading').style.display='none'; $('prerace').style.display='none';
-    $('moreBtn').style.display = (!expanded && !q && rows.length>LIMIT) ? 'block':'none';
-    if(rows.length>LIMIT) $('moreBtn').textContent='Show everyone ('+rows.length+')';
-    $('updBar').style.display='flex';
-    $('upd').textContent='updated '+nowStr();
-    updateTogether();
-  }
-  function showPrerace(){
-    $('lbLoading').style.display='none'; $('board').style.display='none'; $('moreBtn').style.display='none'; $('updBar').style.display='none';
-    $('prerace').style.display='block';
-    $('preSub').textContent='The '+selCat+' leaderboard goes live at flag-off on Sunday, 26 July.';
-    if(cdT) clearInterval(cdT);
-    function tick(){ var off=new Date(FLAG[selCat].off).getTime(), d=off-Date.now();
-      $('preCd').textContent = d>0 ? fmt(d) : 'Any moment now'; }
-    tick(); cdT=setInterval(tick,1000);
-  }
-  function boardGo(){
-    syncBoardBtns();
-    if(!raceLive()){ showPrerace(); return; }
-    if(cdT){ clearInterval(cdT); cdT=null; }
-    if(_roster&&_live){ renderBoard(); }
-    else {
-      $('prerace').style.display='none'; $('lbLoading').style.display='block';
-      Promise.all([getRoster(), getLive(false)]).then(function(){ renderBoard(); })
-        .catch(function(){ $('lbLoading').style.display='none'; $('prerace').style.display='block';
-          $('preSub').textContent='Could not reach the timing feed. Check your connection.'; $('preCd').textContent=''; });
-    }
-    if(!pollT) startPoll();
-  }
-  var i2, cs=document.querySelectorAll('.cat');
-  for(i2=0;i2<cs.length;i2++){ cs[i2].addEventListener('click', function(){ selCat=this.getAttribute('data-cat'); expanded=false; boardGo(); }); }
-  var gs=document.querySelectorAll('.gen');
-  for(i2=0;i2<gs.length;i2++){ gs[i2].addEventListener('click', function(){ selGen=this.getAttribute('data-gen'); expanded=false; boardGo(); }); }
-  $('q').addEventListener('input', function(){ if(raceLive()&&_live) renderBoard(); });
-  $('moreBtn').addEventListener('click', function(){ expanded=true; renderBoard(); });
-
   // ============ lifecycle ============
   document.addEventListener('visibilitychange', function(){
     if(document.hidden){ stopPoll(); }
     else {
       if(wakeWanted && !wakeLock) acquireWake();
       if(currentBib){ loadMe(currentBib, true); }
-      if(curTab==='board' && raceLive()){ getLive(true).then(function(){ renderBoard(); }); }
       startPoll();
     }
   });
@@ -807,11 +623,8 @@
 
   // ============ boot ============
   try{ var saved=localStorage.getItem('mm_bib'); if(saved) bibIn.value=saved; }catch(e){}
-  var t0=qp.get('tab');
-  if(['me','board'].indexOf(t0)<0) t0='me';   // legacy ?tab=official now lands on My Run
-  showTab(t0);
   var qbib=(qp.get('bib')||'').replace(/[^0-9]/g,'');
-  if(qbib && t0==='me'){ bibIn.value=qbib; submit(); }
+  if(qbib){ bibIn.value=qbib; submit(); }
 })();
 </script>
 </body>
