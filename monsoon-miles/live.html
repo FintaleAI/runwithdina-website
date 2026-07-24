@@ -81,6 +81,7 @@
   .hero{margin-top:1.2rem;background:linear-gradient(160deg,rgba(59,130,246,.14),rgba(59,130,246,.03));
     border:1px solid rgba(96,165,250,.28);border-radius:1rem;padding:1.4rem 1.2rem;text-align:center;position:relative;overflow:hidden}
   .hero .big{font-family:var(--sans);font-weight:700;font-size:5rem;line-height:.9;color:var(--pure);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .hero .big .soon{font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.7rem;line-height:1.15;color:var(--rain-light);letter-spacing:0;display:inline-block}
   .hero .big.bump{animation:bump .6s var(--ease)}
   @keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.12);color:var(--rain-light)}100%{transform:scale(1)}}
   .hero .cap{font-family:var(--mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--rain-light);margin-top:.5rem}
@@ -262,7 +263,7 @@
 
         <div class="hero">
           <div class="big" id="rLoops">0</div>
-          <div class="cap">Loops completed</div>
+          <div class="cap" id="rCap">Loops completed</div>
         </div>
 
         <div class="updated"><span class="live">&#9679; LIVE</span><span id="rUpdated">updated &mdash;</span> &middot; auto-refreshing</div>
@@ -418,12 +419,15 @@
     startTimer(d.category);
     var newLoop = (lastLoops!=null && d.loops!=null && d.loops>lastLoops);
     var loopsEl=$('rLoops');
-    if(d.loops!=null){
-      loopsEl.textContent = d.loops;
+    if(d.pending){
+      loopsEl.innerHTML = '<span class="soon">You&rsquo;re in!<br>Your loops go live<br>on race day</span>';
+      $('rCap').style.display='none';
+    } else if(d.loops!=null){
+      $('rCap').style.display=''; loopsEl.textContent = d.loops;
       if(newLoop){ loopsEl.classList.remove('bump'); void loopsEl.offsetWidth; loopsEl.classList.add('bump'); }
       lastLoops = d.loops;
-    } else { loopsEl.textContent='—'; }
-    $('rUpdated').textContent = d.pending ? "you're in — live loops on race day, 26 Jul" : ('updated '+nowStr());
+    } else { $('rCap').style.display=''; loopsEl.textContent='—'; }
+    $('rUpdated').textContent = d.pending ? "registered · loops appear on race day, 26 Jul" : ('updated '+nowStr());
     updateTogether();
     // celebrate each completed loop (never on first load — lastLoops starts null)
     if(!d.pending && raceLive() && newLoop){
