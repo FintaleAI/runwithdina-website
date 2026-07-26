@@ -58,6 +58,8 @@
   .mecard .mstat .v{font-family:var(--serif);font-size:34px;line-height:1}
   .mecard .mstat .v small{font-family:var(--sans);font-size:13px;color:var(--dim)}
   .mecard .mnote{margin-top:12px;font-size:12.5px;color:var(--mist)}
+  .sharebtn{margin-top:16px;width:100%;background:linear-gradient(150deg,var(--teal),#2b9d92);color:#04231f;border:none;border-radius:12px;font-family:var(--sans);font-weight:600;font-size:15px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .sharebtn:disabled{opacity:.6;cursor:default}
 
   .sec{margin-top:52px}
   .sec-h{font-family:var(--mono);font-size:13px;letter-spacing:5px;text-transform:uppercase;color:var(--teal);font-weight:600;text-align:center}
@@ -199,7 +201,7 @@
     block.appendChild(cols); pod.appendChild(block);
   });
 
-  var curCat='all', curGen='all', curTxt='';
+  var curCat='all', curGen='all', curTxt='', curRec=null, curBib=null;
   var catPills=$('#catPills'), genPills=$('#genPills');
   function mkPill(host,label,val,group){
     var p=el('div','pill'+((group==='cat'?curCat:curGen)===val?' on':''),label);
@@ -269,7 +271,10 @@
         '<div><div class="k">Rank ('+rec.gen+')</div><div class="v">'+rec.rank+' <small>/ '+rec.gcount+'</small></div></div>'+
         '<div><div class="k">Loops completed</div><div class="v">'+rec.laps+'</div></div>'+
       '</div>'+
-      (madeMin?'':'<div class="mnote">Official finisher minimum for '+rec.cat+' is '+rec.min+' loops.</div>');
+      (madeMin?'':'<div class="mnote">Official finisher minimum for '+rec.cat+' is '+rec.min+' loops.</div>')+
+      '<button class="sharebtn" id="shareResult">📸 Share my result</button>';
+    curRec=rec; curBib=bib;
+    $('#shareResult').addEventListener('click', shareResult);
     curCat='all'; curGen='all'; curTxt=''; $('#filt').value='';
     [].forEach.call(catPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
     [].forEach.call(genPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
@@ -279,6 +284,110 @@
   }
   $('#bibGo').addEventListener('click',lookup);
   $('#bibIn').addEventListener('keydown',function(e){ if(e.key==='Enter')lookup(); });
+
+  // ---- shareable result card (canvas -> PNG -> Web Share / download) ----
+  function loadImg(src){ return new Promise(function(res){ var im=new Image();
+    im.onload=function(){ res(im); }; im.onerror=function(){ res(null); }; im.src=src; }); }
+  function roundRectPath(ctx,x,y,w,h,r){
+    ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+  }
+  function wrapCanvas(ctx,text,cx,cy,maxW,lh){
+    var words=String(text).split(' '), line='', lines=[];
+    for(var n=0;n<words.length;n++){ var t=line+words[n]+' '; if(ctx.measureText(t).width>maxW && n>0){ lines.push(line.trim()); line=words[n]+' '; } else line=t; }
+    lines.push(line.trim());
+    for(var i=0;i<lines.length;i++){ ctx.fillText(lines[i],cx,cy+i*lh); }
+    return cy+(lines.length-1)*lh;
+  }
+  var PODLABEL={1:'CATEGORY WINNER · 1ST',2:'PODIUM FINISH · 2ND',3:'PODIUM FINISH · 3RD'};
+  function drawResultCard(rec, bib, logo, rwd){
+    var W=1080,H=1920,cv=document.createElement('canvas'); cv.width=W; cv.height=H; var x=cv.getContext('2d');
+    var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#050a1a'); g.addColorStop(.5,'#0a1530'); g.addColorStop(1,'#070c1e');
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    var rg=x.createRadialGradient(W*0.82,H*0.08,0,W*0.82,H*0.08,760); rg.addColorStop(0,'rgba(79,209,197,0.26)'); rg.addColorStop(1,'rgba(79,209,197,0)'); x.fillStyle=rg; x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(255,255,255,0.035)'; x.lineWidth=2;
+    for(var i=-H;i<W;i+=48){ x.beginPath(); x.moveTo(i,0); x.lineTo(i+H*0.25,H); x.stroke(); }
+    x.textAlign='center';
+    var topY=152;
+    if(logo && logo.naturalWidth){
+      var lh=100, lw=Math.round(lh*(logo.naturalWidth/logo.naturalHeight)), pad=40;
+      var cw=lw+pad*2, ch=lh+56, cx0=Math.round((W-cw)/2), cy0=86;
+      x.fillStyle='#ffffff'; roundRectPath(x,cx0,cy0,cw,ch,26); x.fill();
+      x.drawImage(logo, cx0+pad, cy0+28, lw, lh);
+      x.fillStyle='rgba(255,255,255,0.5)'; x.font='700 24px "JetBrains Mono", monospace';
+      x.fillText('P R E S E N T S', W/2, cy0+ch+44);
+      topY = cy0+ch+112;
+    }
+    x.fillStyle='#4fd1c5'; x.font='700 34px "JetBrains Mono", monospace'; x.fillText('MONSOON MILES 2026', W/2, topY);
+    x.fillStyle='rgba(255,255,255,0.5)'; x.font='500 26px "JetBrains Mono", monospace'; x.fillText('O F F I C I A L   R E S U L T', W/2, topY+50);
+    x.fillStyle='#ffffff'; x.font='italic 400 92px "Instrument Serif", Georgia, serif';
+    var ny=wrapCanvas(x,(rec.name||'Runner'),W/2,topY+206,940,94);
+    x.fillStyle='#93c5fd'; x.font='600 30px "JetBrains Mono", monospace';
+    x.fillText(((rec.gen?rec.gen+'   ·   ':'')+(rec.cat||'')).toUpperCase(), W/2, ny+66);
+    // podium ribbon
+    if(rec.rank<=3){
+      var lab=PODLABEL[rec.rank], py=ny+118, ph=70;
+      x.font='700 30px "JetBrains Mono", monospace';
+      var pw=x.measureText(lab).width+64, px=Math.round((W-pw)/2);
+      x.fillStyle='#f6c667'; roundRectPath(x,px,py,pw,ph,35); x.fill();
+      x.fillStyle='#0a1530'; x.textBaseline='middle'; x.fillText(lab, W/2, py+ph/2+1); x.textBaseline='alphabetic';
+    }
+    // big loops number
+    x.textBaseline='middle'; x.fillStyle='#ffffff'; x.font='700 360px "Space Grotesk", Arial, sans-serif';
+    x.fillText(String(rec.laps), W/2, 1050); x.textBaseline='alphabetic';
+    x.fillStyle='#93c5fd'; x.font='700 42px "JetBrains Mono", monospace'; x.fillText('LOOPS COMPLETED', W/2, 1300);
+    x.fillStyle='rgba(255,255,255,0.82)'; x.font='500 36px "JetBrains Mono", monospace';
+    x.fillText('RANK '+rec.rank+' of '+rec.gcount+'  ·  '+String(rec.gen).toUpperCase(), W/2, 1372);
+    x.strokeStyle='rgba(255,255,255,0.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(150,1520); x.lineTo(W-150,1520); x.stroke();
+    if(rwd && rwd.naturalWidth){
+      var rh=58, rw=Math.round(rh*(rwd.naturalWidth/rwd.naturalHeight));
+      x.drawImage(rwd, Math.round((W-rw)/2), 1556, rw, rh);
+    } else {
+      x.fillStyle='rgba(255,255,255,0.7)'; x.font='700 30px "JetBrains Mono", monospace'; x.fillText('RUNWITHDINA', W/2, 1598);
+    }
+    x.fillStyle='#4fd1c5'; x.font='700 40px "JetBrains Mono", monospace'; x.fillText('#MonsoonMiles2026', W/2, 1672);
+    x.fillStyle='rgba(255,255,255,0.55)'; x.font='500 30px "JetBrains Mono", monospace';
+    x.fillText('26 July 2026   ·   Suncity Club, Vadodara', W/2, 1722);
+    x.fillText('runwithdina.com/monsoon-miles   ·   Powered by fintale.io', W/2, 1770);
+    return cv;
+  }
+  function deliverCard(blob, bib, rec){
+    var fname='monsoon-miles-result-'+(bib||'')+'.png';
+    var txt = rec.rank<=3
+      ? 'I finished '+(rec.rank===1?'1st':rec.rank===2?'2nd':'3rd')+' in '+rec.cat+' ('+rec.gen+') at Monsoon Miles 2026 — '+rec.laps+' loops! #MonsoonMiles2026'
+      : 'I completed '+rec.laps+' loops at Monsoon Miles 2026! #MonsoonMiles2026';
+    try{ var file=new File([blob],fname,{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({ files:[file], title:'Monsoon Miles 2026 — My Result', text:txt }).catch(function(){});
+        return;
+      }
+    }catch(e){}
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1200);
+  }
+  function shareResult(){
+    var rec=curRec, bib=curBib; if(!rec) return;
+    var btn=$('#shareResult'), old=btn.innerHTML; btn.disabled=true; btn.innerHTML='Preparing…';
+    function reset(){ btn.disabled=false; btn.innerHTML=old; }
+    var need=['italic 400 92px "Instrument Serif"','700 360px "Space Grotesk"','700 42px "JetBrains Mono"','500 30px "JetBrains Mono"'];
+    var loads=need.map(function(f){ return (document.fonts&&document.fonts.load)?document.fonts.load(f).catch(function(){}):Promise.resolve(); });
+    loads.push(loadImg('Photos/sponsors/ficci-flo.png'));
+    loads.push(loadImg('Photos/community-logos/runwithdina.png'));
+    Promise.all(loads).then(function(res){
+      var logo=res[res.length-2], rwd=res[res.length-1];
+      function attempt(withLogo){
+        try{
+          drawResultCard(rec, bib, withLogo?logo:null, withLogo?rwd:null).toBlob(function(blob){
+            reset(); if(blob) deliverCard(blob, bib, rec);
+          }, 'image/png');
+          return true;
+        }catch(e){ return false; }
+      }
+      if(!attempt(true) && !attempt(false)) reset();
+    }).catch(reset);
+  }
 })();
 </script>
 </body>
