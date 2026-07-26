@@ -2323,11 +2323,27 @@ input[type="date"].form-input {
   z-index: 99990;
   background: var(--black);
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 1.5rem;
+  align-items: center; justify-content: flex-start;
+  gap: 1.25rem;
+  padding: 5rem 1rem 2.5rem;
+  overflow-y: auto;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s var(--ease);
+}
+/* Spacers center the links when they fit, but collapse to allow
+   scrolling when the list is taller than the screen — nothing clips. */
+.mobile-menu::before, .mobile-menu::after { content: ""; margin-block: auto; }
+/* Race-day essentials — pinned bright at the top of the mobile menu */
+.mobile-menu-live {
+  color: var(--rain-light) !important;
+  font-style: normal !important;
+  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.mobile-menu-live::before {
+  content: ""; width: 0.5em; height: 0.5em; border-radius: 50%;
+  background: var(--rain-light); box-shadow: 0 0 0.5em var(--rain-light);
 }
 .mobile-menu.active {
   opacity: 1;
@@ -3590,6 +3606,8 @@ burger.addEventListener('click', () => {
     mobileMenu.className = 'mobile-menu';
     mobileMenu.innerHTML = `
       <button class="mobile-menu-close">&times;</button>
+      <a href="live.html" class="mobile-menu-link mobile-menu-live">Track My Run</a>
+      <a href="bib.html" class="mobile-menu-link mobile-menu-live">Find My BIB</a>
       <a href="../index.html" class="mobile-menu-link" style="color:var(--rain-light);">← RunWithDina Home</a>
       <a href="#about" class="mobile-menu-link">About</a>
       <a href="#categories" class="mobile-menu-link">Categories</a>
