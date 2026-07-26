@@ -2,15 +2,284 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monsoon Miles LIVE — Results</title>
-<script>
-  // Results now live on the leaderboard tab of the hub — forward, keeping any params.
-  var q = location.search.replace(/^\?/, '');
-  location.replace('live.html' + (q ? '?' + q : ''));
-</script>
-<meta http-equiv="refresh" content="0;url=live.html">
-<style>body{background:#050505;color:#999;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh}a{color:#60a5fa}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monsoon Miles 2026 — Official Results</title>
+<meta name="description" content="Official results for RWD Monsoon Miles 2026. Find your BIB, view podium winners and the full field across 1 Hour, 2 Hours and 4 Hours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a1530; --navy2:#0f2547; --ink:#0d3b3a;
+    --rain:#3b82f6; --rain-light:#60a5fa; --teal:#4fd1c5;
+    --white:#fff; --mist:#cbd8ea; --dim:#9fb6d4;
+    --gold:#f6c667; --silver:#c7d0da; --bronze:#d68a5c;
+    --serif:'Instrument Serif',Georgia,serif; --sans:'Space Grotesk',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--white);background:var(--navy);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .bg{position:fixed;inset:0;z-index:-2;background:
+    radial-gradient(1100px 700px at 82% -8%,rgba(79,209,197,.16),transparent 60%),
+    radial-gradient(1000px 800px at 4% 108%,rgba(107,167,255,.14),transparent 55%),
+    linear-gradient(160deg,#0a1530,#0f2547 58%,#0d3b3a 130%)}
+  .bg::after{content:"";position:absolute;inset:0;mix-blend-mode:screen;opacity:.5;
+    background-image:repeating-linear-gradient(104deg,transparent 0 26px,rgba(255,255,255,.03) 26px 28px)}
+  .wrap{max-width:940px;margin:0 auto;padding:0 20px}
+  a{color:inherit}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;max-width:940px;margin:0 auto}
+  nav .home{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--rain-light);text-decoration:none}
+  nav .track{font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--teal);text-decoration:none;border:1px solid rgba(79,209,197,.4);border-radius:999px;padding:7px 14px}
+
+  header{text-align:center;padding:26px 0 8px}
+  .eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:6px;text-transform:uppercase;color:var(--teal);font-weight:600}
+  h1{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(44px,10vw,74px);line-height:.98;letter-spacing:-.5px;margin-top:8px}
+  h1 span{color:var(--rain-light)}
+  .sub{color:var(--mist);font-size:15px;margin-top:12px}
+  .sub b{color:var(--white)}
+  .official{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--dim);
+    border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 16px}
+  .official .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal)}
+
+  .search{margin:26px auto 0;max-width:520px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:22px}
+  .search h2{font-family:var(--serif);font-style:italic;font-size:26px;font-weight:400;text-align:center;margin-bottom:4px}
+  .search p{text-align:center;color:var(--dim);font-size:13px;margin-bottom:14px}
+  .searchrow{display:flex;gap:10px}
+  .searchrow input{flex:1;background:rgba(10,21,48,.7);border:1.5px solid rgba(107,167,255,.35);border-radius:12px;color:#fff;font-family:var(--mono);font-size:18px;padding:14px 16px;outline:none;min-width:0}
+  .searchrow input:focus{border-color:var(--rain-light)}
+  .searchrow button{background:linear-gradient(150deg,var(--rain-light),var(--rain));color:#04122e;border:none;border-radius:12px;font-weight:600;font-size:15px;padding:0 22px;cursor:pointer}
+  .mecard{margin-top:16px;display:none;background:linear-gradient(120deg,rgba(13,148,136,.22),rgba(13,59,58,.28));border:1px solid rgba(79,209,197,.45);border-radius:14px;padding:18px 20px}
+  .mecard.show{display:block}
+  .mecard.miss{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
+  .mecard .mname{font-family:var(--serif);font-style:italic;font-size:28px;line-height:1.05}
+  .mecard .mmeta{font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--teal);text-transform:uppercase;margin-top:4px}
+  .mecard .mstat{display:flex;gap:26px;margin-top:12px;flex-wrap:wrap}
+  .mecard .mstat .k{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+  .mecard .mstat .v{font-family:var(--serif);font-size:34px;line-height:1}
+  .mecard .mstat .v small{font-family:var(--sans);font-size:13px;color:var(--dim)}
+  .mecard .mnote{margin-top:12px;font-size:12.5px;color:var(--mist)}
+
+  .sec{margin-top:52px}
+  .sec-h{font-family:var(--mono);font-size:13px;letter-spacing:5px;text-transform:uppercase;color:var(--teal);font-weight:600;text-align:center}
+  .sec-t{font-family:var(--serif);font-style:italic;font-size:clamp(30px,6vw,44px);font-weight:400;text-align:center;margin-top:4px}
+
+  .pod-cat{margin-top:30px}
+  .pod-cat > .cat-name{font-family:var(--serif);font-style:italic;font-size:24px;text-align:center;color:var(--rain-light);margin-bottom:16px}
+  .pod-cols{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:720px){.pod-cols{grid-template-columns:1fr 1fr;gap:22px}}
+  .pod-col .gtag{font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--dim);text-align:center;margin-bottom:10px}
+  .pod{display:flex;flex-direction:column;gap:8px}
+  .prow{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:13px 16px}
+  .prow.g1{background:linear-gradient(120deg,rgba(246,198,103,.16),rgba(255,255,255,.04));border-color:rgba(246,198,103,.4)}
+  .pmedal{font-size:24px;line-height:1;flex:0 0 auto}
+  .pinfo{flex:1;min-width:0}
+  .pname{font-weight:600;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pbib{font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .plaps{text-align:right;flex:0 0 auto}
+  .plaps b{font-family:var(--serif);font-size:26px;font-weight:400}
+  .plaps span{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:-2px}
+
+  .controls{position:sticky;top:0;z-index:5;background:rgba(10,21,48,.86);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;margin-top:22px;display:flex;flex-direction:column;gap:10px}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .pill{font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--mist);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:8px 14px;cursor:pointer;user-select:none}
+  .pill.on{background:var(--rain-light);border-color:var(--rain-light);color:#04122e;font-weight:600}
+  .controls .filt{width:100%;background:rgba(10,21,48,.7);border:1.5px solid rgba(107,167,255,.3);border-radius:10px;color:#fff;font-family:var(--sans);font-size:15px;padding:11px 14px;outline:none}
+  .controls .filt:focus{border-color:var(--rain-light)}
+
+  .grp{margin-top:26px}
+  .grp-h{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px 8px;border-bottom:2px solid rgba(79,209,197,.4);margin-bottom:2px}
+  .grp-h .gt{font-family:var(--serif);font-style:italic;font-size:22px}
+  .grp-h .gc{font-family:var(--mono);font-size:12px;color:var(--dim)}
+  table{width:100%;border-collapse:collapse}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);text-align:left;padding:9px 8px;font-weight:400}
+  th.c,td.c{text-align:center}th.r,td.r{text-align:right}
+  td{padding:11px 8px;border-bottom:1px solid rgba(255,255,255,.07);font-size:15px}
+  tr.hl td{background:rgba(96,165,250,.18)}
+  .rk{font-family:var(--serif);font-size:18px;width:44px}
+  .rk.m1{color:var(--gold)}.rk.m2{color:var(--silver)}.rk.m3{color:var(--bronze)}
+  .bib{font-family:var(--mono);font-size:13px;color:var(--dim);width:64px}
+  .nm{font-weight:500}
+  .lp{font-family:var(--mono);font-weight:600;width:56px}
+  .nores{text-align:center;color:var(--dim);padding:30px;font-style:italic}
+
+  footer{margin-top:56px;padding:28px 0 46px;border-top:1px solid rgba(255,255,255,.12);text-align:center}
+  footer .note{color:var(--mist);font-size:13px;max-width:640px;margin:0 auto;line-height:1.6}
+  footer .note b{color:#fff}
+  footer .brand{margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:1px}
+  footer .brand a{color:var(--teal);text-decoration:none}
+</style>
 </head>
-<body>Opening&hellip;&nbsp;<a href="live.html">tap here</a></body>
+<body>
+<div class="bg"></div>
+
+<nav>
+  <a class="home" href="./">← Monsoon Miles</a>
+  <a class="track" href="live.html">Live Loops</a>
+</nav>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Official Results</div>
+    <h1>Monsoon Miles<br><span>2026</span></h1>
+    <div class="sub"><b id="totF">—</b> finishers · <b>Sunday 26 July 2026</b> · Suncity Club, Vadodara</div>
+    <div class="official"><span class="dot"></span> Official results · announced after evaluation · organiser's decision is final</div>
+  </header>
+
+  <div class="search">
+    <h2>Find your result</h2>
+    <p>Enter your BIB number to see your placing</p>
+    <div class="searchrow">
+      <input id="bibIn" type="text" inputmode="numeric" placeholder="e.g. 1057" autocomplete="off">
+      <button id="bibGo">Search</button>
+    </div>
+    <div class="mecard" id="meCard"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Podium</div>
+    <div class="sec-t">Winners</div>
+    <div id="podium"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">Every finisher</div>
+    <div class="sec-t">Full results</div>
+    <div class="controls">
+      <div class="pills" id="catPills"></div>
+      <div class="pills" id="genPills"></div>
+      <input class="filt" id="filt" type="text" placeholder="Filter by name or BIB…" autocomplete="off">
+    </div>
+    <div id="tables"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="note">One loop = <b>975 metres</b>. Loops shown are completed full loops. <b>Podium is decided by most loops</b>; men and women judged separately in each category, ties broken by finish time. <b>The organiser's decision is final.</b></div>
+    <div class="brand">RWD Monsoon Miles 2026 · An initiative by RunwithDina · Powered by <a href="https://fintale.io">fintale.io</a></div>
+  </div>
+</footer>
+
+<script src="results-data.js"></script>
+<script>
+(function(){
+  var D = window.MM_RESULTS;
+  var $ = function(s,r){ return (r||document).querySelector(s); };
+  function el(t,c,h){ var e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e; }
+  function medalRk(r){ return r===1?'m1':r===2?'m2':r===3?'m3':''; }
+  var MEDALS={1:'🥇',2:'🥈',3:'🥉'};
+
+  $('#totF').textContent = D.total;
+
+  var BYBIB={};
+  D.categories.forEach(function(c){
+    c.genders.forEach(function(g){
+      g.rows.forEach(function(row){ BYBIB[row.bib]={cat:c.label,gen:g.g,rank:row.r,laps:row.laps,name:row.name,gcount:g.n,min:c.min}; });
+    });
+  });
+
+  var pod=$('#podium');
+  D.categories.forEach(function(c){
+    var block=el('div','pod-cat');
+    block.appendChild(el('div','cat-name',c.label));
+    var cols=el('div','pod-cols');
+    c.genders.forEach(function(g){
+      var col=el('div','pod-col');
+      col.appendChild(el('div','gtag',g.g));
+      var pd=el('div','pod');
+      g.rows.slice(0,3).forEach(function(row,i){
+        var pr=el('div','prow'+(i===0?' g1':''));
+        pr.innerHTML='<div class="pmedal">'+MEDALS[i+1]+'</div>'+
+          '<div class="pinfo"><div class="pname">'+row.name+'</div><div class="pbib">BIB '+row.bib+'</div></div>'+
+          '<div class="plaps"><b>'+row.laps+'</b><span>loops</span></div>';
+        pd.appendChild(pr);
+      });
+      col.appendChild(pd); cols.appendChild(col);
+    });
+    block.appendChild(cols); pod.appendChild(block);
+  });
+
+  var curCat='all', curGen='all', curTxt='';
+  var catPills=$('#catPills'), genPills=$('#genPills');
+  function mkPill(host,label,val,group){
+    var p=el('div','pill'+((group==='cat'?curCat:curGen)===val?' on':''),label);
+    p.dataset.val=val; p.dataset.group=group;
+    p.onclick=function(){
+      if(group==='cat')curCat=val; else curGen=val;
+      [].forEach.call(host.children,function(x){ x.classList.toggle('on', x.dataset.val===val); });
+      render();
+    };
+    host.appendChild(p);
+  }
+  mkPill(catPills,'All','all','cat');
+  D.categories.forEach(function(c){ mkPill(catPills,c.label,c.key,'cat'); });
+  ['all','Women','Men'].forEach(function(v){ mkPill(genPills, v==='all'?'All':v, v,'gen'); });
+  $('#filt').addEventListener('input',function(){ curTxt=this.value.trim().toLowerCase(); render(); });
+
+  var tables=$('#tables');
+  function render(hlBib){
+    tables.innerHTML='';
+    var any=false;
+    D.categories.forEach(function(c){
+      if(curCat!=='all' && curCat!==c.key) return;
+      c.genders.forEach(function(g){
+        if(curGen!=='all' && curGen!==g.g) return;
+        var rows=g.rows;
+        if(curTxt){
+          rows=rows.filter(function(r){ return String(r.bib).indexOf(curTxt)>=0 || r.name.toLowerCase().indexOf(curTxt)>=0; });
+        }
+        if(!rows.length) return;
+        any=true;
+        var grp=el('div','grp');
+        grp.innerHTML='<div class="grp-h"><span class="gt">'+c.label+' · '+g.g+'</span><span class="gc">'+g.n+' finishers</span></div>';
+        var tbl=el('table','');
+        tbl.innerHTML='<thead><tr><th class="c">#</th><th>BIB</th><th>Name</th><th class="r">Loops</th></tr></thead>';
+        var tb=el('tbody','');
+        rows.forEach(function(r){
+          var tr=el('tr', (hlBib&&r.bib===hlBib)?'hl':'');
+          tr.id='bib-'+r.bib;
+          tr.innerHTML='<td class="c rk '+medalRk(r.r)+'">'+r.r+'</td>'+
+            '<td class="bib">'+r.bib+'</td>'+
+            '<td class="nm">'+r.name+'</td>'+
+            '<td class="r lp">'+r.laps+'</td>';
+          tb.appendChild(tr);
+        });
+        tbl.appendChild(tb); grp.appendChild(tbl); tables.appendChild(grp);
+      });
+    });
+    if(!any) tables.appendChild(el('div','nores','No finishers match that filter.'));
+  }
+  render();
+
+  function lookup(){
+    var bib=parseInt(($('#bibIn').value||'').replace(/[^0-9]/g,''),10);
+    var card=$('#meCard');
+    if(!bib){ card.className='mecard'; return; }
+    var rec=BYBIB[bib];
+    if(!rec){
+      card.className='mecard miss show';
+      card.innerHTML='<div class="mname">BIB '+bib+' not found</div><div class="mmeta" style="color:var(--dim)">Check the number and try again</div>';
+      return;
+    }
+    var madeMin = rec.laps>=rec.min;
+    card.className='mecard show';
+    card.innerHTML='<div class="mname">'+rec.name+'</div>'+
+      '<div class="mmeta">'+rec.gen+' · '+rec.cat+' · BIB '+bib+'</div>'+
+      '<div class="mstat">'+
+        '<div><div class="k">Rank ('+rec.gen+')</div><div class="v">'+rec.rank+' <small>/ '+rec.gcount+'</small></div></div>'+
+        '<div><div class="k">Loops completed</div><div class="v">'+rec.laps+'</div></div>'+
+      '</div>'+
+      (madeMin?'':'<div class="mnote">Official finisher minimum for '+rec.cat+' is '+rec.min+' loops.</div>');
+    curCat='all'; curGen='all'; curTxt=''; $('#filt').value='';
+    [].forEach.call(catPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
+    [].forEach.call(genPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
+    render(bib);
+    var row=document.getElementById('bib-'+bib);
+    if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  $('#bibGo').addEventListener('click',lookup);
+  $('#bibIn').addEventListener('keydown',function(e){ if(e.key==='Enter')lookup(); });
+})();
+</script>
+</body>
 </html>
