@@ -60,6 +60,46 @@
   .mecard .mnote{margin-top:12px;font-size:12.5px;color:var(--mist)}
   .sharebtn{margin-top:16px;width:100%;background:linear-gradient(150deg,var(--teal),#2b9d92);color:#04231f;border:none;border-radius:12px;font-family:var(--sans);font-weight:600;font-size:15px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
   .sharebtn:disabled{opacity:.6;cursor:default}
+  .meextra{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12)}
+  .meextra .k{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
+  .meextra .v{font-family:var(--serif);font-size:26px;line-height:1.1;margin-top:2px}
+  .mebadge{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;color:#04231f;background:var(--teal);border-radius:999px;padding:6px 14px}
+  .mebadge.pod{background:var(--gold);color:#2b1e00}
+
+  /* day in numbers */
+  .statband{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+  @media(min-width:640px){.statband{grid-template-columns:repeat(4,1fr)}}
+  .tile{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px 16px;text-align:center}
+  .tile .n{font-family:var(--serif);font-size:clamp(38px,9vw,52px);line-height:1;color:#fff}
+  .tile .l{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-top:8px}
+  .bigkm{margin-top:16px;text-align:center;background:linear-gradient(120deg,rgba(13,148,136,.22),rgba(13,59,58,.28));border:1px solid rgba(79,209,197,.4);border-radius:16px;padding:22px}
+  .bigkm .k{font-family:var(--serif);font-style:italic;font-size:clamp(30px,8vw,46px);color:#fff}
+  .bigkm .k b{color:var(--teal);font-style:normal}
+  .bigkm .c{font-size:14px;color:var(--mist);margin-top:6px}
+
+  /* story cards */
+  .story{display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px}
+  @media(min-width:720px){.story{grid-template-columns:1fr 1fr}}
+  .scard{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px 22px}
+  .scard h3{font-family:var(--serif);font-style:italic;font-weight:400;font-size:24px;margin-bottom:14px}
+  .bar{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13px}
+  .bar .bl{width:78px;flex:0 0 auto;color:var(--mist);font-family:var(--mono);font-size:12px}
+  .bar .bt{flex:1;height:12px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}
+  .bar .bf{display:block;height:100%;min-width:4px;background:linear-gradient(90deg,var(--rain-light),var(--teal));border-radius:6px}
+  .bar .bv{width:56px;flex:0 0 auto;text-align:right;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .duo{display:flex;gap:14px;margin-bottom:6px}
+  .duo .d{flex:1;text-align:center;background:rgba(255,255,255,.04);border-radius:12px;padding:14px 8px}
+  .duo .dn{font-family:var(--serif);font-size:30px;line-height:1}
+  .duo .dl{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-top:4px}
+  .legend{font-size:13px;color:var(--mist);line-height:1.6;margin-top:10px}
+  .legend b{color:#fff}
+  .ironrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px}
+  .ironrow:last-child{border-bottom:none}
+  .ironrow .in{font-family:var(--serif);font-size:22px;width:34px;color:var(--teal)}
+  .ironrow .ii{flex:1;min-width:0}
+  .ironrow .ii b{font-weight:600}
+  .ironrow .ic{font-family:var(--mono);font-size:11px;color:var(--dim)}
+  .ironrow .id{font-family:var(--mono);font-weight:600;color:#fff;font-size:13px}
 
   .sec{margin-top:52px}
   .sec-h{font-family:var(--mono);font-size:13px;letter-spacing:5px;text-transform:uppercase;color:var(--teal);font-weight:600;text-align:center}
@@ -138,9 +178,22 @@
   </div>
 
   <div class="sec">
+    <div class="sec-h">The day in numbers</div>
+    <div class="sec-t">Together, we ran</div>
+    <div class="statband" id="statband"></div>
+    <div class="bigkm" id="bigkm"></div>
+  </div>
+
+  <div class="sec">
     <div class="sec-h">Podium</div>
     <div class="sec-t">Winners</div>
     <div id="podium"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">The day's story</div>
+    <div class="sec-t">Beyond the podium</div>
+    <div class="story" id="story"></div>
   </div>
 
   <div class="sec">
@@ -172,13 +225,68 @@
   var MEDALS={1:'🥇',2:'🥈',3:'🥉'};
 
   $('#totF').textContent = D.total;
+  var S = D.stats || {};
+  var LOOP_M = D.loop_m || 975;
 
   var BYBIB={};
   D.categories.forEach(function(c){
     c.genders.forEach(function(g){
-      g.rows.forEach(function(row){ BYBIB[row.bib]={cat:c.label,gen:g.g,rank:row.r,laps:row.laps,name:row.name,gcount:g.n,min:c.min}; });
+      g.rows.forEach(function(row){ BYBIB[row.bib]={cat:c.label,gen:g.g,rank:row.r,laps:row.laps,name:row.name,gcount:g.n,min:c.min,t:row.t||null}; });
     });
   });
+
+  // ---- Day in numbers ----
+  function animCount(el,to,dec){
+    var start=null,dur=1100;
+    function f(ts){ if(start==null)start=ts; var p=Math.min(1,(ts-start)/dur); var e=1-Math.pow(1-p,3); var v=to*e;
+      el.textContent = dec ? v.toFixed(1) : Math.round(v).toLocaleString('en-IN');
+      if(p<1) requestAnimationFrame(f); else el.textContent = dec ? to.toFixed(1) : to.toLocaleString('en-IN'); }
+    requestAnimationFrame(f);
+  }
+  function renderStats(){
+    var band=$('#statband'); if(!band) return;
+    var tiles=[{n:S.finishers,l:'Finishers'},{n:S.loops,l:'Loops completed'},{n:S.km,l:'Km together'},{n:S.avgLoops,l:'Avg loops / runner',dec:1}];
+    band.innerHTML='';
+    tiles.forEach(function(t){ band.appendChild(el('div','tile','<div class="n" data-to="'+t.n+'"'+(t.dec?' data-dec="1"':'')+'>0</div><div class="l">'+t.l+'</div>')); });
+    $('#bigkm').innerHTML='<div class="k"><b>'+Number(S.km).toLocaleString('en-IN')+' km</b> in one morning</div>'+
+      '<div class="c">That’s further than the length of India — Kashmir to Kanyakumari — run 975 m at a time, in the rain.</div>';
+    var done=false;
+    function go(){ if(done)return; var r=band.getBoundingClientRect(); if(r.top<window.innerHeight && r.bottom>0){ done=true;
+      [].forEach.call(band.querySelectorAll('.n'),function(n){ animCount(n,parseFloat(n.dataset.to),n.dataset.dec); }); } }
+    window.addEventListener('scroll',go,{passive:true}); go();
+  }
+  // ---- The day's story ----
+  function renderStory(){
+    var st=$('#story'); if(!st) return; st.innerHTML='';
+    var g=S.gender||{}, c=S.cat||{}, tot=S.finishers||1;
+    function bar(label,val,mx){ return '<div class="bar"><span class="bl">'+label+'</span><span class="bt"><span class="bf" style="width:'+Math.round(val/mx*100)+'%"></span></span><span class="bv">'+val+'</span></div>'; }
+    var c1=el('div','scard');
+    c1.innerHTML='<h3>Who showed up</h3>'+
+      '<div class="duo"><div class="d"><div class="dn">'+(g.Women||0)+'</div><div class="dl">Women</div></div>'+
+      '<div class="d"><div class="dn">'+(g.Men||0)+'</div><div class="dl">Men</div></div></div>'+
+      Object.keys(c).map(function(k){return bar(k,c[k],tot);}).join('');
+    st.appendChild(c1);
+    var A=S.age;
+    if(A){
+      var b=A.bands||{}, mx=Math.max.apply(null,Object.keys(b).map(function(k){return b[k];}))||1;
+      var c2=el('div','scard');
+      c2.innerHTML='<h3>Every age, in the rain</h3>'+
+        '<div class="duo"><div class="d"><div class="dn">'+A.youngest.age+'</div><div class="dl">Youngest</div></div>'+
+        '<div class="d"><div class="dn">'+A.avg+'</div><div class="dl">Avg age</div></div>'+
+        '<div class="d"><div class="dn">'+A.oldest.age+'</div><div class="dl">Oldest</div></div></div>'+
+        Object.keys(b).map(function(k){return bar(k,b[k],mx);}).join('')+
+        '<div class="legend"><b>'+A.oldest.name+' ('+A.oldest.age+')</b> and <b>'+A.youngest.name+' ('+A.youngest.age+')</b> both crossed the line — and '+(A.over60?A.over60.length:0)+' finishers were 60 or older.</div>';
+      st.appendChild(c2);
+    }
+    if(S.top && S.top.length){
+      var c3=el('div','scard');
+      c3.innerHTML='<h3>Iron legs — most loops</h3>'+S.top.slice(0,5).map(function(t,i){
+        return '<div class="ironrow"><div class="in">'+(i+1)+'</div><div class="ii"><b>'+t.name+'</b><div class="ic">'+t.cat+' · '+t.gender+' · BIB '+t.bib+'</div></div><div class="id">'+t.laps+' loops · '+t.km+' km</div></div>';
+      }).join('');
+      st.appendChild(c3);
+    }
+  }
+  renderStats(); renderStory();
 
   var pod=$('#podium');
   D.categories.forEach(function(c){
@@ -234,8 +342,9 @@
         any=true;
         var grp=el('div','grp');
         grp.innerHTML='<div class="grp-h"><span class="gt">'+c.label+' · '+g.g+'</span><span class="gc">'+g.n+' finishers</span></div>';
+        var hasT=rows.some(function(r){return r.t;});
         var tbl=el('table','');
-        tbl.innerHTML='<thead><tr><th class="c">#</th><th>BIB</th><th>Name</th><th class="r">Loops</th></tr></thead>';
+        tbl.innerHTML='<thead><tr><th class="c">#</th><th>BIB</th><th>Name</th><th class="r">Loops</th>'+(hasT?'<th class="r">Time</th>':'')+'</tr></thead>';
         var tb=el('tbody','');
         rows.forEach(function(r){
           var tr=el('tr', (hlBib&&r.bib===hlBib)?'hl':'');
@@ -243,7 +352,8 @@
           tr.innerHTML='<td class="c rk '+medalRk(r.r)+'">'+r.r+'</td>'+
             '<td class="bib">'+r.bib+'</td>'+
             '<td class="nm">'+r.name+'</td>'+
-            '<td class="r lp">'+r.laps+'</td>';
+            '<td class="r lp">'+r.laps+'</td>'+
+            (hasT?'<td class="r" style="font-family:var(--mono);font-size:12.5px;color:var(--mist)">'+(r.t||'—')+'</td>':'');
           tb.appendChild(tr);
         });
         tbl.appendChild(tb); grp.appendChild(tbl); tables.appendChild(grp);
@@ -264,13 +374,25 @@
       return;
     }
     var madeMin = rec.laps>=rec.min;
+    var km = rec.laps*LOOP_M/1000;
+    var beaten = rec.gcount - rec.rank;
+    var pct = rec.gcount>1 ? Math.round(beaten/(rec.gcount-1)*100) : 100;
+    rec.km=km; rec.pct=pct;
+    var badge = rec.rank===1?'Category Winner':(rec.rank<=3?'Podium Finisher':'Official Finisher');
+    var smallCss='font-family:var(--sans);font-size:13px;color:var(--dim)';
     card.className='mecard show';
     card.innerHTML='<div class="mname">'+rec.name+'</div>'+
       '<div class="mmeta">'+rec.gen+' · '+rec.cat+' · BIB '+bib+'</div>'+
       '<div class="mstat">'+
         '<div><div class="k">Rank ('+rec.gen+')</div><div class="v">'+rec.rank+' <small>/ '+rec.gcount+'</small></div></div>'+
-        '<div><div class="k">Loops completed</div><div class="v">'+rec.laps+'</div></div>'+
+        '<div><div class="k">Loops</div><div class="v">'+rec.laps+'</div></div>'+
+        (rec.t?'<div><div class="k">Finish time</div><div class="v" style="font-family:var(--mono);font-size:22px">'+rec.t+'</div></div>':'')+
       '</div>'+
+      '<div class="meextra">'+
+        '<div><div class="k">Distance</div><div class="v">'+km.toFixed(2)+' <small style="'+smallCss+'">km</small></div></div>'+
+        '<div><div class="k">Ahead of</div><div class="v">'+pct+'<small style="'+smallCss+'">% of '+rec.gen+'</small></div></div>'+
+      '</div>'+
+      '<div class="mebadge'+(rec.rank<=3?' pod':'')+'">'+badge+'</div>'+
       (madeMin?'':'<div class="mnote">Official finisher minimum for '+rec.cat+' is '+rec.min+' loops.</div>')+
       '<button class="sharebtn" id="shareResult">📸 Share my result</button>';
     curRec=rec; curBib=bib;
@@ -340,6 +462,8 @@
     x.fillStyle='#93c5fd'; x.font='700 42px "JetBrains Mono", monospace'; x.fillText('LOOPS COMPLETED', W/2, 1300);
     x.fillStyle='rgba(255,255,255,0.82)'; x.font='500 36px "JetBrains Mono", monospace';
     x.fillText('RANK '+rec.rank+' of '+rec.gcount+'  ·  '+String(rec.gen).toUpperCase(), W/2, 1372);
+    var dline=(rec.km!=null?rec.km.toFixed(1)+' KM':'')+(rec.pct!=null?'   ·   TOP '+Math.max(1,100-rec.pct)+'%':'')+(rec.t?'   ·   '+rec.t:'');
+    if(dline){ x.fillStyle='#4fd1c5'; x.font='600 34px "JetBrains Mono", monospace'; x.fillText(dline, W/2, 1442); }
     x.strokeStyle='rgba(255,255,255,0.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(150,1520); x.lineTo(W-150,1520); x.stroke();
     if(rwd && rwd.naturalWidth){
       var rh=58, rw=Math.round(rh*(rwd.naturalWidth/rwd.naturalHeight));
