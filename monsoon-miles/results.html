@@ -65,6 +65,11 @@
   .meextra .v{font-family:var(--serif);font-size:26px;line-height:1.1;margin-top:2px}
   .mebadge{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:600;color:#04231f;background:var(--teal);border-radius:999px;padding:6px 14px}
   .mebadge.pod{background:var(--gold);color:#2b1e00}
+  .mile{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-family:var(--mono);font-size:12px;letter-spacing:.5px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:var(--dim)}
+  .chip.on{background:var(--teal);border-color:var(--teal);color:#04231f;font-weight:600}
+  .mectx{margin-top:12px;font-size:13px;color:var(--mist);line-height:1.5}
+  .mectx .near{color:var(--teal);font-weight:600}
 
   /* day in numbers */
   .statband{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
@@ -223,6 +228,8 @@
   function el(t,c,h){ var e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e; }
   function medalRk(r){ return r===1?'m1':r===2?'m2':r===3?'m3':''; }
   var MEDALS={1:'🥇',2:'🥈',3:'🥉'};
+  function tsec2(t){ t=(t||'').trim(); if(!/^\d+:\d{2}(:\d{2})?$/.test(t))return null; var p=t.split(':').map(Number); return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]; }
+  function pad2(n){ return (n<10?'0':'')+n; }
 
   $('#totF').textContent = D.total;
   var S = D.stats || {};
@@ -231,7 +238,7 @@
   var BYBIB={};
   D.categories.forEach(function(c){
     c.genders.forEach(function(g){
-      g.rows.forEach(function(row){ BYBIB[row.bib]={cat:c.label,gen:g.g,rank:row.r,laps:row.laps,name:row.name,gcount:g.n,min:c.min,t:row.t||null}; });
+      g.rows.forEach(function(row){ BYBIB[row.bib]={cat:c.label,gen:g.g,rank:row.r,laps:row.laps,name:row.name,gcount:g.n,min:c.min,t:row.t||null,o:row.o}; });
     });
   });
 
@@ -386,21 +393,47 @@
     var km = rec.laps*LOOP_M/1000;
     var beaten = rec.gcount - rec.rank;
     var pct = rec.gcount>1 ? Math.round(beaten/(rec.gcount-1)*100) : 100;
-    rec.km=km; rec.pct=pct;
+    // category context (average + overall field size)
+    var catObj=null, grp=null;
+    D.categories.forEach(function(c){ if(c.label===rec.cat){ catObj=c; c.genders.forEach(function(g){ if(g.g===rec.gen) grp=g; }); } });
+    var catRows=[]; catObj.genders.forEach(function(g){ catRows=catRows.concat(g.rows); });
+    var catTotal=catRows.length;
+    var catAvg=Math.round(catRows.reduce(function(a,r){return a+r.laps;},0)/catTotal*10)/10;
+    var dAvg=Math.round((rec.laps-catAvg)*10)/10;
+    // pace + per-loop time (needs finish time)
+    var ts=tsec2(rec.t), paceStr=null, lapStr=null;
+    if(ts && rec.laps>0){ var ps=ts/km; paceStr=Math.floor(ps/60)+':'+pad2(Math.round(ps%60)); var lp=ts/rec.laps; lapStr=Math.floor(lp/60)+':'+pad2(Math.round(lp%60)); }
+    // distance milestones
+    var MK=[{l:'5K',k:5},{l:'10K',k:10},{l:'15K',k:15},{l:'Half',k:21.0975}];
+    var chips=MK.map(function(m){ return '<span class="chip'+(km>=m.k?' on':'')+'">'+m.l+(km>=m.k?' ✓':'')+'</span>'; }).join('');
+    // near-miss line
+    var near='';
+    if(rec.rank>3 && grp.rows.length>=3){
+      var pg=grp.rows[2].laps-rec.laps;
+      if(pg>=0 && pg<=3){ near = pg===0 ? 'Level with the podium on loops — just off on time' : ('Just '+pg+' loop'+(pg>1?'s':'')+' from a podium'); }
+      else { var ah=grp.rows[rec.rank-2]; if(ah){ var ag=ah.laps-rec.laps; near = ag<=0 ? ('Right behind '+ord(rec.rank-1)+' place') : (ag+' loop'+(ag>1?'s':'')+' behind '+ord(rec.rank-1)+' place'); } }
+    }
+    rec.km=km; rec.pct=pct; rec.pace=paceStr; rec.lap=lapStr;
     var badge = rec.rank===1?'Category Winner':(rec.rank<=3?'Podium Finisher':'Official Finisher');
     var smallCss='font-family:var(--sans);font-size:13px;color:var(--dim)';
+    var monoV='font-family:var(--mono);font-size:22px';
     card.className='mecard show';
     card.innerHTML='<div class="mname">'+rec.name+'</div>'+
       '<div class="mmeta">'+rec.gen+' · '+rec.cat+' · BIB '+bib+'</div>'+
       '<div class="mstat">'+
         '<div><div class="k">Rank ('+rec.gen+')</div><div class="v">'+rec.rank+' <small>/ '+rec.gcount+'</small></div></div>'+
         '<div><div class="k">Loops</div><div class="v">'+rec.laps+'</div></div>'+
-        (rec.t?'<div><div class="k">Finish time</div><div class="v" style="font-family:var(--mono);font-size:22px">'+rec.t+'</div></div>':'')+
+        '<div><div class="k">Overall · '+rec.cat+'</div><div class="v">'+rec.o+' <small>/ '+catTotal+'</small></div></div>'+
+        (rec.t?'<div><div class="k">Finish time</div><div class="v" style="'+monoV+'">'+rec.t+'</div></div>':'')+
       '</div>'+
       '<div class="meextra">'+
         '<div><div class="k">Distance</div><div class="v">'+km.toFixed(2)+' <small style="'+smallCss+'">km</small></div></div>'+
         '<div><div class="k">Ahead of</div><div class="v">'+pct+'<small style="'+smallCss+'">% of '+rec.gen+'</small></div></div>'+
+        (paceStr?'<div><div class="k">Avg pace</div><div class="v" style="'+monoV+'">'+paceStr+' <small style="'+smallCss+'">/km</small></div></div>':'')+
+        (lapStr?'<div><div class="k">Per loop</div><div class="v" style="'+monoV+'">'+lapStr+'</div></div>':'')+
       '</div>'+
+      '<div class="mile">'+chips+'</div>'+
+      '<div class="mectx">'+(dAvg>=0?'+':'')+dAvg+' loops vs the '+rec.cat+' average ('+catAvg+')'+(near?' · <span class="near">'+near+'</span>':'')+'</div>'+
       '<div class="mebadge'+(rec.rank<=3?' pod':'')+'">'+badge+'</div>'+
       (madeMin?'':'<div class="mnote">Official finisher minimum for '+rec.cat+' is '+rec.min+' loops.</div>')+
       '<button class="sharebtn" id="shareResult">📸 Share my result</button>';
@@ -472,7 +505,8 @@
     x.fillStyle='rgba(255,255,255,0.82)'; x.font='500 36px "JetBrains Mono", monospace';
     x.fillText('RANK '+rec.rank+' of '+rec.gcount+'  ·  '+String(rec.gen).toUpperCase(), W/2, 1372);
     var dline=(rec.km!=null?rec.km.toFixed(1)+' KM':'')+(rec.pct!=null?'   ·   TOP '+Math.max(1,100-rec.pct)+'%':'')+(rec.t?'   ·   '+rec.t:'');
-    if(dline){ x.fillStyle='#4fd1c5'; x.font='600 34px "JetBrains Mono", monospace'; x.fillText(dline, W/2, 1442); }
+    if(dline){ x.fillStyle='#4fd1c5'; x.font='600 34px "JetBrains Mono", monospace'; x.fillText(dline, W/2, 1424); }
+    if(rec.pace){ x.fillStyle='rgba(255,255,255,0.72)'; x.font='500 30px "JetBrains Mono", monospace'; x.fillText('AVG '+rec.pace+' /KM   ·   '+rec.lap+' / LOOP', W/2, 1476); }
     x.strokeStyle='rgba(255,255,255,0.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(150,1520); x.lineTo(W-150,1520); x.stroke();
     if(rwd && rwd.naturalWidth){
       var rh=58, rw=Math.round(rh*(rwd.naturalWidth/rwd.naturalHeight));
