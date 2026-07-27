@@ -255,35 +255,44 @@
       [].forEach.call(band.querySelectorAll('.n'),function(n){ animCount(n,parseFloat(n.dataset.to),n.dataset.dec); }); } }
     window.addEventListener('scroll',go,{passive:true}); go();
   }
-  // ---- The day's story ----
+  // ---- The day's story (performance) ----
+  function ord(n){ return n+(["th","st","nd","rd"][(n%100>10&&n%100<14)?0:(n%10<4?n%10:0)]); }
   function renderStory(){
     var st=$('#story'); if(!st) return; st.innerHTML='';
-    var g=S.gender||{}, c=S.cat||{}, tot=S.finishers||1;
+    var tot=S.finishers||1;
     function bar(label,val,mx){ return '<div class="bar"><span class="bl">'+label+'</span><span class="bt"><span class="bf" style="width:'+Math.round(val/mx*100)+'%"></span></span><span class="bv">'+val+'</span></div>'; }
-    var c1=el('div','scard');
-    c1.innerHTML='<h3>Who showed up</h3>'+
-      '<div class="duo"><div class="d"><div class="dn">'+(g.Women||0)+'</div><div class="dl">Women</div></div>'+
-      '<div class="d"><div class="dn">'+(g.Men||0)+'</div><div class="dl">Men</div></div></div>'+
-      Object.keys(c).map(function(k){return bar(k,c[k],tot);}).join('');
-    st.appendChild(c1);
-    var A=S.age;
-    if(A){
-      var b=A.bands||{}, mx=Math.max.apply(null,Object.keys(b).map(function(k){return b[k];}))||1;
-      var c2=el('div','scard');
-      c2.innerHTML='<h3>Every age, in the rain</h3>'+
-        '<div class="duo"><div class="d"><div class="dn">'+A.youngest.age+'</div><div class="dl">Youngest</div></div>'+
-        '<div class="d"><div class="dn">'+A.avg+'</div><div class="dl">Avg age</div></div>'+
-        '<div class="d"><div class="dn">'+A.oldest.age+'</div><div class="dl">Oldest</div></div></div>'+
-        Object.keys(b).map(function(k){return bar(k,b[k],mx);}).join('')+
-        '<div class="legend"><b>'+A.oldest.name+' ('+A.oldest.age+')</b> and <b>'+A.youngest.name+' ('+A.youngest.age+')</b> both crossed the line — and '+(A.over60?A.over60.length:0)+' finishers were 60 or older.</div>';
-      st.appendChild(c2);
+    // How far the field went
+    if(S.milestones && S.milestones.length){
+      var c1=el('div','scard');
+      c1.innerHTML='<h3>How far the field went</h3>'+
+        '<div class="legend" style="margin-top:0;margin-bottom:10px">Runners who covered at least…</div>'+
+        S.milestones.map(function(m){return bar(m.label,m.count,tot);}).join('')+
+        '<div class="legend"><b>50 runners ran a half-marathon or more</b> — 13 of them topped 30 km.</div>';
+      st.appendChild(c1);
     }
+    // Iron legs
     if(S.top && S.top.length){
-      var c3=el('div','scard');
-      c3.innerHTML='<h3>Iron legs — most loops</h3>'+S.top.slice(0,5).map(function(t,i){
+      var c2=el('div','scard');
+      c2.innerHTML='<h3>Iron legs — most loops</h3>'+S.top.slice(0,5).map(function(t,i){
         return '<div class="ironrow"><div class="in">'+(i+1)+'</div><div class="ii"><b>'+t.name+'</b><div class="ic">'+t.cat+' · '+t.gender+' · BIB '+t.bib+'</div></div><div class="id">'+t.laps+' loops · '+t.km+' km</div></div>';
       }).join('');
+      st.appendChild(c2);
+    }
+    // Fastest average pace
+    if(S.pace && S.pace.length){
+      var c3=el('div','scard');
+      c3.innerHTML='<h3>Quickest feet — fastest pace</h3>'+S.pace.map(function(p,i){
+        return '<div class="ironrow"><div class="in">'+(i+1)+'</div><div class="ii"><b>'+p.name+'</b><div class="ic">'+p.cat+' · '+p.gender+' · '+p.laps+' loops</div></div><div class="id">'+p.pace+' /km</div></div>';
+      }).join('')+ (S.paceHasAll?'':'<div class="legend">Timed runners so far — more categories appear as their finish times are added.</div>');
       st.appendChild(c3);
+    }
+    // Down to the wire
+    if(S.close && S.close.length){
+      var c4=el('div','scard');
+      c4.innerHTML='<h3>Down to the wire</h3>'+S.close.map(function(x){
+        return '<div class="legend" style="margin-top:0;margin-bottom:12px"><b>'+x.cat+' · '+x.gender+'</b> — '+ord(x.pa)+' &amp; '+ord(x.pb)+' place split by just <b style="color:var(--teal)">'+x.gap+'</b><br>'+x.behind+' finished right behind '+x.ahead+' after '+x.laps+' loops.</div>';
+      }).join('');
+      st.appendChild(c4);
     }
   }
   renderStats(); renderStory();
