@@ -443,8 +443,8 @@
     [].forEach.call(catPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
     [].forEach.call(genPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
     render(bib);
-    var row=document.getElementById('bib-'+bib);
-    if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
+    // keep the runner's own result card in view — do NOT jump down to the table row
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
   $('#bibGo').addEventListener('click',lookup);
   $('#bibIn').addEventListener('keydown',function(e){ if(e.key==='Enter')lookup(); });
