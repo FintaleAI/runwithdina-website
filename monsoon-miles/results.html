@@ -238,7 +238,7 @@
   var BYBIB={};
   D.categories.forEach(function(c){
     c.genders.forEach(function(g){
-      g.rows.forEach(function(row){ BYBIB[row.bib]={cat:c.label,gen:g.g,rank:row.r,laps:row.laps,name:row.name,gcount:g.n,min:c.min,t:row.t||null,o:row.o,mn:row.mn||null,mx:row.mx||null}; });
+      g.rows.forEach(function(row){ BYBIB[row.bib]={cat:c.label,gen:g.g,rank:row.r,laps:row.laps,name:row.name,gcount:g.n,min:c.min,t:row.t||null,o:row.o}; });
     });
   });
 
@@ -292,22 +292,6 @@
         return '<div class="ironrow"><div class="in">'+(i+1)+'</div><div class="ii"><b>'+p.name+'</b><div class="ic">'+p.cat+' · '+p.gender+' · '+p.laps+' loops</div></div><div class="id">'+p.pace+' /km</div></div>';
       }).join('')+ (S.paceHasAll?'':'<div class="legend">Timed runners so far — more categories appear as their finish times are added.</div>');
       st.appendChild(c3);
-    }
-    // Fastest single loop
-    if(S.fastLap){
-      var f=S.fastLap, cf=el('div','scard');
-      cf.innerHTML='<h3>Fastest loop of the day</h3>'+
-        '<div style="display:flex;align-items:baseline;gap:14px;margin-top:2px"><div style="font-family:var(--serif);font-size:56px;line-height:1;color:var(--teal)">'+f.lap+'</div><div class="legend" style="margin:0">for one 975 m loop</div></div>'+
-        '<div class="legend" style="margin-top:10px"><b>'+f.name+'</b> · '+f.cat+' · '+f.gender+' — the quickest single loop all morning.</div>';
-      st.appendChild(cf);
-    }
-    // Most consistent
-    if(S.consistent && S.consistent.length){
-      var cc=el('div','scard');
-      cc.innerHTML='<h3>The metronomes — most consistent</h3>'+S.consistent.slice(0,5).map(function(c,i){
-        return '<div class="ironrow"><div class="in">'+(i+1)+'</div><div class="ii"><b>'+c.name+'</b><div class="ic">'+c.cat+' · '+c.gender+' · '+c.laps+' loops</div></div><div class="id">'+c.mn+'–'+c.mx+'<br>within '+c.spread+'s</div></div>';
-      }).join('')+'<div class="legend">Smallest gap between their fastest and slowest loop (10+ loops).</div>';
-      st.appendChild(cc);
     }
     // Down to the wire
     if(S.close && S.close.length){
@@ -446,9 +430,7 @@
         '<div><div class="k">Distance</div><div class="v">'+km.toFixed(2)+' <small style="'+smallCss+'">km</small></div></div>'+
         '<div><div class="k">Ahead of</div><div class="v">'+pct+'<small style="'+smallCss+'">% of '+rec.gen+'</small></div></div>'+
         (paceStr?'<div><div class="k">Avg pace</div><div class="v" style="'+monoV+'">'+paceStr+' <small style="'+smallCss+'">/km</small></div></div>':'')+
-        (lapStr&&!rec.mn?'<div><div class="k">Per loop</div><div class="v" style="'+monoV+'">'+lapStr+'</div></div>':'')+
-        (rec.mn?'<div><div class="k">Fastest loop</div><div class="v" style="'+monoV+'">'+rec.mn+'</div></div>':'')+
-        (rec.mx?'<div><div class="k">Slowest loop</div><div class="v" style="'+monoV+'">'+rec.mx+'</div></div>':'')+
+        (lapStr?'<div><div class="k">Per loop</div><div class="v" style="'+monoV+'">'+lapStr+'</div></div>':'')+
       '</div>'+
       '<div class="mile">'+chips+'</div>'+
       '<div class="mectx">'+(dAvg>=0?'+':'')+dAvg+' loops vs the '+rec.cat+' average ('+catAvg+')'+(near?' · <span class="near">'+near+'</span>':'')+'</div>'+
