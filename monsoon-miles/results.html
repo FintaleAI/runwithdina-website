@@ -60,6 +60,8 @@
   .mecard .mnote{margin-top:12px;font-size:12.5px;color:var(--mist)}
   .sharebtn{margin-top:16px;width:100%;background:linear-gradient(150deg,var(--teal),#2b9d92);color:#04231f;border:none;border-radius:12px;font-family:var(--sans);font-weight:600;font-size:15px;padding:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
   .sharebtn:disabled{opacity:.6;cursor:default}
+  .certbtn{margin-top:10px;width:100%;background:transparent;color:var(--teal);border:1.5px solid var(--teal);border-radius:12px;font-family:var(--sans);font-weight:600;font-size:15px;padding:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .certbtn:disabled{opacity:.55;cursor:default}
   .meextra{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12)}
   .meextra .k{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--dim)}
   .meextra .v{font-family:var(--serif);font-size:26px;line-height:1.1;margin-top:2px}
@@ -436,9 +438,11 @@
       '<div class="mectx">'+(dAvg>=0?'+':'')+dAvg+' loops vs the '+rec.cat+' average ('+catAvg+')'+(near?' · <span class="near">'+near+'</span>':'')+'</div>'+
       '<div class="mebadge'+(rec.rank<=3?' pod':'')+'">'+badge+'</div>'+
       (madeMin?'':'<div class="mnote">Official finisher minimum for '+rec.cat+' is '+rec.min+' loops.</div>')+
-      '<button class="sharebtn" id="shareResult">📸 Share my result</button>';
+      '<button class="sharebtn" id="shareResult">📸 Share my result</button>'+
+      '<button class="certbtn" id="certBtn">🎓 Download certificate (PDF + image)</button>';
     curRec=rec; curBib=bib;
     $('#shareResult').addEventListener('click', shareResult);
+    $('#certBtn').addEventListener('click', downloadCertificate);
     curCat='all'; curGen='all'; curTxt=''; $('#filt').value='';
     [].forEach.call(catPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
     [].forEach.call(genPills.children,function(x){x.classList.toggle('on',x.dataset.val==='all');});
@@ -448,6 +452,81 @@
   }
   $('#bibGo').addEventListener('click',lookup);
   $('#bibIn').addEventListener('keydown',function(e){ if(e.key==='Enter')lookup(); });
+
+  // ---- completion certificate (A4 landscape -> PNG + PDF) ----
+  var CPOD={1:'CATEGORY WINNER  ·  1ST PLACE',2:'PODIUM FINISHER  ·  2ND PLACE',3:'PODIUM FINISHER  ·  3RD PLACE'};
+  function catPhrase(c){ return String(c).replace('Hours','Hour').replace(/^(\d)\sHour$/,'$1-Hour'); }
+  function drawCert(cv, rec, logo, rwd){
+    var W=2380,H=1683,cx=W/2; cv.width=W; cv.height=H; var x=cv.getContext('2d');
+    var g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#0a1530'); g.addColorStop(.55,'#0f2547'); g.addColorStop(1,'#0d3b3a'); x.fillStyle=g; x.fillRect(0,0,W,H);
+    var rg=x.createRadialGradient(W*.5,-100,0,W*.5,-100,1400); rg.addColorStop(0,'rgba(79,209,197,.14)'); rg.addColorStop(1,'rgba(79,209,197,0)'); x.fillStyle=rg; x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(255,255,255,.03)'; x.lineWidth=2; for(var i=-H;i<W;i+=54){ x.beginPath(); x.moveTo(i,0); x.lineTo(i+H*.22,H); x.stroke(); }
+    x.strokeStyle='#4fd1c5'; x.lineWidth=4; roundRectPath(x,54,54,W-108,H-108,26); x.stroke();
+    x.strokeStyle='rgba(79,209,197,.35)'; x.lineWidth=2; roundRectPath(x,80,80,W-160,H-160,18); x.stroke();
+    x.textAlign='center';
+    x.fillStyle='#4fd1c5'; x.font='700 30px "JetBrains Mono",monospace'; x.fillText('F I C C I   F L O   V A D O D A R A   ·   P R E S E N T S',cx,190);
+    x.fillStyle='#fff'; x.font='italic 400 104px "Instrument Serif",Georgia,serif'; x.fillText('Monsoon Miles 2026',cx,300);
+    x.fillStyle='#6ba7ff'; x.font='700 34px "JetBrains Mono",monospace'; x.fillText('C E R T I F I C A T E   O F   A C H I E V E M E N T',cx,372);
+    x.strokeStyle='rgba(255,255,255,.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(cx-360,420); x.lineTo(cx+360,420); x.stroke();
+    x.fillStyle='rgba(255,255,255,.62)'; x.font='italic 400 46px "Instrument Serif",Georgia,serif'; x.fillText('This is proudly presented to',cx,505);
+    x.fillStyle='#fff'; x.font='italic 400 130px "Instrument Serif",Georgia,serif'; var ny=wrapCanvas(x,rec.name,cx,640,1900,124);
+    x.fillStyle='#cbd8ea'; x.font='400 46px "Space Grotesk",Arial,sans-serif'; x.fillText('for completing the '+catPhrase(rec.cat)+' loop challenge',cx,ny+70);
+    var sy=ny+150;
+    if(rec.rank<=3){ var lab=CPOD[rec.rank]; x.font='700 32px "JetBrains Mono",monospace'; var pw=x.measureText(lab).width+80,ph=76; x.fillStyle='#f6c667'; roundRectPath(x,cx-pw/2,sy,pw,ph,38); x.fill(); x.fillStyle='#2b1e00'; x.textBaseline='middle'; x.fillText(lab,cx,sy+ph/2+1); x.textBaseline='alphabetic'; sy+=ph+70; } else { sy+=30; }
+    var cols=[[cx-720,String(rec.laps),'LOOPS COMPLETED'],[cx,(rec.km).toFixed(1)+' km','DISTANCE COVERED'],[cx+720,(rec.t||'—'),'FINISH TIME']];
+    cols.forEach(function(c){ x.fillStyle='#4fd1c5'; x.font='400 96px "Instrument Serif",Georgia,serif'; x.fillText(c[1],c[0],sy+70); x.fillStyle='#9fb6d4'; x.font='700 28px "JetBrains Mono",monospace'; x.fillText(c[2],c[0],sy+128); });
+    x.strokeStyle='rgba(255,255,255,.12)'; x.lineWidth=2; x.beginPath(); x.moveTo(cx-360,sy+8); x.lineTo(cx-360,sy+108); x.moveTo(cx+360,sy+8); x.lineTo(cx+360,sy+108); x.stroke();
+    x.fillStyle='rgba(255,255,255,.55)'; x.font='500 30px "JetBrains Mono",monospace'; x.fillText('1 loop = 975 m      ·      Sunday 26 July 2026      ·      Suncity Club, Vadodara',cx,sy+230);
+    x.strokeStyle='rgba(255,255,255,.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(160,1420); x.lineTo(W-160,1420); x.stroke();
+    x.strokeStyle='rgba(255,255,255,.4)'; x.lineWidth=2; x.beginPath(); x.moveTo(300,1540); x.lineTo(680,1540); x.stroke();
+    x.fillStyle='#fff'; x.font='italic 400 52px "Instrument Serif",Georgia,serif'; x.fillText('Dina Patel',490,1525);
+    x.fillStyle='#9fb6d4'; x.font='700 26px "JetBrains Mono",monospace'; x.fillText('FOUNDER · RUNWITHDINA',490,1590);
+    if(logo&&logo.naturalWidth){ var lh=120,lw=Math.round(lh*(logo.naturalWidth/logo.naturalHeight)),pad=36; var cw=lw+pad*2,ch=lh+50,ax=W-160-cw,ay=1448; x.fillStyle='#fff'; roundRectPath(x,ax,ay,cw,ch,20); x.fill(); x.drawImage(logo,ax+pad,ay+25,lw,lh); x.fillStyle='#9fb6d4'; x.font='700 24px "JetBrains Mono",monospace'; x.fillText('TITLE SPONSOR',ax+cw/2,ay+ch+40); }
+    x.fillStyle='#4fd1c5'; x.font='italic 400 40px "Instrument Serif",Georgia,serif'; x.fillText('#MonsoonMiles2026',cx,1500);
+    x.fillStyle='rgba(255,255,255,.5)'; x.font='500 26px "JetBrains Mono",monospace'; x.fillText('runwithdina.com/monsoon-miles   ·   Powered by fintale.io',cx,1550);
+    if(rwd&&rwd.naturalWidth){ var rh=64,rw=Math.round(rh*(rwd.naturalWidth/rwd.naturalHeight)); x.drawImage(rwd,Math.round(cx-rw/2),1592,rw,rh); }
+    return cv;
+  }
+  function buildPdfFromJpeg(dataURL, iw, ih){
+    var jpg=atob(dataURL.split(',')[1]);
+    var pw=842, ph=595.28, s=Math.min(pw/iw, ph/ih), w=iw*s, h=ih*s, ox=(pw-w)/2, oy=(ph-h)/2;
+    function nn(v){ return (Math.round(v*100)/100).toString(); }
+    var content='q\n'+nn(w)+' 0 0 '+nn(h)+' '+nn(ox)+' '+nn(oy)+' cm\n/Im0 Do\nQ';
+    var o=[]; o[1]='<< /Type /Catalog /Pages 2 0 R >>'; o[2]='<< /Type /Pages /Kids [3 0 R] /Count 1 >>';
+    o[3]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+nn(pw)+' '+nn(ph)+'] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>';
+    o[4]='<< /Type /XObject /Subtype /Image /Width '+iw+' /Height '+ih+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+jpg.length+' >>\nstream\n'+jpg+'\nendstream';
+    o[5]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream';
+    var pdf='%PDF-1.3\n', off=[]; for(var i=1;i<=5;i++){ off[i]=pdf.length; pdf+=i+' 0 obj\n'+o[i]+'\nendobj\n'; }
+    var xr=pdf.length; pdf+='xref\n0 6\n0000000000 65535 f \n';
+    for(var i=1;i<=5;i++){ pdf+=('0000000000'+off[i]).slice(-10)+' 00000 n \n'; }
+    pdf+='trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF';
+    var bytes=new Uint8Array(pdf.length); for(var i=0;i<pdf.length;i++) bytes[i]=pdf.charCodeAt(i)&0xff;
+    return new Blob([bytes],{type:'application/pdf'});
+  }
+  function dlBlob(blob,fname){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500); }
+  function downloadCertificate(){
+    var rec=curRec, bib=curBib; if(!rec) return;
+    var btn=$('#certBtn'), old=btn.innerHTML; btn.disabled=true; btn.innerHTML='Preparing…';
+    function reset(){ btn.disabled=false; btn.innerHTML=old; }
+    var need=['italic 400 130px "Instrument Serif"','400 96px "Instrument Serif"','700 34px "JetBrains Mono"','400 46px "Space Grotesk"'];
+    var loads=need.map(function(f){ return (document.fonts&&document.fonts.load)?document.fonts.load(f).catch(function(){}):Promise.resolve(); });
+    loads.push(loadImg('Photos/sponsors/ficci-flo.png')); loads.push(loadImg('Photos/community-logos/runwithdina.png'));
+    Promise.all(loads).then(function(r){
+      var logo=r[r.length-2], rwd=r[r.length-1], fn='monsoon-miles-certificate-'+bib;
+      function attempt(withLogo){
+        try{
+          var cv=drawCert(document.createElement('canvas'), rec, withLogo?logo:null, withLogo?rwd:null);
+          cv.toBlob(function(png){
+            if(png) dlBlob(png, fn+'.png');
+            try{ var pdf=buildPdfFromJpeg(cv.toDataURL('image/jpeg',0.92), cv.width, cv.height); setTimeout(function(){ dlBlob(pdf, fn+'.pdf'); reset(); }, 800); }
+            catch(e){ reset(); }
+          }, 'image/png');
+          return true;
+        }catch(e){ return false; }
+      }
+      if(!attempt(true) && !attempt(false)) reset();
+    }).catch(reset);
+  }
 
   // ---- shareable result card (canvas -> PNG -> Web Share / download) ----
   function loadImg(src){ return new Promise(function(res){ var im=new Image();
