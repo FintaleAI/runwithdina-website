@@ -461,8 +461,12 @@
     var g=x.createLinearGradient(0,0,W,H); g.addColorStop(0,'#0a1530'); g.addColorStop(.55,'#0f2547'); g.addColorStop(1,'#0d3b3a'); x.fillStyle=g; x.fillRect(0,0,W,H);
     var rg=x.createRadialGradient(W*.5,-100,0,W*.5,-100,1400); rg.addColorStop(0,'rgba(79,209,197,.14)'); rg.addColorStop(1,'rgba(79,209,197,0)'); x.fillStyle=rg; x.fillRect(0,0,W,H);
     x.strokeStyle='rgba(255,255,255,.03)'; x.lineWidth=2; for(var i=-H;i<W;i+=54){ x.beginPath(); x.moveTo(i,0); x.lineTo(i+H*.22,H); x.stroke(); }
-    x.strokeStyle='#4fd1c5'; x.lineWidth=4; roundRectPath(x,54,54,W-108,H-108,26); x.stroke();
-    x.strokeStyle='rgba(79,209,197,.35)'; x.lineWidth=2; roundRectPath(x,80,80,W-160,H-160,18); x.stroke();
+    x.strokeStyle='#4fd1c5'; x.lineWidth=4; roundRectPath(x,58,58,W-116,H-116,24); x.stroke();
+    x.strokeStyle='rgba(79,209,197,.4)'; x.lineWidth=2; roundRectPath(x,88,88,W-176,H-176,16); x.stroke();
+    (function(){ var m=124, L=60; x.strokeStyle='#f6c667'; x.lineWidth=5; x.lineCap='round';
+      [[m,m,1,1],[W-m,m,-1,1],[m,H-m,1,-1],[W-m,H-m,-1,-1]].forEach(function(c){
+        x.beginPath(); x.moveTo(c[0]+c[2]*L,c[1]); x.lineTo(c[0],c[1]); x.lineTo(c[0],c[1]+c[3]*L); x.stroke(); });
+      x.lineCap='butt'; })();
     x.textAlign='center';
     x.fillStyle='#4fd1c5'; x.font='700 30px "JetBrains Mono",monospace'; x.fillText('F I C C I   F L O   V A D O D A R A   ·   P R E S E N T S',cx,190);
     x.fillStyle='#fff'; x.font='italic 400 104px "Instrument Serif",Georgia,serif'; x.fillText('Monsoon Miles 2026',cx,300);
@@ -477,14 +481,21 @@
     cols.forEach(function(c){ x.fillStyle='#4fd1c5'; x.font='400 96px "Instrument Serif",Georgia,serif'; x.fillText(c[1],c[0],sy+70); x.fillStyle='#9fb6d4'; x.font='700 28px "JetBrains Mono",monospace'; x.fillText(c[2],c[0],sy+128); });
     x.strokeStyle='rgba(255,255,255,.12)'; x.lineWidth=2; x.beginPath(); x.moveTo(cx,sy+8); x.lineTo(cx,sy+108); x.stroke();
     x.fillStyle='rgba(255,255,255,.55)'; x.font='500 30px "JetBrains Mono",monospace'; x.fillText('1 loop ≈ 975 metres      ·      Sunday 26 July 2026      ·      Suncity Club, Vadodara',cx,sy+230);
-    x.strokeStyle='rgba(255,255,255,.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(160,1420); x.lineTo(W-160,1420); x.stroke();
-    x.strokeStyle='rgba(255,255,255,.4)'; x.lineWidth=2; x.beginPath(); x.moveTo(300,1540); x.lineTo(680,1540); x.stroke();
-    x.fillStyle='#fff'; x.font='italic 400 52px "Instrument Serif",Georgia,serif'; x.fillText('Dina Patel',490,1525);
-    x.fillStyle='#9fb6d4'; x.font='700 26px "JetBrains Mono",monospace'; x.fillText('FOUNDER · RUNWITHDINA',490,1590);
-    if(logo&&logo.naturalWidth){ var lh=120,lw=Math.round(lh*(logo.naturalWidth/logo.naturalHeight)),pad=36; var cw=lw+pad*2,ch=lh+50,ax=W-160-cw,ay=1448; x.fillStyle='#fff'; roundRectPath(x,ax,ay,cw,ch,20); x.fill(); x.drawImage(logo,ax+pad,ay+25,lw,lh); x.fillStyle='#9fb6d4'; x.font='700 24px "JetBrains Mono",monospace'; x.fillText('TITLE SPONSOR',ax+cw/2,ay+ch+40); }
-    x.fillStyle='#4fd1c5'; x.font='italic 400 40px "Instrument Serif",Georgia,serif'; x.fillText('#MonsoonMiles2026',cx,1500);
-    x.fillStyle='rgba(255,255,255,.5)'; x.font='500 26px "JetBrains Mono",monospace'; x.fillText('runwithdina.com/monsoon-miles   ·   Powered by fintale.io',cx,1550);
-    if(rwd&&rwd.naturalWidth){ var rh=64,rw=Math.round(rh*(rwd.naturalWidth/rwd.naturalHeight)); x.drawImage(rwd,Math.round(cx-rw/2),1592,rw,rh); }
+    // ---- footer band — three columns, all kept safely inside the inner border (bottom ≈1591) ----
+    x.strokeStyle='rgba(255,255,255,.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(180,1386); x.lineTo(W-180,1386); x.stroke();
+    // left: signature
+    var sigx=478;
+    x.fillStyle='#fff'; x.font='italic 400 48px "Instrument Serif",Georgia,serif'; x.fillText('Dina Patel',sigx,1470);
+    x.strokeStyle='rgba(255,255,255,.4)'; x.lineWidth=2; x.beginPath(); x.moveTo(sigx-185,1488); x.lineTo(sigx+185,1488); x.stroke();
+    x.fillStyle='#9fb6d4'; x.font='700 23px "JetBrains Mono",monospace'; x.fillText('FOUNDER · RUNWITHDINA',sigx,1524);
+    // centre: RunwithDina mark + hashtag + urls
+    if(rwd&&rwd.naturalWidth){ var rh=52,rw=Math.round(rh*(rwd.naturalWidth/rwd.naturalHeight)); x.drawImage(rwd,Math.round(cx-rw/2),1428,rw,rh); }
+    x.fillStyle='#4fd1c5'; x.font='italic 400 36px "Instrument Serif",Georgia,serif'; x.fillText('#MonsoonMiles2026',cx,1522);
+    x.fillStyle='rgba(255,255,255,.5)'; x.font='500 23px "JetBrains Mono",monospace'; x.fillText('runwithdina.com/monsoon-miles      ·      Powered by fintale.io',cx,1558);
+    // right: FICCI FLO title sponsor
+    var fx=W-478;
+    x.fillStyle='#9fb6d4'; x.font='700 22px "JetBrains Mono",monospace'; x.fillText('TITLE SPONSOR',fx,1420);
+    if(logo&&logo.naturalWidth){ var lh=88,lw=Math.round(lh*(logo.naturalWidth/logo.naturalHeight)),pad=28; var cw=lw+pad*2,ch=lh+32,ax=fx-cw/2,ay=1438; x.fillStyle='#fff'; roundRectPath(x,ax,ay,cw,ch,16); x.fill(); x.drawImage(logo,ax+pad,ay+16,lw,lh); }
     return cv;
   }
   function buildPdfFromJpeg(dataURL, iw, ih){
