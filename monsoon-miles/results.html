@@ -473,10 +473,10 @@
     x.fillStyle='#cbd8ea'; x.font='400 46px "Space Grotesk",Arial,sans-serif'; x.fillText('for completing the '+catPhrase(rec.cat)+' loop challenge',cx,ny+70);
     var sy=ny+150;
     if(rec.rank<=3){ var lab=CPOD[rec.rank]; x.font='700 32px "JetBrains Mono",monospace'; var pw=x.measureText(lab).width+80,ph=76; x.fillStyle='#f6c667'; roundRectPath(x,cx-pw/2,sy,pw,ph,38); x.fill(); x.fillStyle='#2b1e00'; x.textBaseline='middle'; x.fillText(lab,cx,sy+ph/2+1); x.textBaseline='alphabetic'; sy+=ph+70; } else { sy+=30; }
-    var cols=[[cx-720,String(rec.laps),'LOOPS COMPLETED'],[cx,(rec.km).toFixed(1)+' km','DISTANCE COVERED'],[cx+720,(rec.t||'—'),'FINISH TIME']];
+    var cols=[[cx-360,String(rec.laps),'LOOPS COMPLETED'],[cx+360,(rec.t||'—'),'FINISH TIME']];
     cols.forEach(function(c){ x.fillStyle='#4fd1c5'; x.font='400 96px "Instrument Serif",Georgia,serif'; x.fillText(c[1],c[0],sy+70); x.fillStyle='#9fb6d4'; x.font='700 28px "JetBrains Mono",monospace'; x.fillText(c[2],c[0],sy+128); });
-    x.strokeStyle='rgba(255,255,255,.12)'; x.lineWidth=2; x.beginPath(); x.moveTo(cx-360,sy+8); x.lineTo(cx-360,sy+108); x.moveTo(cx+360,sy+8); x.lineTo(cx+360,sy+108); x.stroke();
-    x.fillStyle='rgba(255,255,255,.55)'; x.font='500 30px "JetBrains Mono",monospace'; x.fillText('1 loop = 975 m      ·      Sunday 26 July 2026      ·      Suncity Club, Vadodara',cx,sy+230);
+    x.strokeStyle='rgba(255,255,255,.12)'; x.lineWidth=2; x.beginPath(); x.moveTo(cx,sy+8); x.lineTo(cx,sy+108); x.stroke();
+    x.fillStyle='rgba(255,255,255,.55)'; x.font='500 30px "JetBrains Mono",monospace'; x.fillText('1 loop ≈ 975 metres      ·      Sunday 26 July 2026      ·      Suncity Club, Vadodara',cx,sy+230);
     x.strokeStyle='rgba(255,255,255,.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(160,1420); x.lineTo(W-160,1420); x.stroke();
     x.strokeStyle='rgba(255,255,255,.4)'; x.lineWidth=2; x.beginPath(); x.moveTo(300,1540); x.lineTo(680,1540); x.stroke();
     x.fillStyle='#fff'; x.font='italic 400 52px "Instrument Serif",Georgia,serif'; x.fillText('Dina Patel',490,1525);
