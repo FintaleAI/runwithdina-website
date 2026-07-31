@@ -480,7 +480,7 @@
     var cols=[[cx-360,String(rec.laps),'LOOPS COMPLETED'],[cx+360,(rec.t||'—'),'FINISH TIME']];
     cols.forEach(function(c){ x.fillStyle='#4fd1c5'; x.font='400 96px "Instrument Serif",Georgia,serif'; x.fillText(c[1],c[0],sy+70); x.fillStyle='#9fb6d4'; x.font='700 28px "JetBrains Mono",monospace'; x.fillText(c[2],c[0],sy+128); });
     x.strokeStyle='rgba(255,255,255,.12)'; x.lineWidth=2; x.beginPath(); x.moveTo(cx,sy+8); x.lineTo(cx,sy+108); x.stroke();
-    x.fillStyle='rgba(255,255,255,.55)'; x.font='500 30px "JetBrains Mono",monospace'; x.fillText('Sunday 26 July 2026      ·      Suncity Club, Vadodara',cx,sy+230);
+    x.fillStyle='rgba(255,255,255,.55)'; x.font='500 30px "JetBrains Mono",monospace'; x.fillText('1 loop ≈ 975 metres      ·      Sunday 26 July 2026      ·      Suncity Club, Vadodara',cx,sy+230);
     // ---- footer band — three columns, all kept safely inside the inner border (bottom ≈1591) ----
     x.strokeStyle='rgba(255,255,255,.14)'; x.lineWidth=2; x.beginPath(); x.moveTo(180,1386); x.lineTo(W-180,1386); x.stroke();
     // left: signature
