@@ -32,6 +32,17 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 # ============================================================
+# ALWAYS-FRESH live/results pages + their data
+# (they change after the event; must not be cached stale)
+# ============================================================
+<IfModule mod_headers.c>
+  <FilesMatch "(results|live|leaderboard|results-data)\.(html|js)$">
+    Header set Cache-Control "no-cache, must-revalidate, max-age=0"
+    Header unset Expires
+  </FilesMatch>
+</IfModule>
+
+# ============================================================
 # FORCE HTTPS
 # ============================================================
 <IfModule mod_rewrite.c>
